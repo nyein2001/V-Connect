@@ -406,4 +406,6 @@ class Assets {
 
 	static const String id_json = 'assets/languages/id.json';
 
+  static const String otp_png ='assets/images/otp_icon.png';
+
 }

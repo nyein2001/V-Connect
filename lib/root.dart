@@ -7,6 +7,7 @@ import 'package:ndvpn/core/providers/globals/iap_provider.dart';
 import 'package:ndvpn/core/resources/environment.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
+import 'package:ndvpn/ui/screens/verify_screen/verification_screen.dart';
 import 'core/providers/globals/ads_provider.dart';
 import 'ui/screens/splash_screen.dart';
 
@@ -68,7 +69,7 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return _ready ? LoginScreen() : const SplashScreen();
+    return _ready ?  const LoginScreen() : const SplashScreen();
   }
 
   Future loadAppOpenAd() async {

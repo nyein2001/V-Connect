@@ -11,6 +11,11 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
   final TextEditingController _referenceCodeController =
       TextEditingController();
   String status = '';
+  String name= '';
+  String email = '';
+  String password ='';
+  String phoneNo= '';
+  String reference= '';
 
   @override
   void initState() {
@@ -145,19 +150,32 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
   }
 
   Future<void> register() async {
-    if (status == "true") {
-      verificationCall(_emailController.text, generateOTP().toString());
-    } else {
-      addToRegistation(
-          _nameController.text,
-          _emailController.text,
-          _passwordController.text,
-          _phoneController.text,
-          _referenceCodeController.text);
+    name=_nameController.text;
+    email=_emailController.text;
+    password=_passwordController.text;
+    phoneNo=_phoneController.text;
+    reference=_referenceCodeController.text;
+    if (name == '' || name.isEmpty) {
+      validate();
+    } else if(!_checkEmail(email) || email.isEmpty){
+      validate();
+    }else if(password =='' || password.isEmpty){
+      validate();
+    }else if(phoneNo =='' || phoneNo.isEmpty){
+      validate();
+    }else if(reference =='' || reference.isEmpty){
+      validate();
+    }else {
+      if (status == "true") {
+        verificationCall(email, generateOTP().toString());
+      } else {
+        addToRegistation(name, email, password, phoneNo, reference);
+      }
     }
   }
 
   void verificationCall(String sentEmail, String otp) async {
+    alertBox('Loading...', context);
     String methodBody = jsonEncode({
       'sign': AppConstants.sign,
       'salt': AppConstants.randomSalt.toString(),
@@ -181,25 +199,29 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
           String msg = data['msg'];
           String success = data['success'];
           if (success == '1') {
+            Fluttertoast.showToast(
+              msg: msg,
+              toastLength: Toast.LENGTH_SHORT
+              );
+            Preferences.setVerification(isVerification: true);
+            Preferences.setName(name: name);
+            Preferences.setEmail(email: email);
+            Preferences.setPassword(password: password);
+            Preferences.setPhone(phoneNO: phoneNo);
+            Preferences.setReference(reference: reference);
+            Preferences.setOtp(verificationCode: otp);
           } else {
             alertBox(msg, context);
           }
         }
-
-//         "
-
-//  {
-//     "ANDROID_REWARDS_APP": {
-//         "msg": "OTP has been sent on your mail.",
-//         "success": "1"
-//     }
-// }"
       }
     } on Exception catch (_) {}
+    Navigator.of(context).pop();
   }
 
   void addToRegistation(String name, String email, String password,
       String phone, String reference) async {
+    alertBox('Loading...', context);
     String deviceId = '';
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     try {
@@ -221,9 +243,9 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
       'package_name': AppConstants.packageName,
       'method_name': 'user_register',
       'type': 'normal',
-      'name': name, //naing
-      'email': email, //naingthurakyaw6@gmail.com
-      'password': password, //naingnaing
+      'name': name,
+      'email': email,
+      'password': password,
       'phone': phone,
       'device_id': deviceId,
       'user_refrence_code': reference
@@ -243,19 +265,13 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
         String success = data['success'];
         if (success == '1') {
           replaceScreen(context, const LoginScreen());
-        } else {
-          alertBox(msg, context);
         }
+        Fluttertoast.showToast(
+          msg: msg,
+          toastLength: Toast.LENGTH_SHORT);
       }
-//         "
-
-//  {
-//     "ANDROID_REWARDS_APP": {
-//         "msg": "Registration successfully.",
-//         "success": "1"
-//     }
-// }"
     }
+    Navigator.of(context).pop();
   }
 
   int generateOTP() {

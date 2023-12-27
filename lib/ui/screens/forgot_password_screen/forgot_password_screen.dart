@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:ndvpn/assets.dart';
 import 'package:ndvpn/core/resources/colors.dart';
+import 'package:ndvpn/core/utils/constant.dart';
+import 'package:ndvpn/core/utils/utils.dart';
+import 'package:http/http.dart' as http;
 import 'package:ndvpn/ui/screens/register_screen/register_screen.dart';
 part 'mixin/forgot_password_mixin.dart';
 
@@ -68,6 +73,7 @@ class ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                       child: Center(
                         child: Text(
                           "Enter your email address below and we'll send you email with instructions on how to change your password",
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 14, fontWeight: FontWeight.w600),
                         ),
@@ -75,7 +81,7 @@ class ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 Form(
@@ -102,7 +108,7 @@ class ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                 Padding(
                     padding: const EdgeInsets.only(top: 32),
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: submitButton,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.amber,
                         padding: const EdgeInsets.symmetric(

@@ -68,6 +68,20 @@ void alertBox(String message, BuildContext context) {
   ).show(context);
 }
 
+void customLoadingDialog(BuildContext context){
+  showDialog(
+    context: context, 
+    builder: (context){
+      return const AlertDialog(
+        title: SizedBox(
+          height: 50,
+          width: 300,
+          child: Text('Loading...'),
+        ),
+      );
+    });
+}
+
 // void alertBox(String message, BuildContext context) {
 //   if (Navigator.of(context).canPop()) {
 //     showDialog(

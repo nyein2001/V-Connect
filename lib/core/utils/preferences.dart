@@ -105,6 +105,24 @@ class Preferences {
     return _getValue<String>(passwordKey) ?? '';
   }
 
+  static const String phoneKey = 'phoneKey';
+  static void setPhone({required String phoneNO}) {
+    _setValue<String>(phoneKey, phoneNO);
+  }
+
+  static String getPhoneNo() {
+    return _getValue<String>(phoneKey) ?? '';
+  }
+  
+  static const String referenceKey = 'referenceKey';
+  static void setReference({required String reference}) {
+    _setValue<String>(referenceKey, reference);
+  }
+
+  static String getReference() {
+    return _getValue<String>(referenceKey) ?? '';
+  }
+
   static const String isCheckKey = 'isCheckKey';
   static void setCheck({required bool isCheck}) {
     _setValue<bool>(isCheckKey, isCheck);
@@ -139,5 +157,14 @@ class Preferences {
 
   static bool showLogin() {
     return _getValue<bool>(showLoginKey) ?? false;
+  }
+
+  static const String otpKey = 'verify_otp_code';
+  static void setOtp({required String verificationCode}) {
+    _setValue<String>(otpKey, verificationCode);
+  }
+
+  static String getOtp() {
+    return _getValue<String>(otpKey) ?? '';
   }
 }

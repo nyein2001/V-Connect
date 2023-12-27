@@ -29,11 +29,9 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
 
   @override
   void initState() {
-    Preferences.instance().then((prefs) {
-      userId = prefs.getString(prefprofileId);
-      spinnerLists.clear();
-      init();
-    });
+    userId = Preferences.getProfileId();
+    spinnerLists.clear();
+    init();
     super.initState();
   }
 

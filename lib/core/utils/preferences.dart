@@ -113,4 +113,31 @@ class Preferences {
   static bool isCheck() {
     return _getValue<bool>(isCheckKey) ?? false;
   }
+
+  static const String isLoginKey = 'isLoginKey';
+  static void setLogin({required bool isLogin}) {
+    _setValue<bool>(isLoginKey, isLogin);
+  }
+
+  static bool isLogin() {
+    return _getValue<bool>(isLoginKey) ?? false;
+  }
+
+  static const String isVerificationKey = 'isVerificationKey';
+  static void setVerification({required bool isVerification}) {
+    _setValue<bool>(isVerificationKey, isVerification);
+  }
+
+  static bool isVerification() {
+    return _getValue<bool>(isVerificationKey) ?? false;
+  }
+
+  static const String showLoginKey = 'showLoginKey';
+  static void setShowLogin({required bool showLogin}) {
+    _setValue<bool>(showLoginKey, showLogin);
+  }
+
+  static bool showLogin() {
+    return _getValue<bool>(showLoginKey) ?? false;
+  }
 }

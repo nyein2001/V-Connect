@@ -68,7 +68,7 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return _ready ?  LoginScreen() : const SplashScreen();
+    return _ready ? LoginScreen() : const SplashScreen();
   }
 
   Future loadAppOpenAd() async {

@@ -31,13 +31,21 @@ class SplashScreen extends StatelessWidget {
                 children: [
                   Image.asset('assets/icons/logo.png', width: 100, height: 100),
                   const ColumnDivider(space: 20),
-                  Text(appName, style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold, color: Colors.white)),
+                  Text(appName,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold, color: Colors.white)),
                   const ColumnDivider(space: 5),
                   FutureBuilder<PackageInfo>(
                     future: PackageInfo.fromPlatform(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return Text("version", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white)).tr(args: [snapshot.data!.version]);
+                        return Text("version",
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(color: Colors.white))
+                            .tr(args: [snapshot.data!.version]);
                       } else {
                         return const SizedBox.shrink();
                       }

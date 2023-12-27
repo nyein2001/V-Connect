@@ -1,12 +1,13 @@
 // ignore_for_file: implementation_imports
 
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:google_mobile_ads/src/ad_instance_manager.dart';
 import 'package:in_app_update/in_app_update.dart';
+import 'package:ndialog/ndialog.dart';
+import 'package:ndvpn/ui/components/alert_detail.dart';
 
 import '../providers/globals/iap_provider.dart';
 
@@ -60,25 +61,33 @@ class AssetsPath {
 }
 
 void alertBox(String message, BuildContext context) {
-  if (Navigator.of(context).canPop()) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'OK',
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  DialogBackground(
+    dialog: AlertScreen(message: message),
+    blur: 10,
+    dismissable: false,
+  ).show(context);
 }
+
+// void alertBox(String message, BuildContext context) {
+//   if (Navigator.of(context).canPop()) {
+//     showDialog(
+//       context: context,
+//       barrierDismissible: false,
+//       builder: (BuildContext context) {
+//         return AlertDialog(
+//           content: Text(message),
+//           actions: <Widget>[
+//             TextButton(
+//               onPressed: () {
+//                 Navigator.of(context).pop();
+//               },
+//               child: const Text(
+//                 'OK',
+//               ),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
+// }

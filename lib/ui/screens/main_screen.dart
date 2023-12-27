@@ -14,8 +14,8 @@ import 'package:ndvpn/core/resources/themes.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/custom_divider.dart';
 import 'package:ndvpn/ui/components/about_detail.dart';
+import 'package:ndvpn/ui/components/logout_alert.dart';
 import 'package:ndvpn/ui/screens/html_screen.dart';
-import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/profile_screen.dart';
 import 'package:ndvpn/ui/screens/server_list_screen.dart';
 import 'package:ndvpn/ui/screens/spin_wheel/lucky_wheel_screen.dart';
@@ -77,7 +77,7 @@ class _MainScreenState extends State<MainScreen> {
               ListTile(
                   leading: const Icon(Icons.login),
                   title: const Text("Login or Logout").tr(),
-                  onTap: () => replaceScreen(context, const LoginScreen())),
+                  onTap: () => logout()),
               ListTile(
                   leading: const Icon(Icons.update),
                   title: const Text('check_update').tr(),
@@ -339,7 +339,6 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                 ),
-                //Button to see more detail
                 Container(
                   color: primaryColor,
                   padding:
@@ -356,6 +355,14 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
     );
+  }
+
+  logout() {
+    const DialogBackground(
+      dialog: LogoutScreen(),
+      blur: 10,
+      dismissable: false,
+    ).show(context);
   }
 
   ///Appbar, Change the code below if you want to customize the appbar
@@ -393,7 +400,7 @@ class _MainScreenState extends State<MainScreen> {
     startScreen(context, const SubscriptionScreen());
   }
 
-  void _profileUpdate(BuildContext context) {
+  void profileUpdate(BuildContext context) {
     startScreen(context, const ProfileScreen());
   }
 

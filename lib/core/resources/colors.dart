@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 ///General Colors
 const Color primaryColor = Color(0xff5781EB);
 const Color secondaryColor = Color(0xff7D58EC);
+const Color warningColor = Color(0xffcc3300);
 
 const Color primaryShade = Color(0xff3566E2);
 const Color secondaryShade = Color(0xff6136E3);

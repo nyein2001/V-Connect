@@ -10,6 +10,7 @@ import 'package:ndvpn/core/resources/themes.dart';
 import 'package:ndvpn/root.dart';
 import 'package:ndvpn/services/auth_services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/providers/globals/theme_provider.dart';
 import 'core/providers/globals/vpn_provider.dart';
@@ -19,6 +20,7 @@ AuthService authService = AuthService();
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.getInstance();
   await Firebase.initializeApp();
   await Future.wait([
     CountryCodes.init(),

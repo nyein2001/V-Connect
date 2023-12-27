@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:ndvpn/core/models/get_spinner_req.dart';
+import 'package:ndvpn/core/models/save_spinner_points_req.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
@@ -17,7 +19,6 @@ class SpinningWheelPage extends StatefulWidget {
 }
 
 class SpinningWheelPageState extends State<SpinningWheelPage> {
-  StreamController<int> selected = StreamController<int>();
   String userId = '';
   String prefprofileId = 'pref_profileId';
   List<LuckyItem> spinnerLists = [];
@@ -37,13 +38,8 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
   }
 
   void init() async {
-    String methodBody = jsonEncode({
-      'sign': AppConstants.sign,
-      'salt': AppConstants.randomSalt.toString(),
-      'package_name': AppConstants.packageName,
-      'method_name': 'get_spinner',
-      'user_id': userId,
-    });
+    GetSpinnerReq req = GetSpinnerReq(userId: userId);
+    String methodBody = jsonEncode(req.toJson());
 
     try {
       http.Response response = await http.post(
@@ -76,12 +72,6 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
     } catch (error) {
       print("Error updateUIWithData  $error");
     }
-  }
-
-  @override
-  void dispose() {
-    selected.close();
-    super.dispose();
   }
 
   void updateUIWithData(Map<String, dynamic> jsonData) {
@@ -204,11 +194,9 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
                                   ),
                                   color: luckyItem.color);
                             }).toList();
-                            int winitem =
-                                int.parse(mySpinController.itemList[rdm].label);
+                            String winitem =
+                                mySpinController.itemList[rdm].label;
                             sendSpinnerData(userId, winitem);
-
-                            alertBox(rdm.toString(), context);
                             await mySpinController.spinNow(
                                 luckyIndex: rdm + 1,
                                 totalSpin: 10,
@@ -221,16 +209,19 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
     );
   }
 
-  Future<void> sendSpinnerData(String userId, int point) async {
+  Future<void> sendSpinnerData(String userId, String point) async {
     try {
-      String methodBody = jsonEncode({
-        'sign': AppConstants.sign,
-        'salt': AppConstants.randomSalt.toString(),
-        'package_name': AppConstants.packageName,
-        'method_name': 'save_spinner_points',
-        'user_id': userId,
-        'ponints': point.toString(),
-      });
+      // String methodBody = jsonEncode({
+      //   'sign': AppConstants.sign,
+      //   'salt': AppConstants.randomSalt.toString(),
+      //   'package_name': AppConstants.packageName,
+      //   'method_name': 'save_spinner_points',
+      //   'user_id': userId,
+      //   'ponints': point.toString(),
+      // });
+      SaveSpinnerPointsReq req =
+          SaveSpinnerPointsReq(userId: userId, points: point);
+      String methodBody = jsonEncode(req.toJson());
 
       http.Response response = await http.post(
         Uri.parse(AppConstants.baseURL),

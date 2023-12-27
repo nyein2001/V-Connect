@@ -7,7 +7,6 @@ mixin _LoginScreenMixin on State<LoginScreen> {
   final bool isCheck = true;
   String prefemail = 'pref_email';
   String prefname = 'pref_name';
-  String prefprofileId = 'pref_profileId';
   String prefpassword = 'pref_password';
   String prefcheck = 'pref_check';
 
@@ -54,20 +53,12 @@ mixin _LoginScreenMixin on State<LoginScreen> {
   }
 
   void loginFun(String email, String password, bool isCheck) async {
-    String methodBody = jsonEncode({
-      'sign': AppConstants.sign,
-      'salt': AppConstants.randomSalt.toString(),
-      'package_name': AppConstants.packageName,
-      'method_name': 'user_login',
-      'email': email,
-      'password': password,
-      'player_id': '123'
-    });
-
+    UserLoginReq req = UserLoginReq(email: email, password: password);
+    String requestBody = jsonEncode(req.toJson());
     try {
       http.Response response = await http.post(
         Uri.parse(AppConstants.baseURL),
-        body: {'data': base64Encode(utf8.encode(methodBody))},
+        body: {'data': base64Encode(utf8.encode(requestBody))},
       );
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
@@ -96,31 +87,18 @@ mixin _LoginScreenMixin on State<LoginScreen> {
             String email = data['email'];
             String stripe = data['stripe'];
 
-            ///i don't understant this line ,you need to fix
             if (stripe != '') {
               var striptObject = jsonDecode(stripe);
               String striptJson = striptObject['stripe'];
             }
-            // Preferences.instance.setString(prefname,name);
-            Preferences.instance().then((prefs) {
-              prefs.setString(prefname, name);
-              prefs.setString(prefemail, email);
-            });
+            Preferences.setName(name: name);
+            Preferences.setEmail(email: email);
             if (isCheck) {
-              Preferences.instance().then((prefs) {
-                prefs.setString(prefpassword, password);
-                prefs.setBool(prefcheck, isCheck);
-              });
+              Preferences.setPassword(password: password);
+              Preferences.setCheck(isCheck: isCheck);
             }
-
-            Preferences.instance().then((prefs) {
-              prefs.setString(prefpassword, password);
-              prefs.setBool(prefcheck, isCheck);
-              prefs.setString(prefprofileId, userid);
-            });
+            Preferences.setProfileId(profileId: userid);
             replaceScreen(context, const MainScreen());
-
-            ///please add more function.i don't understant
           } else {
             alertBox(msg, context);
           }

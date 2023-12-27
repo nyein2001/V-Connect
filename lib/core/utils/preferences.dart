@@ -42,4 +42,11 @@ class Preferences {
     }
     return [];
   }
+
+  void setString(String key,String value){
+     shared.setString(key, value);
+  }
+  void setBool(String key,bool value){
+    shared.setBool(key, value);
+  }
 }

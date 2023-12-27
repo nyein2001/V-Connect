@@ -158,9 +158,115 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
 
   Future<void> register() async {
     if (status == "true") {
-      // verificationCall(_emailController.text, generateOTP());
+      verificationCall(_emailController.text, generateOTP().toString());
     } else {
-      // addToRegistation(_nameController.text, _emailController.text, _passwordController.text, _phoneController.text, _referenceCodeController.text);
+      addToRegistation(
+          _nameController.text,
+          _emailController.text,
+          _passwordController.text,
+          _phoneController.text,
+          _referenceCodeController.text);
+    }
+  }
+
+  void verificationCall(String sentEmail, String otp) async {
+    String methodBody = jsonEncode({
+      'sign': AppConstants.sign,
+      'salt': AppConstants.randomSalt.toString(),
+      'package_name': AppConstants.packageName,
+      'method_name': 'user_register_verify_email',
+      'email': sentEmail,
+      'otp_code': otp
+    });
+    try {
+      http.Response response = await http.post(
+        Uri.parse(AppConstants.baseURL),
+        body: {'data': base64Encode(utf8.encode(methodBody))},
+      );
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        if (jsonResponse.containsKey('status')) {
+          String message = jsonResponse['message'];
+          showAlertBox(message);
+        } else {
+          Map<String, dynamic> data = jsonResponse[AppConstants.tag];
+          String msg = data['msg'];
+          String success = data['success'];
+          if (success == '1') {
+          } else {
+            showAlertBox(msg);
+          }
+        }
+
+//         "
+
+//  {
+//     "ANDROID_REWARDS_APP": {
+//         "msg": "OTP has been sent on your mail.",
+//         "success": "1"
+//     }
+// }"
+      }
+    } on Exception catch (_) {}
+  }
+
+  void addToRegistation(String name, String email, String password,
+      String phone, String reference) async {
+    String deviceId = '';
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    try {
+      if (Platform.isAndroid) {
+        deviceInfo.androidInfo.then((AndroidDeviceInfo androidInfo) {
+          deviceId = androidInfo.serialNumber;
+        });
+      } else if (Platform.isIOS) {
+        deviceInfo.iosInfo.then((IosDeviceInfo iosInfo) {
+          deviceId = iosInfo.identifierForVendor!;
+        });
+      }
+    } catch (e) {
+      deviceId = 'Not Found';
+    }
+    String methodBody = jsonEncode({
+      'sign': AppConstants.sign,
+      'salt': AppConstants.randomSalt.toString(),
+      'package_name': AppConstants.packageName,
+      'method_name': 'user_register',
+      'type': 'normal',
+      'name': name, //naing
+      'email': email, //naingthurakyaw6@gmail.com
+      'password': password, //naingnaing
+      'phone': phone,
+      'device_id': deviceId,
+      'user_refrence_code': reference
+    });
+    http.Response response = await http.post(
+      Uri.parse(AppConstants.baseURL),
+      body: {'data': base64Encode(utf8.encode(methodBody))},
+    );
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      if (jsonResponse.containsKey('status')) {
+        String message = jsonResponse['message'];
+        showAlertBox(message);
+      } else {
+        Map<String, dynamic> data = jsonResponse[AppConstants.tag];
+        String msg = data['msg'];
+        String success = data['success'];
+        if (success == '1') {
+          replaceScreen(context, const LoginScreen());
+        } else {
+          showAlertBox(msg);
+        }
+      }
+//         "
+
+//  {
+//     "ANDROID_REWARDS_APP": {
+//         "msg": "Registration successfully.",
+//         "success": "1"
+//     }
+// }"
     }
   }
 

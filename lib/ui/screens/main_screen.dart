@@ -16,9 +16,9 @@ import 'package:ndvpn/ui/components/custom_divider.dart';
 import 'package:ndvpn/ui/components/about_detail.dart';
 import 'package:ndvpn/ui/screens/html_screen.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
-import 'package:ndvpn/ui/screens/lucky_wheel_screen.dart';
 import 'package:ndvpn/ui/screens/profile_screen.dart';
 import 'package:ndvpn/ui/screens/server_list_screen.dart';
+import 'package:ndvpn/ui/screens/spin_wheel/lucky_wheel_screen.dart';
 import 'package:ndvpn/ui/screens/subscription_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -59,7 +59,7 @@ class _MainScreenState extends State<MainScreen> {
               ListTile(
                   leading: const Icon(Icons.wheelchair_pickup),
                   title: const Text('Lucky Wheel').tr(),
-                  onTap: () => startScreen(context, LuckyWheel())),
+                  onTap: () => startScreen(context, const SpinningWheelPage())),
               const ColumnDivider(space: 20),
               Text("settings", style: Theme.of(context).textTheme.bodySmall)
                   .tr(),
@@ -77,7 +77,7 @@ class _MainScreenState extends State<MainScreen> {
               ListTile(
                   leading: const Icon(Icons.login),
                   title: const Text("Login or Logout").tr(),
-                  onTap: () => replaceScreen(context,  LoginScreen())),
+                  onTap: () => replaceScreen(context, const LoginScreen())),
               ListTile(
                   leading: const Icon(Icons.update),
                   title: const Text('check_update').tr(),

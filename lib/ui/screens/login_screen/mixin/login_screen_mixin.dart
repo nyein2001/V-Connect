@@ -4,11 +4,12 @@ mixin _LoginScreenMixin on State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final bool isCheck=true;
-  String prefemail='pref_email';
-  String prefname='pref_name';
-  String prefpassword='pref_password';
-  String prefcheck='pref_check';
+  final bool isCheck = true;
+  String prefemail = 'pref_email';
+  String prefname = 'pref_name';
+  String prefprofileId = 'pref_profileId';
+  String prefpassword = 'pref_password';
+  String prefcheck = 'pref_check';
 
   @override
   void dispose() {
@@ -46,22 +47,20 @@ mixin _LoginScreenMixin on State<LoginScreen> {
 
   Future<void> login() async {
     if (!_checkEmail(_emailController.text) || _emailController.text.isEmpty) {
-      
-    } else if(_passwordController.text.isEmpty){
-      
-    }else{
-      loginFun(_emailController.text,_passwordController.text,isCheck);
+    } else if (_passwordController.text.isEmpty) {
+    } else {
+      loginFun(_emailController.text, _passwordController.text, isCheck);
     }
   }
 
-  void loginFun(String email,String password,bool isCheck) async{
+  void loginFun(String email, String password, bool isCheck) async {
     String methodBody = jsonEncode({
       'sign': AppConstants.sign,
       'salt': AppConstants.randomSalt.toString(),
       'package_name': AppConstants.packageName,
       'method_name': 'user_login',
       'email': email,
-      'password':password,
+      'password': password,
       'player_id': '123'
     });
 
@@ -74,7 +73,7 @@ mixin _LoginScreenMixin on State<LoginScreen> {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         if (jsonResponse.containsKey('status')) {
           String message = jsonResponse['message'];
-          showAlertBox(message);
+          alertBox(message, context);
         } else {
           // 0:"user_id" -> "55"
           // 1:"name" -> "naing"
@@ -89,17 +88,18 @@ mixin _LoginScreenMixin on State<LoginScreen> {
           // 10:"exp" -> ""
           // 11:"stripe" -> ""
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
-          String msg=data['msg'];
+          String msg = data['msg'];
           String success = data['success'];
-          if (success=='1') {
-            String userid=data['user_id'];
-            String name=data['name'];
-            String email=data['email'];
-            String stripe=data['stripe'];
+          if (success == '1') {
+            String userid = data['user_id'];
+            String name = data['name'];
+            String email = data['email'];
+            String stripe = data['stripe'];
+
             ///i don't understant this line ,you need to fix
             if (stripe != '') {
-              var striptObject=jsonDecode(stripe);
-              String striptJson=striptObject['stripe'];
+              var striptObject = jsonDecode(stripe);
+              String striptJson = striptObject['stripe'];
             }
             // Preferences.instance.setString(prefname,name);
             Preferences.instance().then((prefs) {
@@ -108,36 +108,27 @@ mixin _LoginScreenMixin on State<LoginScreen> {
             });
             if (isCheck) {
               Preferences.instance().then((prefs) {
-              prefs.setString(prefpassword, password);
-              prefs.setBool(prefcheck, isCheck);
-            });
+                prefs.setString(prefpassword, password);
+                prefs.setBool(prefcheck, isCheck);
+              });
             }
 
-            // Preferences.instance().then((prefs) {
-            //   prefs.setString(prefpassword, password);
-            //   prefs.setBool(prefcheck, isCheck);
-            // });
+            Preferences.instance().then((prefs) {
+              prefs.setString(prefpassword, password);
+              prefs.setBool(prefcheck, isCheck);
+              prefs.setString(prefprofileId, userid);
+            });
+            replaceScreen(context, const MainScreen());
 
             ///please add more function.i don't understant
           } else {
-            showAlertBox(msg);
+            alertBox(msg, context);
           }
         }
       }
-    } catch (_){
-      showAlertBox('Failed try again');
+    } catch (e) {
+      print('Failed try again $e');
+      alertBox('Failed try again ', context);
     }
-  }
-
-   void showAlertBox(String message) {
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Colors.red,
-      textColor: Colors.white,
-      fontSize: 16.0,
-    );
   }
 }

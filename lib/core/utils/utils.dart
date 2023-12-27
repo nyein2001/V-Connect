@@ -58,3 +58,27 @@ Future<bool> checkUpdate(BuildContext context) async {
 class AssetsPath {
   static const String imagepath = "assets/images/";
 }
+
+void alertBox(String message, BuildContext context) {
+  if (Navigator.of(context).canPop()) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'OK',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}

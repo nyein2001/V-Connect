@@ -36,7 +36,8 @@ class ServersHttp extends HttpConnection {
 
   ///Randomly get server
   Future<VpnConfig?> random() async {
-    ApiResponse<Map<String, dynamic>> resp = await get<Map<String, dynamic>>("detail/random");
+    ApiResponse<Map<String, dynamic>> resp =
+        await get<Map<String, dynamic>>("detail/random");
     if (resp.success ?? false) {
       return VpnConfig.fromJson(resp.data!);
     }
@@ -45,7 +46,8 @@ class ServersHttp extends HttpConnection {
 
   ///Fetch server's detail by slug
   Future<VpnConfig?> serverDetail(String slug) async {
-    ApiResponse<Map<String, dynamic>> resp = await get<Map<String, dynamic>>("detail/$slug");
+    ApiResponse<Map<String, dynamic>> resp =
+        await get<Map<String, dynamic>>("detail/$slug");
     if (resp.success ?? false) {
       return VpnConfig.fromJson(resp.data!);
     }

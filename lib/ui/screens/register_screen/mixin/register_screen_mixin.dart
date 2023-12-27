@@ -37,29 +37,17 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
 
         if (jsonResponse.containsKey('status')) {
           String message = jsonResponse['message'];
-          showAlertBox(message);
+          alertBox(message, context);
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           status = data['otp_status'];
         }
       } else {
-        showAlertBox('Failed. Try again.');
+        alertBox('Failed. Try again.', context);
       }
     } catch (e) {
-      showAlertBox('Server timeout');
+      alertBox('Server timeout', context);
     }
-  }
-
-  void showAlertBox(String message) {
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Colors.red,
-      textColor: Colors.white,
-      fontSize: 16.0,
-    );
   }
 
   @override
@@ -187,14 +175,14 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         if (jsonResponse.containsKey('status')) {
           String message = jsonResponse['message'];
-          showAlertBox(message);
+          alertBox(message, context);
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           String msg = data['msg'];
           String success = data['success'];
           if (success == '1') {
           } else {
-            showAlertBox(msg);
+            alertBox(msg, context);
           }
         }
 
@@ -248,7 +236,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       if (jsonResponse.containsKey('status')) {
         String message = jsonResponse['message'];
-        showAlertBox(message);
+        alertBox(message, context);
       } else {
         Map<String, dynamic> data = jsonResponse[AppConstants.tag];
         String msg = data['msg'];
@@ -256,7 +244,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
         if (success == '1') {
           replaceScreen(context, const LoginScreen());
         } else {
-          showAlertBox(msg);
+          alertBox(msg, context);
         }
       }
 //         "

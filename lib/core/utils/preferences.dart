@@ -13,10 +13,12 @@ class Preferences {
 
   String? get token => shared.getString("token");
 
-  static Future<Preferences> instance() => SharedPreferences.getInstance().then((value) => Preferences(value));
+  static Future<Preferences> instance() =>
+      SharedPreferences.getInstance().then((value) => Preferences(value));
 
   void saveServers({required List<VpnConfig> value}) {
-    shared.setString("server_cache", jsonEncode(value.map((e) => e.toJson()).toList()));
+    shared.setString(
+        "server_cache", jsonEncode(value.map((e) => e.toJson()).toList()));
   }
 
   void setServer(VpnConfig? value) {
@@ -38,15 +40,22 @@ class Preferences {
   List<VpnConfig> loadServers() {
     var data = shared.getString("server_cache");
     if (data != null) {
-      return (jsonDecode(data) as List).map((e) => VpnConfig.fromJson(e)).toList();
+      return (jsonDecode(data) as List)
+          .map((e) => VpnConfig.fromJson(e))
+          .toList();
     }
     return [];
   }
 
-  void setString(String key,String value){
-     shared.setString(key, value);
+  void setString(String key, String value) {
+    shared.setString(key, value);
   }
-  void setBool(String key,bool value){
+
+  String getString(String key) {
+    return shared.getString(key) ?? '';
+  }
+
+  void setBool(String key, bool value) {
     shared.setBool(key, value);
   }
 }

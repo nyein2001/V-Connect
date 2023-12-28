@@ -167,9 +167,11 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
       validate();
     }else {
       if (status == "true") {
-        verificationCall(email, generateOTP().toString());
+        // verificationCall(email, generateOTP().toString());
+        BlocProvider.of<RegisterBloc>(context).add(VerificationCall(email: email,otp: generateOTP().toString()));
       } else {
-        addToRegistation(name, email, password, phoneNo, reference);
+        // addToRegistation(name, email, password, phoneNo, reference);
+        BlocProvider.of<RegisterBloc>(context).add(RegistationCall(name: name,email: email,passwrod: password,phoneNo: phoneNo,reference: reference));
       }
     }
   }
@@ -210,13 +212,13 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
             Preferences.setPhone(phoneNO: phoneNo);
             Preferences.setReference(reference: reference);
             Preferences.setOtp(verificationCode: otp);
+            startScreen(context,VerificationScreen(name: name,email: email,password: password,phoneNO: phoneNo,reference: reference,));
           } else {
             alertBox(msg, context);
           }
         }
       }
     } on Exception catch (_) {}
-    Navigator.of(context).pop();
   }
 
   void addToRegistation(String name, String email, String password,

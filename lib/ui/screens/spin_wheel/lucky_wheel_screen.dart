@@ -97,7 +97,7 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: HexColor('#0D1543'),
+        // backgroundColor: HexColor('#0D1543'),
         centerTitle: false,
         title: const Text('Lucky Wheel',
             textAlign: TextAlign.center,

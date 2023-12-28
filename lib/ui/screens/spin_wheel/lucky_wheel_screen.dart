@@ -248,8 +248,11 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
             String msg = object['msg'];
             dailySpinnerLimit = object['daily_spinner_limit'];
             remainSpin = object['remain_spin'];
-            setState(() {});
-            alertBox("Congratulations, you have won $msg Point!", context);
+
+            Future.delayed(const Duration(seconds: 3), () {
+              alertBox("Congratulations, you have won $msg Point!", context);
+              setState(() {});
+            });
           }
         }
       } else {

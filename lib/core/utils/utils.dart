@@ -8,7 +8,6 @@ import 'package:google_mobile_ads/src/ad_instance_manager.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/ui/components/alert_detail.dart';
-
 import '../providers/globals/iap_provider.dart';
 
 export 'preferences.dart';
@@ -68,18 +67,18 @@ void alertBox(String message, BuildContext context) {
   ).show(context);
 }
 
-void customLoadingDialog(BuildContext context){
+void customLoadingDialog(BuildContext context) {
   showDialog(
-    context: context, 
-    builder: (context){
-      return const AlertDialog(
-        title: SizedBox(
-          height: 50,
-          width: 300,
-          child: Text('Loading...'),
-        ),
-      );
-    });
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: SizedBox(
+            height: 50,
+            width: 300,
+            child: Text('Loading...'),
+          ),
+        );
+      });
 }
 
 // void alertBox(String message, BuildContext context) {

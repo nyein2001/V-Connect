@@ -7,11 +7,10 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ndvpn/core/providers/globals/ads_provider.dart';
 import 'package:ndvpn/core/providers/globals/iap_provider.dart';
 import 'package:ndvpn/core/resources/themes.dart';
+import 'package:ndvpn/core/utils/preferences.dart';
 import 'package:ndvpn/root.dart';
 import 'package:ndvpn/services/auth_services.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'core/providers/globals/theme_provider.dart';
 import 'core/providers/globals/vpn_provider.dart';
 import 'core/resources/environment.dart';
@@ -20,7 +19,7 @@ AuthService authService = AuthService();
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SharedPreferences.getInstance();
+  await Preferences.init();
   await Firebase.initializeApp();
   await Future.wait([
     CountryCodes.init(),

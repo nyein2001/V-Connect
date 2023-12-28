@@ -336,6 +336,7 @@ class Assets {
 
 	static const String so_png = 'assets/images/maps/so.png';
 
+	// ignore: constant_identifier_names
 	static const String sr_png = 'assets/images/maps/sr.png';
 
 	static const String ss_png = 'assets/images/maps/ss.png';

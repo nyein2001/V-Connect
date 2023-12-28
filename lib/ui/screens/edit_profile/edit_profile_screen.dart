@@ -1,13 +1,23 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ndvpn/core/models/get_profile_req.dart';
+import 'package:ndvpn/core/models/profile_upload_req.dart';
+import 'package:ndvpn/core/models/user_profile_update.dart';
+import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/gallery_permission.dart';
+import 'package:ndvpn/core/utils/network_available.dart';
 import 'package:ndvpn/core/utils/utils.dart';
+import 'package:ndvpn/ui/components/build_snackbar.dart';
+import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
+import 'package:ndvpn/ui/screens/main_screen.dart';
 import 'package:ndvpn/ui/screens/register_screen/register_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 part 'mixin/edit_profile_mixin.dart';
@@ -26,11 +36,89 @@ class EditProfileScreenState extends State<EditProfileScreen>
   File? image;
   bool isValidate = false;
   String profileImage = "";
+  NetworkInfo networkInfo = NetworkInfo(Connectivity());
+
+  String name = '';
+  String email = '';
+  String phone = '';
+  String instagram = '';
+  String youtube = '';
+  String userimage = '';
+
+  @override
+  void initState() {
+    name = Preferences.getName();
+    nameController.text = name;
+    email = Preferences.getEmail();
+    emailController.text = email;
+    phone = Preferences.getPhoneNo();
+    phoneController.text = phone;
+    userimage = Preferences.getUserImage();
+    // setState(() {});
+    callData();
+    super.initState();
+  }
+
+  callData() async {
+    bool isConnected = await networkInfo.isConnected;
+    if (isConnected) {
+      // if (Preferences.isLogin()) {
+      getProfile();
+      // }
+    } else {
+      alertBox("Internet connection not available", context);
+    }
+  }
+
+  void getProfile() async {
+    UserProfileReq req = UserProfileReq(userId: Preferences.getProfileId());
+    String methodBody = jsonEncode(req.toJson());
+
+    try {
+      http.Response response = await http.post(
+        Uri.parse(AppConstants.baseURL),
+        body: {'data': base64Encode(utf8.encode(methodBody))},
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonData = jsonDecode(response.body);
+
+        if (jsonData.containsKey("status")) {
+          String status = jsonData["status"];
+          String message = jsonData["message"];
+
+          if (status == "-2") {
+            replaceScreen(context, const LoginScreen());
+            alertBox(message, context);
+          } else {
+            alertBox(message, context);
+          }
+        } else {
+          Map<String, dynamic> data = jsonData[AppConstants.tag];
+          String success = data['success'];
+          if (success == "1") {
+            nameController.text = data["name"];
+            emailController.text = data["email"];
+            phoneController.text = data["phone"];
+            youtubeController.text = data["user_youtube"];
+            instraController.text = data["user_instagram"];
+            userimage = data["user_image"];
+            setState(() {});
+          }
+        }
+      } else {
+        // updateNoDataVisibility(true);
+      }
+    } catch (error) {
+      print("Error updateUIWithData  $error");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var themehandler = Theme.of(context);
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
         title: const Column(
@@ -44,7 +132,6 @@ class EditProfileScreenState extends State<EditProfileScreen>
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
         child: Card(
           color: Theme.of(context).cardColor,
           elevation: 2,
@@ -57,16 +144,13 @@ class EditProfileScreenState extends State<EditProfileScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(
-                  height: 30,
-                ),
                 Center(
                   child: Stack(
                     children: [
                       if (isnetworkimage)
                         Container(
-                          height: 130,
-                          width: 130,
+                          height: 100,
+                          width: 100,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             border: Border.all(
@@ -167,6 +251,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
                                       title: const Text('Camera'),
                                       onTap: () {
                                         Navigator.pop(context);
+                                        pickImage(ImageSource.camera);
                                       },
                                     ),
                                     ListTile(
@@ -182,7 +267,9 @@ class EditProfileScreenState extends State<EditProfileScreen>
                                               PermissionStatus.granted) {
                                             chooseImageFromGallery();
                                           }
-                                        } else if (Platform.isIOS) {}
+                                        } else if (Platform.isIOS) {
+                                          pickImage(ImageSource.gallery);
+                                        }
                                       },
                                     ),
                                   ]),
@@ -240,6 +327,32 @@ class EditProfileScreenState extends State<EditProfileScreen>
                           validator: isEmailValid,
                         ),
                         RegisterTextFormFieldWidget(
+                          hintText: 'Password',
+                          prefixIcon: Icons.remove_red_eye_rounded,
+                          controller: passwordController,
+                          obscure: true,
+                          textCapitalization: TextCapitalization.none,
+                          autofillHints: const [
+                            AutofillHints.password,
+                            AutofillHints.newPassword
+                          ],
+                          textInputAction: TextInputAction.next,
+                          validator: isPasswordValid,
+                        ),
+                        RegisterTextFormFieldWidget(
+                          hintText: 'Confirm Password',
+                          prefixIcon: Icons.remove_red_eye_rounded,
+                          controller: confirmController,
+                          obscure: true,
+                          textCapitalization: TextCapitalization.none,
+                          autofillHints: const [
+                            AutofillHints.password,
+                            AutofillHints.newPassword
+                          ],
+                          textInputAction: TextInputAction.next,
+                          validator: isPasswordValid,
+                        ),
+                        RegisterTextFormFieldWidget(
                           hintText: 'Phone Number',
                           prefixIcon: Icons.phone,
                           controller: phoneController,
@@ -252,6 +365,24 @@ class EditProfileScreenState extends State<EditProfileScreen>
                           textInputAction: TextInputAction.next,
                           validator: isPhoneValid,
                         ),
+                        RegisterTextFormFieldWidget(
+                          hintText: 'Youtube',
+                          prefixIcon: Icons.link,
+                          controller: youtubeController,
+                          autofillHints: const [AutofillHints.url],
+                          textCapitalization: TextCapitalization.none,
+                          textInputAction: TextInputAction.next,
+                          // validator: isEmailValid,
+                        ),
+                        RegisterTextFormFieldWidget(
+                          hintText: 'Instagram',
+                          prefixIcon: Icons.link,
+                          controller: instraController,
+                          autofillHints: const [AutofillHints.url],
+                          textCapitalization: TextCapitalization.none,
+                          textInputAction: TextInputAction.next,
+                          // validator: isEmailValid,
+                        ),
                       ].map((e) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
@@ -260,23 +391,49 @@ class EditProfileScreenState extends State<EditProfileScreen>
                       }).toList(),
                     )),
                 const SizedBox(
-                  height: 50,
+                  height: 10,
+                ),
+                Divider(),
+                const SizedBox(
+                  height: 10,
                 ),
                 SizedBox(
-                  width: double.infinity, // Set to maximum width
-                  child: ElevatedButton(
-                    onPressed: () async => await profileUpdate(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      padding: const EdgeInsets.symmetric(vertical: 25),
-                      shape: const StadiumBorder(),
-                    ),
-                    child: Text(
-                      'SAVE',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontWeight: FontWeight.w400,
-                          ),
+                  width: double.infinity,
+                  child: GestureDetector(
+                    onTap: () {
+                      profileUpdateFun();
+                    },
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (nameController.text.trim().isEmpty) {
+                          FocusScope.of(context).requestFocus(FocusNode());
+                        } else if (Preferences.getLoginType() == "normal" &&
+                            (emailController.text.trim().isEmpty)) {
+                          FocusScope.of(context).requestFocus(FocusNode());
+                        } else if (passwordController.text !=
+                                passwordController.text ||
+                            passwordController.text.trim().isEmpty ||
+                            confirmController.text.trim().isEmpty) {
+                          alertBox("Password and confirm password do not match",
+                              context);
+                        } else if (phoneController.text.trim().isEmpty) {
+                          FocusScope.of(context).requestFocus(FocusNode());
+                        } else {
+                          profileUpdateFun();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: const StadiumBorder(),
+                      ),
+                      child: Text(
+                        'SAVE',
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              fontWeight: FontWeight.w400,
+                            ),
+                      ),
                     ),
                   ),
                 ),
@@ -286,6 +443,106 @@ class EditProfileScreenState extends State<EditProfileScreen>
         ),
       ),
     );
+  }
+
+  Future<PhotoUploadReq> pickImage(ImageSource source) async {
+    final image = await ImagePicker().pickImage(source: source);
+
+    File? imageTempoary = File(image!.path);
+    imageTempoary = await _cropImage(imageFile: imageTempoary);
+
+    setState(() {
+      if (imageTempoary != null) {
+        this.image = imageTempoary;
+        isnetworkimage = false;
+      }
+
+      if (this.image != null) {
+        // showDialog(
+        //   context: context,
+        //   barrierDismissible: false,
+        //   builder: (BuildContext context) {
+        //     return const CircularProgressIndicator();
+        //   },
+        // );
+        // PhotoUploadReq obj =
+        //     PhotoUploadReq(file: this.image ?? File(""), url: '');
+        // uploadPhoto(obj);
+      } else {
+        var snackBar = buildSnackBar("Please select a photo.", false);
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    });
+
+    return PhotoUploadReq(file: this.image ?? File(""), url: '');
+  }
+
+  void profileUpdateFun() async {
+    UserProfileUpdate updateReq = UserProfileUpdate(
+        userId: Preferences.getProfileId(),
+        name: nameController.text,
+        email: emailController.text,
+        password: passwordController.text,
+        phone: phoneController.text,
+        userYoutube: youtubeController.text,
+        userInstagram: instraController.text);
+    String methodBody = jsonEncode(updateReq.toJson());
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(AppConstants.baseURL),
+      );
+
+      request.fields['data'] = base64Encode(utf8.encode(methodBody));
+
+      // http.Response response = await http.post(
+      //   Uri.parse(AppConstants.baseURL),
+      //   body: {'data': base64Encode(utf8.encode(methodBody))},
+      // );
+
+      if (image != null) {
+        try {
+          var stream = http.ByteStream(image!.openRead());
+          var length = await image!.length();
+
+          var multipartFile = http.MultipartFile(
+            'profile_image',
+            stream,
+            length,
+            filename: image!.path.split('/').last,
+          );
+
+          request.files.add(multipartFile);
+        } catch (e) {
+          print('Error reading file: $e');
+          // Handle the error as needed
+        }
+      }
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(await response.stream.bytesToString());
+
+        if (jsonResponse.containsKey(AppConstants.status)) {
+          int status = jsonResponse['status'];
+          String message = jsonResponse['message'];
+          if (status == -2) {
+            alertBox(message, context);
+          } else {
+            alertBox(message, context);
+          }
+        } else {
+          Map<String, dynamic> data = jsonResponse[AppConstants.tag];
+          String msg = data['msg'];
+          alertBox(msg, context);
+          replaceScreen(context, const MainScreen());
+        }
+      }
+    } catch (e) {
+      print('Failed try again $e');
+      alertBox('Failed try again ', context);
+    }
   }
 
   Future<void> chooseImageFromGallery() async {
@@ -305,6 +562,22 @@ class EditProfileScreenState extends State<EditProfileScreen>
           if (imageTempoary != null) {
             image = imageTempoary;
             isnetworkimage = false;
+          }
+
+          if (image != null) {
+            // showDialog(
+            //   context: context,
+            //   barrierDismissible: false,
+            //   builder: (BuildContext context) {
+            //     return const CircularProgressIndicator();
+            //   },
+            // );
+            // PhotoUploadReq obj =
+            //     PhotoUploadReq(file: image ?? File(""), url: '');
+            // uploadPhoto(obj);
+          } else {
+            var snackBar = buildSnackBar("Please select a photo.", false);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
         });
       } else {
@@ -327,4 +600,22 @@ class EditProfileScreenState extends State<EditProfileScreen>
     if (croppedImage == null) return null;
     return File(croppedImage.path);
   }
+
+  // Future<bool> uploadPhoto(PhotoUploadReq obj) async {
+  //   final imageBytes = await obj.file.readAsBytes();
+
+  //   final response = await http.put(
+  //     Uri.parse(AppConstants.baseURL),
+  //     headers: {
+  //       'Content-Type': 'image/jpeg',
+  //     },
+  //     body: imageBytes,
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 }

@@ -8,6 +8,7 @@ class AppConstants {
   static const LOGIN_TYPE_GOOGLE = 'google';
   static const USER_NOT_CREATED = "User not created";
   static const tag = "ANDROID_REWARDS_APP";
+  static const status = "status";
   static const int serviceConnectionTimeOut = 60;
 
   static String apiKey = 'dev';

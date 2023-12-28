@@ -96,6 +96,15 @@ class Preferences {
     return _getValue<String>(emailKey) ?? '';
   }
 
+  static const String userImageKey = 'userImageKey';
+  static void setUserImage({required String userImage}) {
+    _setValue<String>(userImageKey, userImage);
+  }
+
+  static String getUserImage() {
+    return _getValue<String>(userImageKey) ?? '';
+  }
+
   static const String passwordKey = 'passwordKey';
   static void setPassword({required String password}) {
     _setValue<String>(passwordKey, password);
@@ -113,7 +122,7 @@ class Preferences {
   static String getPhoneNo() {
     return _getValue<String>(phoneKey) ?? '';
   }
-  
+
   static const String referenceKey = 'referenceKey';
   static void setReference({required String reference}) {
     _setValue<String>(referenceKey, reference);
@@ -166,5 +175,14 @@ class Preferences {
 
   static String getOtp() {
     return _getValue<String>(otpKey) ?? '';
+  }
+
+  static const String loginTypeKey = 'loginTypeKey';
+  static void setLoginType({required String loginType}) {
+    _setValue<String>(loginTypeKey, loginType);
+  }
+
+  static String getLoginType() {
+    return _getValue<String>(loginTypeKey) ?? '';
   }
 }

@@ -43,7 +43,8 @@ mixin _ForgotPasswordMixin on State<ForgotPasswordScreen> {
     if (!_checkEmail(email) || email.isEmpty) {
       isEmailValid(email);
     } else {
-      forgetPassword(email);
+      // forgetPassword(email);
+      BlocProvider.of<ForgetPasswordBloc>(context).add(ForgetPasswordCall(email: email));
     }
   }
 

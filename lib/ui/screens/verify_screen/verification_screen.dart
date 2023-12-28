@@ -53,8 +53,7 @@ class _VerificationScreenState extends State<VerificationScreen>
             ),
             SingleChildScrollView(
               child: SafeArea(
-                  minimum:
-                      const EdgeInsets.symmetric(horizontal: 16),
+                  minimum: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -71,11 +70,15 @@ class _VerificationScreenState extends State<VerificationScreen>
                                     ?.copyWith(
                                         fontWeight: FontWeight.w600,
                                         color: Colors.white)),
-                            const SizedBox(
-                              height: 35,
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 10,
                             ),
-                            Image.asset(Assets.otp_png,
-                                filterQuality: FilterQuality.medium),
+                            Image.asset(
+                              Assets.otp_png,
+                              filterQuality: FilterQuality.medium,
+                              height: 120,
+                              width: 120,
+                            ),
                             const SizedBox(height: 12),
                             Text('Enter code',
                                 style: Theme.of(context)
@@ -106,13 +109,13 @@ class _VerificationScreenState extends State<VerificationScreen>
                                     pinTheme: PinTheme(
                                       fieldHeight: 55,
                                       fieldWidth: 55,
-                                      activeColor: const Color(0xffC8CED8),
-                                      selectedColor: const Color(0xffC8CED8),
+                                      activeColor: Colors.blue,
+                                      selectedColor: Colors.greenAccent,
                                       inactiveColor: const Color(0xffC8CED8),
-                                      activeFillColor: Colors.white,
+                                      activeFillColor: Colors.black,
                                       inactiveFillColor:
                                           const Color(0xFFEA80FC),
-                                      selectedFillColor: Colors.white,
+                                      selectedFillColor: Colors.deepPurple,
                                       shape: PinCodeFieldShape.box,
                                       borderRadius: BorderRadius.circular(10),
                                     ),
@@ -151,6 +154,8 @@ class _VerificationScreenState extends State<VerificationScreen>
                                         ),
                                       ),
                                       onPressed: () {
+                                        Preferences.setVerification(
+                                            isVerification: false);
                                         startScreen(
                                             context, const RegisterScreen());
                                       },
@@ -162,7 +167,7 @@ class _VerificationScreenState extends State<VerificationScreen>
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               child: GestureDetector(
                                 onTap: () {
-                                  // replaceScreen(context, const LoginScreen());
+                                  resendVerification();
                                 },
                                 child: Center(
                                   child: Text.rich(TextSpan(

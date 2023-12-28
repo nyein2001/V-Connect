@@ -10,20 +10,35 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _referenceCodeController =
       TextEditingController();
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  String deviceid = '';
   String status = '';
-  String name= '';
+  String name = '';
   String email = '';
-  String password ='';
-  String phoneNo= '';
-  String reference= '';
+  String password = '';
+  String phoneNo = '';
+  String reference = '';
+  String otp = '';
 
   @override
   void initState() {
-    checkOtp();
     super.initState();
+    if (Platform.isAndroid) {
+      deviceInfo.androidInfo.then((AndroidDeviceInfo androidInfo) {
+        deviceid = androidInfo.serialNumber;
+      });
+    } else if (Platform.isIOS) {
+      deviceInfo.iosInfo.then((IosDeviceInfo iosInfo) {
+        deviceid = iosInfo.identifierForVendor!;
+      });
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkOtp();
+    });
   }
 
   void checkOtp() async {
+    loadingBox(context);
     String methodBody = jsonEncode({
       'sign': AppConstants.sign,
       'salt': AppConstants.randomSalt.toString(),
@@ -35,8 +50,10 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
       http.Response response = await http.post(
         Uri.parse(AppConstants.baseURL),
         body: {'data': base64Encode(utf8.encode(methodBody))},
-      );
-
+      ).then((value) {
+        closeScreen(context);
+        return value;
+      });
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
 
@@ -150,28 +167,48 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
   }
 
   Future<void> register() async {
-    name=_nameController.text;
-    email=_emailController.text;
-    password=_passwordController.text;
-    phoneNo=_phoneController.text;
-    reference=_referenceCodeController.text;
+    name = _nameController.text;
+    email = _emailController.text;
+    password = _passwordController.text;
+    phoneNo = _phoneController.text;
+    reference = _referenceCodeController.text;
     if (name == '' || name.isEmpty) {
       validate();
-    } else if(!_checkEmail(email) || email.isEmpty){
+    } else if (!_checkEmail(email) || email.isEmpty) {
       validate();
-    }else if(password =='' || password.isEmpty){
+    } else if (password == '' || password.isEmpty) {
       validate();
-    }else if(phoneNo =='' || phoneNo.isEmpty){
+    } else if (phoneNo == '' || phoneNo.isEmpty) {
       validate();
-    }else if(reference =='' || reference.isEmpty){
+    } else if (reference == '' || reference.isEmpty) {
       validate();
-    }else {
-      if (status == "true") {
-        // verificationCall(email, generateOTP().toString());
-        BlocProvider.of<RegisterBloc>(context).add(VerificationCall(email: email,otp: generateOTP().toString()));
+    } else {
+      _nameController.clear();
+      _emailController.clear();
+      _passwordController.clear();
+      _confirmPasswordController.clear();
+      _phoneController.clear();
+      _referenceCodeController.clear();
+      bool isConnected = await networkInfo.isConnected;
+      if (isConnected) {
+        if (status == "true") {
+          loadingBox(context);
+          // verificationCall(email, generateOTP().toString());
+          otp = generateOTP().toString();
+          BlocProvider.of<RegisterBloc>(context)
+              .add(VerificationCall(email: email, otp: otp));
+        } else {
+          // addToRegistation(name, email, password, phoneNo, reference);
+          BlocProvider.of<RegisterBloc>(context).add(RegistationCall(
+              deviceid: deviceid,
+              name: name,
+              email: email,
+              passwrod: password,
+              phoneNo: phoneNo,
+              reference: reference));
+        }
       } else {
-        // addToRegistation(name, email, password, phoneNo, reference);
-        BlocProvider.of<RegisterBloc>(context).add(RegistationCall(name: name,email: email,passwrod: password,phoneNo: phoneNo,reference: reference));
+        alertBox("Internet connection not available", context);
       }
     }
   }
@@ -201,10 +238,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
           String msg = data['msg'];
           String success = data['success'];
           if (success == '1') {
-            Fluttertoast.showToast(
-              msg: msg,
-              toastLength: Toast.LENGTH_SHORT
-              );
+            Fluttertoast.showToast(msg: msg, toastLength: Toast.LENGTH_SHORT);
             Preferences.setVerification(isVerification: true);
             Preferences.setName(name: name);
             Preferences.setEmail(email: email);
@@ -212,7 +246,15 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
             Preferences.setPhone(phoneNO: phoneNo);
             Preferences.setReference(reference: reference);
             Preferences.setOtp(verificationCode: otp);
-            startScreen(context,VerificationScreen(name: name,email: email,password: password,phoneNO: phoneNo,reference: reference,));
+            startScreen(
+                context,
+                VerificationScreen(
+                  name: name,
+                  email: email,
+                  password: password,
+                  phoneNO: phoneNo,
+                  reference: reference,
+                ));
           } else {
             alertBox(msg, context);
           }
@@ -268,9 +310,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
         if (success == '1') {
           replaceScreen(context, const LoginScreen());
         }
-        Fluttertoast.showToast(
-          msg: msg,
-          toastLength: Toast.LENGTH_SHORT);
+        Fluttertoast.showToast(msg: msg, toastLength: Toast.LENGTH_SHORT);
       }
     }
     Navigator.of(context).pop();

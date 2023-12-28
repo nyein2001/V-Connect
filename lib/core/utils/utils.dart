@@ -1,17 +1,22 @@
 // ignore_for_file: implementation_imports
 
 import 'dart:math';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:google_mobile_ads/src/ad_instance_manager.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:ndialog/ndialog.dart';
+import 'package:ndvpn/core/utils/network_available.dart';
 import 'package:ndvpn/ui/components/alert_detail.dart';
+import 'package:ndvpn/ui/components/show_loading.dart';
 import '../providers/globals/iap_provider.dart';
 
 export 'preferences.dart';
 export 'navigations.dart';
+
+NetworkInfo networkInfo = NetworkInfo(Connectivity());
 
 Future<bool> assetExists(String path) async {
   try {
@@ -62,6 +67,14 @@ class AssetsPath {
 void alertBox(String message, BuildContext context) {
   DialogBackground(
     dialog: AlertScreen(message: message),
+    blur: 10,
+    dismissable: false,
+  ).show(context);
+}
+
+void loadingBox(BuildContext context) {
+  const DialogBackground(
+    dialog: LoadingScreen(),
     blur: 10,
     dismissable: false,
   ).show(context);

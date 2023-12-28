@@ -14,7 +14,6 @@ mixin _LoginScreenMixin on State<LoginScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-
     super.dispose();
   }
 

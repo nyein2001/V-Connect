@@ -165,7 +165,7 @@ class Preferences {
   }
 
   static bool showLogin() {
-    return _getValue<bool>(showLoginKey) ?? false;
+    return _getValue<bool>(showLoginKey) ?? true;
   }
 
   static const String otpKey = 'verify_otp_code';

@@ -175,13 +175,13 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
                 if (data.containsKey("no_ads")) {
                   int noAds = data["no_ads"];
                   int premiumServers = data["premium_servers"];
-                  String isPremium = data["is_premium"];
+                  int isPremium = data["is_premium"];
                   String perks = data["perks"];
                   String exp = data["exp"];
 
                   Config.noAds = noAds == 1;
                   Config.premiumServersAccess = premiumServers == 1;
-                  Config.isPremium = isPremium == "1";
+                  Config.isPremium = isPremium == 1;
                   Config.perks = perks;
                   Config.expiration = exp;
                 }

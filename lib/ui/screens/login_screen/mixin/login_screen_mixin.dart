@@ -45,38 +45,32 @@ mixin _LoginScreenMixin on State<LoginScreen> {
 
   Future<void> login() async {
     if (!_checkEmail(_emailController.text) || _emailController.text.isEmpty) {
+      _formKey.currentState!.validate();
     } else if (_passwordController.text.isEmpty) {
+      _formKey.currentState!.validate();
     } else {
       loginFun(_emailController.text, _passwordController.text, isCheck);
     }
   }
 
   void loginFun(String email, String password, bool isCheck) async {
+    loadingBox(context);
     UserLoginReq req = UserLoginReq(email: email, password: password);
     String requestBody = jsonEncode(req.toJson());
     try {
       http.Response response = await http.post(
         Uri.parse(AppConstants.baseURL),
         body: {'data': base64Encode(utf8.encode(requestBody))},
-      );
+      ).then((value) {
+        closeScreen(context);
+        return value;
+      });
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         if (jsonResponse.containsKey('status')) {
           String message = jsonResponse['message'];
           alertBox(message, context);
         } else {
-          // 0:"user_id" -> "55"
-          // 1:"name" -> "naing"
-          // 2:"email" -> "naingthurakyaw6@gmail.com"
-          // 3:"msg" -> "Login successfully."
-          // 4:"auth_id" -> ""
-          // 5:"success" -> "1"
-          // 6:"no_ads" -> 0
-          // 7:"premium_servers" -> 0
-          // 8:"is_premium" -> "0"
-          // 9:"perks" -> ""
-          // 10:"exp" -> ""
-          // 11:"stripe" -> ""
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           String msg = data['msg'];
           String success = data['success'];
@@ -84,11 +78,19 @@ mixin _LoginScreenMixin on State<LoginScreen> {
             String userid = data['user_id'];
             String name = data['name'];
             String email = data['email'];
-            String stripe = data['stripe'];
+            String stripeJson = data['stripe'];
 
-            if (stripe != '') {
-              var striptObject = jsonDecode(stripe);
-              String striptJson = striptObject['stripe'];
+            if (stripeJson != '') {
+              Map<String, dynamic> stripeObject = jsonDecode(stripeJson);
+              print("CHECKSTRIPE ${data["stripe"]}");
+              Config.stripeJson = data["stripe"];
+
+              if (stripeObject["status"] == "active") {
+                Config.stripeRenewDate = stripeObject["current_period_end"];
+                Config.vipSubscription = true;
+                Config.allSubscription = true;
+                Config.stripeStatus = "active";
+              }
             }
             Preferences.setName(name: name);
             Preferences.setEmail(email: email);
@@ -96,7 +98,25 @@ mixin _LoginScreenMixin on State<LoginScreen> {
               Preferences.setPassword(password: password);
               Preferences.setCheck(isCheck: isCheck);
             }
+            Preferences.setLogin(isLogin: true);
             Preferences.setProfileId(profileId: userid);
+            Preferences.setLoginType(loginType: 'normal');
+            Preferences.setProfileId(profileId: userid);
+            if (Config.loginBack) {
+              
+            } else {
+              int noAds=data['no_ads'];
+              int premiumServers =data['premium_servers'];
+              int isPremium=data['is_premium'];
+              String perks =data['perks'];
+              String exp=data['exp'];
+
+              Config.noAds = noAds == 1;
+                  Config.premiumServersAccess = premiumServers == 1;
+                  Config.isPremium = isPremium == 1;
+                  Config.perks = perks;
+                  Config.expiration = exp;
+            }
             replaceScreen(context, const MainScreen());
           } else {
             alertBox(msg, context);

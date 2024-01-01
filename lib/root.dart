@@ -1,6 +1,8 @@
 // ignore_for_file: library_private_types_in_public_api
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -28,11 +30,25 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
   bool _ready = false;
   AppOpenAd? _appOpenAd;
   Timer? openAdTimeout;
-
   DateTime _lastShownTime = DateTime.now();
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  String deviceid = '';
 
   @override
   void initState() {
+    if (Preferences.getDeviceId() == "unknown") {
+      if (Platform.isAndroid) {
+        deviceInfo.androidInfo.then((AndroidDeviceInfo androidInfo) {
+          deviceid = androidInfo.serialNumber;
+          Preferences.setDeviceId(deviceid: deviceid);
+        });
+      } else if (Platform.isIOS) {
+        deviceInfo.iosInfo.then((IosDeviceInfo iosInfo) {
+          deviceid = iosInfo.identifierForVendor!;
+          Preferences.setDeviceId(deviceid: deviceid);
+        });
+      }
+    }
     WidgetsBinding.instance.addObserver(this);
     if (Preferences.showLogin()) {
       Preferences.setShowLogin(showLogin: false);
@@ -137,8 +153,7 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
         }
       }
     } catch (e) {
-      print('Failed try again $e');
-      alertBox('Failed try again ', context);
+      replaceScreen(context, const MainScreen());
     }
   }
 

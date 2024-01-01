@@ -5,7 +5,9 @@ import 'package:crypto/crypto.dart';
 
 class AppConstants {
   static const String baseURL = "https://vpn.truetest.xyz/api.php";
+  // ignore: constant_identifier_names
   static const LOGIN_TYPE_GOOGLE = 'google';
+  // ignore: constant_identifier_names
   static const USER_NOT_CREATED = "User not created";
   static const tag = "ANDROID_REWARDS_APP";
   static const status = "status";

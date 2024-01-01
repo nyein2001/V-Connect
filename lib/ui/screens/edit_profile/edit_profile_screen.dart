@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ndvpn/core/models/get_profile_req.dart';
-import 'package:ndvpn/core/models/profile_upload_req.dart';
+import 'package:ndvpn/core/models/user_info.dart';
 import 'package:ndvpn/core/models/user_profile_update.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/gallery_permission.dart';
@@ -17,7 +17,6 @@ import 'package:ndvpn/core/utils/network_available.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/build_snackbar.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
-import 'package:ndvpn/ui/screens/main_screen.dart';
 import 'package:ndvpn/ui/screens/register_screen/register_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 part 'mixin/edit_profile_mixin.dart';
@@ -37,24 +36,13 @@ class EditProfileScreenState extends State<EditProfileScreen>
   bool isValidate = false;
   String profileImage = "";
   NetworkInfo networkInfo = NetworkInfo(Connectivity());
-
-  String name = '';
-  String email = '';
-  String phone = '';
-  String instagram = '';
-  String youtube = '';
-  String userimage = '';
+  String name = Preferences.getName();
+  String email = Preferences.getEmail();
+  String phone = Preferences.getPhoneNo();
+  String userImage = Preferences.getUserImage();
 
   @override
   void initState() {
-    name = Preferences.getName();
-    nameController.text = name;
-    email = Preferences.getEmail();
-    emailController.text = email;
-    phone = Preferences.getPhoneNo();
-    phoneController.text = phone;
-    userimage = Preferences.getUserImage();
-    // setState(() {});
     callData();
     super.initState();
   }
@@ -62,9 +50,10 @@ class EditProfileScreenState extends State<EditProfileScreen>
   callData() async {
     bool isConnected = await networkInfo.isConnected;
     if (isConnected) {
-      // if (Preferences.isLogin()) {
-      getProfile();
-      // }
+      if (Preferences.isLogin()) {
+        loadingBox(context);
+        getProfile();
+      }
     } else {
       alertBox("Internet connection not available", context);
     }
@@ -78,7 +67,10 @@ class EditProfileScreenState extends State<EditProfileScreen>
       http.Response response = await http.post(
         Uri.parse(AppConstants.baseURL),
         body: {'data': base64Encode(utf8.encode(methodBody))},
-      );
+      ).then((value) {
+        closeScreen(context);
+        return value;
+      });
 
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -102,12 +94,17 @@ class EditProfileScreenState extends State<EditProfileScreen>
             phoneController.text = data["phone"];
             youtubeController.text = data["user_youtube"];
             instraController.text = data["user_instagram"];
-            userimage = data["user_image"];
+            String userimage = data["user_image"];
+            if (userimage != "") {
+              isnetworkimage = true;
+              profileImage = userimage;
+            } else {
+              isnetworkimage = false;
+              profileImage = "";
+            }
             setState(() {});
           }
         }
-      } else {
-        // updateNoDataVisibility(true);
       }
     } catch (error) {
       print("Error updateUIWithData  $error");
@@ -120,6 +117,15 @@ class EditProfileScreenState extends State<EditProfileScreen>
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, size: 26),
+          onPressed: () {
+            Navigator.pop(
+                context,
+                UserInfomation(
+                    name: nameController.text, email: emailController.text));
+          },
+        ),
         centerTitle: true,
         title: const Column(
           children: [
@@ -363,7 +369,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
                           autofillHints: const [AutofillHints.telephoneNumber],
                           keyboardType: TextInputType.phone,
                           textInputAction: TextInputAction.next,
-                          validator: isPhoneValid,
+                          // validator: isPhoneValid,
                         ),
                         RegisterTextFormFieldWidget(
                           hintText: 'Youtube',
@@ -393,7 +399,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
                 const SizedBox(
                   height: 10,
                 ),
-                Divider(),
+                const Divider(),
                 const SizedBox(
                   height: 10,
                 ),
@@ -445,7 +451,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
     );
   }
 
-  Future<PhotoUploadReq> pickImage(ImageSource source) async {
+  Future<void> pickImage(ImageSource source) async {
     final image = await ImagePicker().pickImage(source: source);
 
     File? imageTempoary = File(image!.path);
@@ -456,28 +462,12 @@ class EditProfileScreenState extends State<EditProfileScreen>
         this.image = imageTempoary;
         isnetworkimage = false;
       }
-
-      if (this.image != null) {
-        // showDialog(
-        //   context: context,
-        //   barrierDismissible: false,
-        //   builder: (BuildContext context) {
-        //     return const CircularProgressIndicator();
-        //   },
-        // );
-        // PhotoUploadReq obj =
-        //     PhotoUploadReq(file: this.image ?? File(""), url: '');
-        // uploadPhoto(obj);
-      } else {
-        var snackBar = buildSnackBar("Please select a photo.", false);
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }
     });
-
-    return PhotoUploadReq(file: this.image ?? File(""), url: '');
   }
 
   void profileUpdateFun() async {
+    loadingBox(context);
+    var headers = <String, String>{'Content-Type': 'application/json'};
     UserProfileUpdate updateReq = UserProfileUpdate(
         userId: Preferences.getProfileId(),
         name: nameController.text,
@@ -488,57 +478,115 @@ class EditProfileScreenState extends State<EditProfileScreen>
         userInstagram: instraController.text);
     String methodBody = jsonEncode(updateReq.toJson());
     try {
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse(AppConstants.baseURL),
-      );
+      if (image != null) {
+        var request =
+            http.MultipartRequest('POST', Uri.parse(AppConstants.baseURL));
+        request.headers.addAll(headers);
+        request.fields['data'] = base64Encode(utf8.encode(methodBody));
+        var file = await http.MultipartFile.fromPath('user_image', image!.path);
+        request.files.add(file);
 
-      request.fields['data'] = base64Encode(utf8.encode(methodBody));
+        var response = await request.send().then((value) {
+          closeScreen(context);
+          return value;
+        });
+        if (response.statusCode == 200) {
+          var jsonResponse = jsonDecode(await response.stream.bytesToString());
 
-      // http.Response response = await http.post(
+          if (jsonResponse.containsKey(AppConstants.status)) {
+            int status = jsonResponse['status'];
+            String message = jsonResponse['message'];
+            if (status == -2) {
+              alertBox(message, context);
+            } else {
+              alertBox(message, context);
+            }
+          } else {
+            Map<String, dynamic> data = jsonResponse[AppConstants.tag];
+            String msg = data['msg'];
+            alertBox(msg, context);
+            // replaceScreen(context, const MainScreen());
+          }
+        }
+      } else {
+        http.Response response = await http.post(
+          Uri.parse(AppConstants.baseURL),
+          body: {'data': base64Encode(utf8.encode(methodBody))},
+        ).then((value) {
+          closeScreen(context);
+          return value;
+        });
+        if (response.statusCode == 200) {
+          Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+
+          if (jsonResponse.containsKey(AppConstants.status)) {
+            int status = jsonResponse['status'];
+            String message = jsonResponse['message'];
+            if (status == -2) {
+              alertBox(message, context);
+            } else {
+              alertBox(message, context);
+            }
+          } else {
+            Map<String, dynamic> data = jsonResponse[AppConstants.tag];
+            String msg = data['msg'];
+            alertBox(msg, context);
+            // replaceScreen(context, const MainScreen());
+          }
+        }
+      }
+      // var request = http.MultipartRequest(
+      //   'POST',
       //   Uri.parse(AppConstants.baseURL),
-      //   body: {'data': base64Encode(utf8.encode(methodBody))},
       // );
 
-      if (image != null) {
-        try {
-          var stream = http.ByteStream(image!.openRead());
-          var length = await image!.length();
+      // request.fields['data'] = base64Encode(utf8.encode(methodBody));
+      // request.headers.addAll(headers);
 
-          var multipartFile = http.MultipartFile(
-            'profile_image',
-            stream,
-            length,
-            filename: image!.path.split('/').last,
-          );
+      // // http.Response response = await http.post(
+      // //   Uri.parse(AppConstants.baseURL),
+      // //   body: {'data': base64Encode(utf8.encode(methodBody))},
+      // // );
 
-          request.files.add(multipartFile);
-        } catch (e) {
-          print('Error reading file: $e');
-          // Handle the error as needed
-        }
-      }
+      // if (image != null) {
+      //   try {
+      //     var stream = http.ByteStream(image!.openRead());
+      //     var length = await image!.length();
 
-      var response = await request.send();
+      //     var multipartFile = http.MultipartFile(
+      //       'profile_image',
+      //       stream,
+      //       length,
+      //       filename: image!.path.split('/').last,
+      //     );
 
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(await response.stream.bytesToString());
+      //     request.files.add(multipartFile);
+      //   } catch (e) {
+      //     print('Error reading file: $e');
+      //     // Handle the error as needed
+      //   }
+      // }
 
-        if (jsonResponse.containsKey(AppConstants.status)) {
-          int status = jsonResponse['status'];
-          String message = jsonResponse['message'];
-          if (status == -2) {
-            alertBox(message, context);
-          } else {
-            alertBox(message, context);
-          }
-        } else {
-          Map<String, dynamic> data = jsonResponse[AppConstants.tag];
-          String msg = data['msg'];
-          alertBox(msg, context);
-          replaceScreen(context, const MainScreen());
-        }
-      }
+      // var response = await request.send();
+
+      // if (response.statusCode == 200) {
+      //   var jsonResponse = jsonDecode(await response.stream.bytesToString());
+
+      //   if (jsonResponse.containsKey(AppConstants.status)) {
+      //     int status = jsonResponse['status'];
+      //     String message = jsonResponse['message'];
+      //     if (status == -2) {
+      //       alertBox(message, context);
+      //     } else {
+      //       alertBox(message, context);
+      //     }
+      //   } else {
+      //     Map<String, dynamic> data = jsonResponse[AppConstants.tag];
+      //     String msg = data['msg'];
+      //     alertBox(msg, context);
+      //     replaceScreen(context, const MainScreen());
+      //   }
+      // }
     } catch (e) {
       print('Failed try again $e');
       alertBox('Failed try again ', context);

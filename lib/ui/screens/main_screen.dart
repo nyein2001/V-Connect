@@ -16,6 +16,7 @@ import 'package:ndvpn/ui/components/custom_divider.dart';
 import 'package:ndvpn/ui/components/about_detail.dart';
 import 'package:ndvpn/ui/components/logout_alert.dart';
 import 'package:ndvpn/ui/screens/html_screen.dart';
+import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/profile_screen.dart';
 import 'package:ndvpn/ui/screens/server_list_screen.dart';
 import 'package:ndvpn/ui/screens/spin_wheel/lucky_wheel_screen.dart';
@@ -55,11 +56,24 @@ class _MainScreenState extends State<MainScreen> {
               ListTile(
                   leading: const Icon(Icons.person),
                   title: const Text('Profile').tr(),
-                  onTap: () => startScreen(context, const ProfileScreen())),
+                  onTap: () {
+                    if (Preferences.isLogin()) {
+                      startScreen(context, const ProfileScreen());
+                    } else {
+                      alertBox("You have not login", context);
+                    }
+                    _controller.hideDrawer();
+                  }),
               ListTile(
                   leading: const Icon(Icons.wheelchair_pickup),
                   title: const Text('Lucky Wheel').tr(),
-                  onTap: () => startScreen(context, const SpinningWheelPage())),
+                  onTap: () {
+                    if (Preferences.isLogin()) {
+                      startScreen(context, const SpinningWheelPage());
+                    } else {
+                      alertBox("You have not login", context);
+                    }
+                  }),
               const ColumnDivider(space: 20),
               Text("settings", style: Theme.of(context).textTheme.bodySmall)
                   .tr(),
@@ -77,7 +91,14 @@ class _MainScreenState extends State<MainScreen> {
               ListTile(
                   leading: const Icon(Icons.login),
                   title: const Text("Login or Logout").tr(),
-                  onTap: () => logout()),
+                  onTap: () {
+                    if (Preferences.isLogin()) {
+                      logout();
+                    } else {
+                      startScreen(context, const LoginScreen());
+                    }
+                    _controller.hideDrawer();
+                  }),
               ListTile(
                   leading: const Icon(Icons.update),
                   title: const Text('check_update').tr(),

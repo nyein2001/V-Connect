@@ -25,6 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String phone = Preferences.getPhoneNo();
   String userImage = Preferences.getUserImage();
   NetworkInfo networkInfo = NetworkInfo(Connectivity());
+  String accountType = "Free";
 
   @override
   void initState() {
@@ -35,9 +36,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   callData() async {
     bool isConnected = await networkInfo.isConnected;
     if (isConnected) {
-      // if (Preferences.isLogin()) {
-      getProfile();
-      // }
+      if (Preferences.isLogin()) {
+        getProfile();
+      }
     } else {
       alertBox("Internet connection not available", context);
     }
@@ -74,11 +75,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
             email = data["email"];
             phone = data["phone"];
             userImage = data["user_image"];
+
+            String stripeJson = data["stripe"];
+            if (stripeJson != '') {
+              Map<String, dynamic> stripeObject = jsonDecode(stripeJson);
+
+              if (stripeObject["status"] == "active") {
+                Config.stripeRenewDate = stripeObject["current_period_end"];
+                Config.stripeStatus = "active";
+                accountType = "Premium";
+                // setRenewDate();
+              } else {
+                accountType = "Free";
+              }
+            }
             setState(() {});
           }
         }
-      } else {
-        // updateNoDataVisibility(true);
       }
     } catch (error) {
       print("Error updateUIWithData  $error");
@@ -113,7 +126,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          startScreen(context, const EditProfileScreen());
+                          startScreen(context, const EditProfileScreen())
+                              .then((value) {
+                            name = value.name;
+                            email = value.email;
+                            setState(() {});
+                          });
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,

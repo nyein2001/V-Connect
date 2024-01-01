@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:ndvpn/assets.dart';
@@ -23,22 +21,7 @@ final class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> with _LoginScreenMixin {
-  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-  String deviceid = '';
-
-  @override
-  void initState() {
-    if (Platform.isAndroid) {
-      deviceInfo.androidInfo.then((AndroidDeviceInfo androidInfo) {
-        deviceid = androidInfo.serialNumber;
-      });
-    } else if (Platform.isIOS) {
-      deviceInfo.iosInfo.then((IosDeviceInfo iosInfo) {
-        deviceid = iosInfo.identifierForVendor!;
-      });
-    }
-    super.initState();
-  }
+  String deviceid = Preferences.getDeviceId();
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +77,7 @@ class _LoginScreenState extends State<LoginScreen> with _LoginScreenMixin {
                       hintText: 'Password',
                       prefixIcon: Icons.remove_red_eye_rounded,
                       controller: _passwordController,
+                      obscure: true,
                       textCapitalization: TextCapitalization.none,
                       autofillHints: const [
                         AutofillHints.password,

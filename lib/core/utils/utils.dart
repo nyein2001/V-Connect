@@ -76,7 +76,7 @@ void loadingBox(BuildContext context) {
   const DialogBackground(
     dialog: LoadingScreen(),
     blur: 10,
-    dismissable: false,
+    dismissable: true,
   ).show(context);
 }
 
@@ -93,27 +93,3 @@ void customLoadingDialog(BuildContext context) {
         );
       });
 }
-
-// void alertBox(String message, BuildContext context) {
-//   if (Navigator.of(context).canPop()) {
-//     showDialog(
-//       context: context,
-//       barrierDismissible: false,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           content: Text(message),
-//           actions: <Widget>[
-//             TextButton(
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//               },
-//               child: const Text(
-//                 'OK',
-//               ),
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-// }

@@ -44,12 +44,18 @@ mixin _LoginScreenMixin on State<LoginScreen> {
   }
 
   Future<void> login() async {
-    if (!_checkEmail(_emailController.text) || _emailController.text.isEmpty) {
-      _formKey.currentState!.validate();
-    } else if (_passwordController.text.isEmpty) {
-      _formKey.currentState!.validate();
+    bool isConnected = await networkInfo.isConnected;
+    if (isConnected) {
+      if (!_checkEmail(_emailController.text) ||
+          _emailController.text.isEmpty) {
+        _formKey.currentState!.validate();
+      } else if (_passwordController.text.isEmpty) {
+        _formKey.currentState!.validate();
+      } else {
+        loginFun(_emailController.text, _passwordController.text, isCheck);
+      }
     } else {
-      loginFun(_emailController.text, _passwordController.text, isCheck);
+      alertBox("Internet connection not available", context);
     }
   }
 
@@ -73,7 +79,8 @@ mixin _LoginScreenMixin on State<LoginScreen> {
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           String msg = data['msg'];
-          String success = data['success'];
+          String success = '${data['success']}';
+          print(data.toString());
           if (success == '1') {
             String userid = data['user_id'];
             String name = data['name'];
@@ -82,7 +89,6 @@ mixin _LoginScreenMixin on State<LoginScreen> {
 
             if (stripeJson != '') {
               Map<String, dynamic> stripeObject = jsonDecode(stripeJson);
-              print("CHECKSTRIPE ${data["stripe"]}");
               Config.stripeJson = data["stripe"];
 
               if (stripeObject["status"] == "active") {
@@ -103,19 +109,18 @@ mixin _LoginScreenMixin on State<LoginScreen> {
             Preferences.setLoginType(loginType: 'normal');
             Preferences.setProfileId(profileId: userid);
             if (Config.loginBack) {
-              
             } else {
-              int noAds=data['no_ads'];
-              int premiumServers =data['premium_servers'];
-              int isPremium=data['is_premium'];
-              String perks =data['perks'];
-              String exp=data['exp'];
+              String noAds = "${data['no_ads']}";
+              String premiumServers = "${data['premium_servers']}";
+              String isPremium = "${data['is_premium']}";
+              String perks = data['perks'];
+              String exp = data['exp'];
 
-              Config.noAds = noAds == 1;
-                  Config.premiumServersAccess = premiumServers == 1;
-                  Config.isPremium = isPremium == 1;
-                  Config.perks = perks;
-                  Config.expiration = exp;
+              Config.noAds = noAds == "1";
+              Config.premiumServersAccess = premiumServers == "1";
+              Config.isPremium = isPremium == "1";
+              Config.perks = perks;
+              Config.expiration = exp;
             }
             replaceScreen(context, const MainScreen());
           } else {
@@ -124,7 +129,7 @@ mixin _LoginScreenMixin on State<LoginScreen> {
         }
       }
     } catch (e) {
-      print('Failed try again $e');
+      print("Failed try again $e");
       alertBox('Failed try again ', context);
     }
   }

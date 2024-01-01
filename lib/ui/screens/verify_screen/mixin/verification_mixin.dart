@@ -2,30 +2,16 @@ part of '../verification_screen.dart';
 
 mixin _VerificationMixin on State<VerificationScreen> {
   final TextEditingController optController = TextEditingController();
-  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   String name = '';
   String email = '';
   String password = '';
   String phoneNO = '';
   String reference = '';
-  String deviceId = '';
   String pinText = '';
+  String deviceId = Preferences.getDeviceId();
 
   @override
   void initState() {
-    try {
-      if (Platform.isAndroid) {
-        deviceInfo.androidInfo.then((AndroidDeviceInfo androidInfo) {
-          deviceId = androidInfo.serialNumber;
-        });
-      } else if (Platform.isIOS) {
-        deviceInfo.iosInfo.then((IosDeviceInfo iosInfo) {
-          deviceId = iosInfo.identifierForVendor!;
-        });
-      }
-    } on Exception catch (_) {
-      deviceId = 'Not Found';
-    }
     if (widget.name != null) {
       name = widget.name!;
       email = widget.email!;
@@ -56,7 +42,8 @@ mixin _VerificationMixin on State<VerificationScreen> {
       bool isConnected = await networkInfo.isConnected;
       if (isConnected) {
         optController.clear();
-        if (pinText == Preferences.getOtp()) {
+        String text = Preferences.getOtp();
+        if (pinText == text) {
           loadingBox(context);
           register(name, email, password, phoneNO, reference);
         } else {
@@ -102,9 +89,9 @@ mixin _VerificationMixin on State<VerificationScreen> {
         String success = data['success'];
         Preferences.setVerification(isVerification: false);
         if (success == '1') {
-          replaceScreen(context, const LoginScreen());
+          startScreen(context, const LoginScreen());
         } else {
-          replaceScreen(context, const RegisterScreen());
+          startScreen(context, const RegisterScreen());
         }
         Fluttertoast.showToast(
           msg: msg,

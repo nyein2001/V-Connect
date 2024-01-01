@@ -185,4 +185,13 @@ class Preferences {
   static String getLoginType() {
     return _getValue<String>(loginTypeKey) ?? '';
   }
+
+  static const String deviceIdKey = 'deviceIdKey';
+  static void setDeviceId({required String deviceid}) {
+    _setValue<String>(deviceIdKey, deviceid);
+  }
+
+  static String getDeviceId() {
+    return _getValue<String>(deviceIdKey) ?? 'unknown';
+  }
 }

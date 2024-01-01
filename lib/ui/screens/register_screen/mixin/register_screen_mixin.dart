@@ -10,8 +10,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _referenceCodeController =
       TextEditingController();
-  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-  String deviceid = '';
+  String deviceid = Preferences.getDeviceId();
   String status = '';
   String name = '';
   String email = '';
@@ -23,15 +22,6 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) {
-      deviceInfo.androidInfo.then((AndroidDeviceInfo androidInfo) {
-        deviceid = androidInfo.serialNumber;
-      });
-    } else if (Platform.isIOS) {
-      deviceInfo.iosInfo.then((IosDeviceInfo iosInfo) {
-        deviceid = iosInfo.identifierForVendor!;
-      });
-    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       checkOtp();
     });
@@ -214,7 +204,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
   }
 
   void verificationCall(String sentEmail, String otp) async {
-    alertBox('Loading...', context);
+    loadingBox(context);
     String methodBody = jsonEncode({
       'sign': AppConstants.sign,
       'salt': AppConstants.randomSalt.toString(),
@@ -227,7 +217,10 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
       http.Response response = await http.post(
         Uri.parse(AppConstants.baseURL),
         body: {'data': base64Encode(utf8.encode(methodBody))},
-      );
+      ).then((value) {
+        closeScreen(context);
+        return value;
+      });
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         if (jsonResponse.containsKey('status')) {
@@ -265,22 +258,8 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
 
   void addToRegistation(String name, String email, String password,
       String phone, String reference) async {
-    alertBox('Loading...', context);
-    String deviceId = '';
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    try {
-      if (Platform.isAndroid) {
-        deviceInfo.androidInfo.then((AndroidDeviceInfo androidInfo) {
-          deviceId = androidInfo.serialNumber;
-        });
-      } else if (Platform.isIOS) {
-        deviceInfo.iosInfo.then((IosDeviceInfo iosInfo) {
-          deviceId = iosInfo.identifierForVendor!;
-        });
-      }
-    } catch (e) {
-      deviceId = 'Not Found';
-    }
+    String deviceId = Preferences.getDeviceId();
+    loadingBox(context);
     String methodBody = jsonEncode({
       'sign': AppConstants.sign,
       'salt': AppConstants.randomSalt.toString(),
@@ -297,7 +276,10 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
     http.Response response = await http.post(
       Uri.parse(AppConstants.baseURL),
       body: {'data': base64Encode(utf8.encode(methodBody))},
-    );
+    ).then((value) {
+      closeScreen(context);
+      return value;
+    });
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       if (jsonResponse.containsKey('status')) {
@@ -313,7 +295,6 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
         Fluttertoast.showToast(msg: msg, toastLength: Toast.LENGTH_SHORT);
       }
     }
-    Navigator.of(context).pop();
   }
 
   int generateOTP() {

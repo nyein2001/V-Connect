@@ -1,13 +1,13 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:ndvpn/core/utils/config.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/main.dart';
+import 'package:ndvpn/ui/screens/enter_reference_code.dart';
 import 'package:ndvpn/ui/screens/main_screen.dart';
 
 class GoogleSignInButton extends StatefulWidget {
@@ -19,23 +19,8 @@ class GoogleSignInButton extends StatefulWidget {
 
 class GoogleSignInButtonState extends State<GoogleSignInButton> {
   bool _isSigningIn = false;
-
-  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-  String deviceid = '';
-
-  @override
-  void initState() {
-    if (Platform.isAndroid) {
-      deviceInfo.androidInfo.then((AndroidDeviceInfo androidInfo) {
-        deviceid = androidInfo.serialNumber;
-      });
-    } else if (Platform.isIOS) {
-      deviceInfo.iosInfo.then((IosDeviceInfo iosInfo) {
-        deviceid = iosInfo.identifierForVendor!;
-      });
-    }
-    super.initState();
-  }
+  String deviceid = Preferences.getDeviceId();
+  final GoogleSignIn google = GoogleSignIn();
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +41,7 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
                 ),
               ),
               onPressed: () async {
+                loadingBox(context);
                 setState(() {
                   _isSigningIn = true;
                 });
@@ -86,41 +72,21 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
   }
 
   Future<void> googleSignIn() async {
-    if (Platform.isAndroid) {
-      deviceInfo.androidInfo.then((AndroidDeviceInfo androidInfo) {
-        deviceid = androidInfo.serialNumber;
-      });
-    } else if (Platform.isIOS) {
-      deviceInfo.iosInfo.then((IosDeviceInfo iosInfo) {
-        deviceid = iosInfo.identifierForVendor!;
-      });
+    bool isConnected = await networkInfo.isConnected;
+    if (isConnected) {
+      await authService.signInWithGoogle(context).then((value) async {
+        registerSocialNetwork("${value!.userData!.id}",
+            value.userData!.username!, value.userData!.email!, 'google');
+      }).catchError((e) {});
+    } else {
+      alertBox("Internet connection not available", context);
     }
-    await authService.signInWithGoogle(context).then((value) async {
-      registerSocialNetwork("${value!.userData!.id}", value.userData!.username!,
-          value.userData!.email!, 'google');
-    }).catchError((e) {
-      print('Error in googleSignIn : $e');
-    });
   }
 
   void registerSocialNetwork(
       String id, String sendName, String sendEmail, String type) async {
-    alertBox('Loading...', context);
-    String deviceId = '';
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    try {
-      if (Platform.isAndroid) {
-        deviceInfo.androidInfo.then((AndroidDeviceInfo androidInfo) {
-          deviceId = androidInfo.serialNumber;
-        });
-      } else if (Platform.isIOS) {
-        deviceInfo.iosInfo.then((IosDeviceInfo iosInfo) {
-          deviceId = iosInfo.identifierForVendor!;
-        });
-      }
-    } catch (e) {
-      deviceId = 'Not Found';
-    }
+    String deviceId = Preferences.getDeviceId();
+    // loadingBox(context);
     String methodBody = jsonEncode({
       'sign': AppConstants.sign,
       'salt': AppConstants.randomSalt.toString(),
@@ -136,65 +102,73 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
     http.Response response = await http.post(
       Uri.parse(AppConstants.baseURL),
       body: {'data': base64Encode(utf8.encode(methodBody))},
-    );
+    ).then((value) {
+      closeScreen(context);
+      return value;
+    });
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       if (jsonResponse.containsKey('status')) {
         String message = jsonResponse['message'];
         alertBox(message, context);
       } else {
-        try {
-          Map<String, dynamic> data = jsonResponse[AppConstants.tag];
-          String msg = data['msg'];
-          String success = data['success'];
-          if (success == '1') {
-            String userId = data["user_id"];
-            String email = data["email"];
-            String name = data["name"];
-            String stripeJson = data["stripe"];
+        Map<String, dynamic> data = jsonResponse[AppConstants.tag];
+        String msg = data['msg'];
+        String success = data['success'];
+        if (success == '1') {
+          String userId = data["user_id"];
+          String email = data["email"];
+          String name = data["name"];
+          bool referralCode = data["referral_code"];
+          String stripeJson = data["stripe"];
 
-            if (stripeJson != "") {
-              Map<String, dynamic> stripeObject = jsonDecode(stripeJson);
-              print("CHECKSTRIPE ${data["stripe"]}");
-              Config.stripeJson = data["stripe"];
+          if (stripeJson != "") {
+            Map<String, dynamic> stripeObject = jsonDecode(stripeJson);
+            Config.stripeJson = data["stripe"];
 
-              if (stripeObject["status"] == "active") {
-                Config.stripeRenewDate = stripeObject["current_period_end"];
-                Config.vipSubscription = true;
-                Config.allSubscription = true;
-                Config.stripeStatus = "active";
-              }
-              Preferences.setEmail(email: email);
-              Preferences.setName(name: name);
-              Preferences.setLogin(isLogin: true);
-              Preferences.setProfileId(profileId: userId);
-              Preferences.setLoginType(loginType: type);
-
-              if (Config.loginBack) {
-              } else {
-                if (data.containsKey("no_ads")) {
-                  int noAds = data["no_ads"];
-                  int premiumServers = data["premium_servers"];
-                  int isPremium = data["is_premium"];
-                  String perks = data["perks"];
-                  String exp = data["exp"];
-
-                  Config.noAds = noAds == 1;
-                  Config.premiumServersAccess = premiumServers == 1;
-                  Config.isPremium = isPremium == 1;
-                  Config.perks = perks;
-                  Config.expiration = exp;
-                }
-                replaceScreen(context, const MainScreen());
-              }
+            if (stripeObject["status"] == "active") {
+              Config.stripeRenewDate = stripeObject["current_period_end"];
+              Config.vipSubscription = true;
+              Config.allSubscription = true;
+              Config.stripeStatus = "active";
             }
           }
+          Preferences.setEmail(email: email);
+          Preferences.setName(name: name);
+          Preferences.setLogin(isLogin: true);
+          Preferences.setProfileId(profileId: userId);
+          Preferences.setLoginType(loginType: type);
+
+          if (Config.loginBack) {
+          } else {
+            if (referralCode) {
+              replaceScreen(context, EnterReferenceCodeScreen(userId: userId));
+            } else {
+              if (data['no_ads'] != null) {
+                int noAds = data['no_ads'];
+                int premiumServers = data['premium_servers'];
+                String isPremium = data['is_premium'];
+                String perks = data['perks'];
+                String exp = data['exp'];
+
+                Config.noAds = noAds == 1;
+                Config.premiumServersAccess = premiumServers == 1;
+                Config.isPremium = isPremium == "1";
+                Config.perks = perks;
+                Config.expiration = exp;
+              }
+              replaceScreen(context, const MainScreen());
+            }
+          }
+        } else {
+          if (data["is_suspended"] != null && data["is_suspended"] == "true") {
+            if (type == "google") {
+              await google.signOut();
+            } else {}
+          }
           Fluttertoast.showToast(msg: msg, toastLength: Toast.LENGTH_SHORT);
-        } catch (e) {
-          print('Error $e');
         }
       }
     }
-    Navigator.of(context).pop();
   }
 }

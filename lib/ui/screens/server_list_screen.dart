@@ -7,7 +7,7 @@ import 'package:ndvpn/core/models/vpn_config.dart';
 import 'package:ndvpn/core/resources/environment.dart';
 import 'package:ndvpn/core/utils/preferences.dart';
 import 'package:ndvpn/ui/components/server_item.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart'; 
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 /// Server list screen
 class ServerListScreen extends StatefulWidget {
@@ -18,7 +18,8 @@ class ServerListScreen extends StatefulWidget {
 }
 
 class _ServerListScreenState extends State<ServerListScreen> {
-  final List<RefreshController> _refreshControllers = List.generate(2, (index) => RefreshController(initialRefresh: !cacheServerList));
+  final List<RefreshController> _refreshControllers = List.generate(
+      2, (index) => RefreshController(initialRefresh: !cacheServerList));
   List<VpnConfig> _servers = [];
 
   @override
@@ -61,7 +62,9 @@ class _ServerListScreenState extends State<ServerListScreen> {
               floating: true,
               pinned: true,
               forceElevated: innerBoxIsScrolled,
-              bottom: PreferredSize(preferredSize: const Size.fromHeight(70), child: _serversTab()),
+              bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(70),
+                  child: _serversTab()),
             ),
           ],
           body: ExtendedTabBarView(
@@ -73,7 +76,8 @@ class _ServerListScreenState extends State<ServerListScreen> {
                 child: ListView(
                   addAutomaticKeepAlives: true,
                   padding: EdgeInsets.zero,
-                  children: List.generate(data.length, (index) => ServerItem(data[index])),
+                  children: List.generate(
+                      data.length, (index) => ServerItem(data[index])),
                 ),
               );
             }),
@@ -87,18 +91,26 @@ class _ServerListScreenState extends State<ServerListScreen> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(color: Colors.grey.withOpacity(.3), borderRadius: BorderRadius.circular(20)),
+      decoration: BoxDecoration(
+          color: Colors.grey.withOpacity(.3),
+          borderRadius: BorderRadius.circular(20)),
       child: TabBar(
         splashBorderRadius: BorderRadius.circular(20),
         indicatorColor: Colors.white,
-        indicator: BoxDecoration(color: Colors.grey.shade100.withOpacity(.4), borderRadius: BorderRadius.circular(20)),
-        tabs: [Tab(text: 'standard_servers'.tr()), Tab(text: 'premium_servers'.tr())],
+        indicator: BoxDecoration(
+            color: Colors.grey.shade100.withOpacity(.4),
+            borderRadius: BorderRadius.circular(20)),
+        tabs: [
+          Tab(text: 'standard_servers'.tr()),
+          Tab(text: 'premium_servers'.tr())
+        ],
       ),
     );
   }
 
   void loadData() async {
-    List<VpnConfig> resp = await ServersHttp(context).allServers().then((value) {
+    List<VpnConfig> resp =
+        await ServersHttp(context).allServers().then((value) {
       for (var element in _refreshControllers) {
         element.refreshCompleted();
         element.loadComplete();

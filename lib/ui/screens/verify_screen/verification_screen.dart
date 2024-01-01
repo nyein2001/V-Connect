@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/assets.dart';
 import 'package:ndvpn/core/resources/colors.dart';
 import 'package:ndvpn/core/utils/constant.dart';

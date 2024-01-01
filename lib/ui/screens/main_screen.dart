@@ -65,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
                     _controller.hideDrawer();
                   }),
               ListTile(
-                  leading: const Icon(Icons.wheelchair_pickup),
+                  leading: const Icon(Icons.casino),
                   title: const Text('Lucky Wheel').tr(),
                   onTap: () {
                     if (Preferences.isLogin()) {
@@ -73,6 +73,7 @@ class _MainScreenState extends State<MainScreen> {
                     } else {
                       alertBox("You have not login", context);
                     }
+                    _controller.hideDrawer();
                   }),
               const ColumnDivider(space: 20),
               Text("settings", style: Theme.of(context).textTheme.bodySmall)

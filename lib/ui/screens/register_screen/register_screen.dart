@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/assets.dart';
 import 'package:ndvpn/core/https/sign_http/register_http.dart';
 import 'package:ndvpn/core/resources/colors.dart';
@@ -26,14 +27,21 @@ final class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen>
     with _RegisterScreenMixin {
   @override
+  void initState() {
+    customProgressDialog =
+        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<RegisterBloc, RegisterState>(
       listener: (context, state) {
         if (state is RegisterInitial) {
-          loadingBox(context);
+          customProgressDialog.show();
         }
         if (state is VerificationSuccess) {
-          closeScreen(context);
+          customProgressDialog.dismiss();
           Preferences.setVerification(isVerification: true);
           Preferences.setName(name: name);
           Preferences.setEmail(email: email);
@@ -52,11 +60,11 @@ class _RegisterScreenState extends State<RegisterScreen>
               ));
         }
         if (state is RegisterFail) {
-          closeScreen(context);
+          customProgressDialog.dismiss();
           alertBox(state.message, context);
         }
         if (state is RegisterSuccess) {
-          closeScreen(context);
+          customProgressDialog.dismiss();
           replaceScreen(context, const LoginScreen());
         }
       },

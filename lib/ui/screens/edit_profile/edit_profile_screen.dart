@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/models/get_profile_req.dart';
 import 'package:ndvpn/core/models/user_info.dart';
 import 'package:ndvpn/core/models/user_profile_update.dart';
@@ -51,7 +52,6 @@ class EditProfileScreenState extends State<EditProfileScreen>
     bool isConnected = await networkInfo.isConnected;
     if (isConnected) {
       if (Preferences.isLogin()) {
-        loadingBox(context);
         getProfile();
       }
     } else {
@@ -62,13 +62,15 @@ class EditProfileScreenState extends State<EditProfileScreen>
   void getProfile() async {
     UserProfileReq req = UserProfileReq(userId: Preferences.getProfileId());
     String methodBody = jsonEncode(req.toJson());
-
+    CustomProgressDialog customProgressDialog =
+        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
+    customProgressDialog.show();
     try {
       http.Response response = await http.post(
         Uri.parse(AppConstants.baseURL),
         body: {'data': base64Encode(utf8.encode(methodBody))},
       ).then((value) {
-        closeScreen(context);
+        customProgressDialog.dismiss();
         return value;
       });
 
@@ -466,7 +468,9 @@ class EditProfileScreenState extends State<EditProfileScreen>
   }
 
   void profileUpdateFun() async {
-    loadingBox(context);
+    CustomProgressDialog customProgressDialog =
+        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
+    customProgressDialog.show();
     var headers = <String, String>{'Content-Type': 'application/json'};
     UserProfileUpdate updateReq = UserProfileUpdate(
         userId: Preferences.getProfileId(),
@@ -487,7 +491,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
         request.files.add(file);
 
         var response = await request.send().then((value) {
-          closeScreen(context);
+          customProgressDialog.dismiss();
           return value;
         });
         if (response.statusCode == 200) {
@@ -513,7 +517,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
           Uri.parse(AppConstants.baseURL),
           body: {'data': base64Encode(utf8.encode(methodBody))},
         ).then((value) {
-          closeScreen(context);
+          customProgressDialog.dismiss();
           return value;
         });
         if (response.statusCode == 200) {

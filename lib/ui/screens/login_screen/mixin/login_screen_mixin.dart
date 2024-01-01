@@ -60,7 +60,9 @@ mixin _LoginScreenMixin on State<LoginScreen> {
   }
 
   void loginFun(String email, String password, bool isCheck) async {
-    loadingBox(context);
+    CustomProgressDialog customProgressDialog =
+        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
+    customProgressDialog.show();
     UserLoginReq req = UserLoginReq(email: email, password: password);
     String requestBody = jsonEncode(req.toJson());
     try {
@@ -68,7 +70,7 @@ mixin _LoginScreenMixin on State<LoginScreen> {
         Uri.parse(AppConstants.baseURL),
         body: {'data': base64Encode(utf8.encode(requestBody))},
       ).then((value) {
-        closeScreen(context);
+        customProgressDialog.dismiss();
         return value;
       });
       if (response.statusCode == 200) {

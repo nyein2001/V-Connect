@@ -11,6 +11,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
   final TextEditingController _referenceCodeController =
       TextEditingController();
   String deviceid = Preferences.getDeviceId();
+  late CustomProgressDialog customProgressDialog;
   String status = '';
   String name = '';
   String email = '';
@@ -22,13 +23,15 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
   @override
   void initState() {
     super.initState();
+    customProgressDialog =
+        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
     WidgetsBinding.instance.addPostFrameCallback((_) {
       checkOtp();
     });
   }
 
   void checkOtp() async {
-    loadingBox(context);
+    customProgressDialog.show();
     String methodBody = jsonEncode({
       'sign': AppConstants.sign,
       'salt': AppConstants.randomSalt.toString(),
@@ -41,7 +44,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
         Uri.parse(AppConstants.baseURL),
         body: {'data': base64Encode(utf8.encode(methodBody))},
       ).then((value) {
-        closeScreen(context);
+        customProgressDialog.dismiss();
         return value;
       });
       if (response.statusCode == 200) {
@@ -182,7 +185,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
       bool isConnected = await networkInfo.isConnected;
       if (isConnected) {
         if (status == "true") {
-          loadingBox(context);
+          customProgressDialog.show();
           // verificationCall(email, generateOTP().toString());
           otp = generateOTP().toString();
           BlocProvider.of<RegisterBloc>(context)
@@ -204,7 +207,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
   }
 
   void verificationCall(String sentEmail, String otp) async {
-    loadingBox(context);
+    customProgressDialog.show();
     String methodBody = jsonEncode({
       'sign': AppConstants.sign,
       'salt': AppConstants.randomSalt.toString(),
@@ -218,7 +221,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
         Uri.parse(AppConstants.baseURL),
         body: {'data': base64Encode(utf8.encode(methodBody))},
       ).then((value) {
-        closeScreen(context);
+        customProgressDialog.dismiss();
         return value;
       });
       if (response.statusCode == 200) {
@@ -259,7 +262,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
   void addToRegistation(String name, String email, String password,
       String phone, String reference) async {
     String deviceId = Preferences.getDeviceId();
-    loadingBox(context);
+    customProgressDialog.show();
     String methodBody = jsonEncode({
       'sign': AppConstants.sign,
       'salt': AppConstants.randomSalt.toString(),
@@ -277,7 +280,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
       Uri.parse(AppConstants.baseURL),
       body: {'data': base64Encode(utf8.encode(methodBody))},
     ).then((value) {
-      closeScreen(context);
+      customProgressDialog.dismiss();
       return value;
     });
     if (response.statusCode == 200) {

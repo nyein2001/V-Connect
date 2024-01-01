@@ -9,9 +9,12 @@ mixin _VerificationMixin on State<VerificationScreen> {
   String reference = '';
   String pinText = '';
   String deviceId = Preferences.getDeviceId();
+  late CustomProgressDialog customProgressDialog;
 
   @override
   void initState() {
+    customProgressDialog =
+        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
     if (widget.name != null) {
       name = widget.name!;
       email = widget.email!;
@@ -44,7 +47,7 @@ mixin _VerificationMixin on State<VerificationScreen> {
         optController.clear();
         String text = Preferences.getOtp();
         if (pinText == text) {
-          loadingBox(context);
+          customProgressDialog.show();
           register(name, email, password, phoneNO, reference);
         } else {
           alertBox('Verification code does not match', context);
@@ -75,7 +78,7 @@ mixin _VerificationMixin on State<VerificationScreen> {
       Uri.parse(AppConstants.baseURL),
       body: {'data': base64Encode(utf8.encode(methodBody))},
     ).then((value) {
-      closeScreen(context);
+      customProgressDialog.dismiss();
       return value;
     });
     if (response.statusCode == 200) {
@@ -109,7 +112,7 @@ mixin _VerificationMixin on State<VerificationScreen> {
   }
 
   void verificationCall(String sentEmail, String otp) async {
-    loadingBox(context);
+    customProgressDialog.show();
     optController.clear();
     String methodBody = jsonEncode({
       'sign': AppConstants.sign,
@@ -125,7 +128,7 @@ mixin _VerificationMixin on State<VerificationScreen> {
         Uri.parse(AppConstants.baseURL),
         body: {'data': base64Encode(utf8.encode(methodBody))},
       ).then((value) {
-        closeScreen(context);
+        customProgressDialog.dismiss();
         return value;
       });
       if (response.statusCode == 200) {

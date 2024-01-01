@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ndvpn/core/models/get_req_with_userid.dart';
 import 'package:ndvpn/core/resources/colors.dart';
+import 'package:ndvpn/core/utils/config.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
@@ -66,11 +68,8 @@ class LogoutScreen extends StatelessWidget {
   }
 
   void logout(BuildContext context) async {
-    closeScreen(context);
-    replaceScreen(context, const LoginScreen());
     String userId = Preferences.getProfileId();
-    ReqWithUserId req =
-        ReqWithUserId(methodName: "method_name", userId: userId);
+    ReqWithUserId req = ReqWithUserId(methodName: "logout", userId: userId);
     String methodBody = jsonEncode(req.toJson());
     try {
       http.Response response = await http.post(
@@ -79,6 +78,23 @@ class LogoutScreen extends StatelessWidget {
       );
 
       if (response.statusCode == 200) {
+        Config.stripeStatus = "";
+        Config.stripeJson = "";
+        Config.stripeRenewDate = "";
+        Preferences.setLogin(isLogin: false);
+        Preferences.setProfileId(profileId: "");
+        Preferences.setName(name: "");
+        Preferences.setEmail(email: "");
+
+        if (Preferences.getLoginType() == "google") {
+          final GoogleSignIn google = GoogleSignIn();
+          await google
+              .signOut()
+              .then((value) => startScreen(context, const LoginScreen()));
+        } else {
+          Preferences.setLogin(isLogin: false);
+          startScreen(context, const LoginScreen());
+        }
         Preferences.setProfileId(profileId: '');
       }
     } catch (e) {}

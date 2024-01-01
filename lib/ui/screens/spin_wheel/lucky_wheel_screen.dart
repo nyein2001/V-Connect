@@ -1,11 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
+import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/models/get_spinner_req.dart';
 import 'package:ndvpn/core/models/save_spinner_points_req.dart';
+import 'package:ndvpn/core/providers/globals/ads_provider.dart';
+import 'package:ndvpn/core/resources/environment.dart';
 import 'package:ndvpn/core/utils/constant.dart';
+import 'package:ndvpn/core/utils/network_available.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/spin_wheel/controller/lucky_wheel_controller.dart';
@@ -26,13 +34,37 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
   String remainSpin = '';
   String adOnSpin = "false";
   bool isloading = true;
+  NetworkInfo networkInfo = NetworkInfo(Connectivity());
+  LuckyWheelController mySpinController = LuckyWheelController();
+  InterstitialAd? interstitialAd;
+  Timer? interstitialTimeout;
 
   @override
   void initState() {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      loadInterstitial();
+    });
     userId = Preferences.getProfileId();
     spinnerLists.clear();
     init();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    interstitialTimeout?.cancel();
+    super.dispose();
+  }
+
+  callData() async {
+    bool isConnected = await networkInfo.isConnected;
+    if (isConnected) {
+      if (Preferences.isLogin()) {
+        init();
+      }
+    } else {
+      alertBox("Internet connection not available", context);
+    }
   }
 
   void init() async {
@@ -64,8 +96,6 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
           adOnSpin = jsonData["ad_on_spin"];
           updateUIWithData(jsonData);
         }
-      } else {
-        // updateNoDataVisibility(true);
       }
     } catch (error) {
       print("Error updateUIWithData  $error");
@@ -91,13 +121,10 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
     }
   }
 
-  LuckyWheelController mySpinController = LuckyWheelController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: HexColor('#0D1543'),
         centerTitle: false,
         title: const Text('Lucky Wheel',
             textAlign: TextAlign.center,
@@ -181,24 +208,11 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
                                 MaterialStateProperty.all<Color>(Colors.green),
                           ),
                           onPressed: () async {
-                            int rdm = Random().nextInt(6);
-                            mySpinController.itemList =
-                                spinnerLists.map((luckyItem) {
-                              return SpinItem(
-                                  label: luckyItem.topText,
-                                  labelStyle: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  color: luckyItem.color);
-                            }).toList();
-                            String winitem =
-                                mySpinController.itemList[rdm].label;
-                            sendSpinnerData(userId, winitem);
-                            await mySpinController.spinNow(
-                                luckyIndex: rdm + 1,
-                                totalSpin: 10,
-                                baseSpinDuration: 20);
+                            if (adOnSpin == "true") {
+                              _itemClick();
+                            } else {
+                              showReward();
+                            }
                           },
                           child: const Text('Spin Now'))),
                 ],
@@ -207,16 +221,119 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
     );
   }
 
+  void startLuckyRound() async {
+    int rdm = Random().nextInt(6);
+    mySpinController.itemList = spinnerLists.map((luckyItem) {
+      return SpinItem(
+          label: luckyItem.topText,
+          labelStyle: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+          color: luckyItem.color);
+    }).toList();
+    String winitem = mySpinController.itemList[rdm].label;
+    sendSpinnerData(userId, winitem);
+    await mySpinController.spinNow(
+        luckyIndex: rdm + 1, totalSpin: 10, baseSpinDuration: 20);
+  }
+
+  void _itemClick() async {
+    return NAlertDialog(
+      blur: 10,
+      title: const Text("Watch Rewarded Video"),
+      content: const Text("Do you want to watch rewarded video ads?"),
+      actions: [
+        TextButton(
+          child: Text("watch_ad".tr()),
+          onPressed: () {
+            Navigator.pop(context);
+            showReward();
+          },
+        ),
+        TextButton(
+          child: const Text("No"),
+          onPressed: () {
+            Navigator.pop(context);
+            startLuckyRound();
+            Future.delayed(const Duration(seconds: 5), () async {
+              interstitialAd?.showIfNotPro(context);
+            });
+          },
+        ),
+      ],
+    ).show(context);
+  }
+
+  void showReward() async {
+    CustomProgressDialog customProgressDialog =
+        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
+
+    customProgressDialog.show();
+
+    AdsProvider.read(context)
+        .loadRewardAd(interstitialRewardAdUnitID)
+        .then((value) async {
+      customProgressDialog.dismiss();
+      startLuckyRound();
+      Future.delayed(const Duration(seconds: 5), () async {
+        if (value != null) {
+          value.show(onUserEarnedReward: (ad, reward) {
+            // _itemClick();
+          });
+        } else {
+          if (unlockProServerWithRewardAdsFail) {
+            await NAlertDialog(
+              blur: 10,
+              title: Text("no_reward_title".tr()),
+              content: Text("no_reward_but_unlock_description".tr()),
+              actions: [
+                TextButton(
+                    child: Text("understand".tr()),
+                    onPressed: () => Navigator.pop(context))
+              ],
+            ).show(context);
+            // _itemClick();
+          } else {
+            NAlertDialog(
+              blur: 10,
+              title: Text("no_reward_title".tr()),
+              content: Text("no_reward_description".tr()),
+              actions: [
+                TextButton(
+                    child: Text("understand".tr()),
+                    onPressed: () => Navigator.pop(context))
+              ],
+            ).show(context);
+          }
+        }
+      });
+    });
+  }
+
+  void loadInterstitial() {
+    interstitialTimeout?.cancel();
+    AdsProvider.read(context)
+        .loadInterstitial(interstitialAdUnitID)
+        .then((value) {
+      if (value != null) {
+        interstitialAd = value;
+        interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+          onAdDismissedFullScreenContent: (ad) {
+            interstitialAd!.dispose();
+            interstitialAd = null;
+            loadInterstitial();
+          },
+        );
+      } else {
+        interstitialTimeout =
+            Timer(const Duration(minutes: 1), loadInterstitial);
+      }
+    });
+  }
+
   Future<void> sendSpinnerData(String userId, String point) async {
     try {
-      // String methodBody = jsonEncode({
-      //   'sign': AppConstants.sign,
-      //   'salt': AppConstants.randomSalt.toString(),
-      //   'package_name': AppConstants.packageName,
-      //   'method_name': 'save_spinner_points',
-      //   'user_id': userId,
-      //   'ponints': point.toString(),
-      // });
       SaveSpinnerPointsReq req =
           SaveSpinnerPointsReq(userId: userId, points: point);
       String methodBody = jsonEncode(req.toJson());

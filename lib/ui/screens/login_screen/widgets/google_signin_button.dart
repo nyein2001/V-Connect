@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/utils/config.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/utils.dart';
@@ -41,7 +42,6 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
                 ),
               ),
               onPressed: () async {
-                loadingBox(context);
                 setState(() {
                   _isSigningIn = true;
                 });
@@ -72,21 +72,27 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
   }
 
   Future<void> googleSignIn() async {
+    CustomProgressDialog customProgressDialog =
+        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
+    customProgressDialog.show();
     bool isConnected = await networkInfo.isConnected;
     if (isConnected) {
       await authService.signInWithGoogle(context).then((value) async {
-        registerSocialNetwork("${value!.userData!.id}",
-            value.userData!.username!, value.userData!.email!, 'google');
+        registerSocialNetwork(
+            "${value!.userData!.id}",
+            value.userData!.username!,
+            value.userData!.email!,
+            'google',
+            customProgressDialog);
       }).catchError((e) {});
     } else {
       alertBox("Internet connection not available", context);
     }
   }
 
-  void registerSocialNetwork(
-      String id, String sendName, String sendEmail, String type) async {
+  void registerSocialNetwork(String id, String sendName, String sendEmail,
+      String type, CustomProgressDialog dialog) async {
     String deviceId = Preferences.getDeviceId();
-    // loadingBox(context);
     String methodBody = jsonEncode({
       'sign': AppConstants.sign,
       'salt': AppConstants.randomSalt.toString(),
@@ -103,7 +109,7 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
       Uri.parse(AppConstants.baseURL),
       body: {'data': base64Encode(utf8.encode(methodBody))},
     ).then((value) {
-      closeScreen(context);
+      dialog.dismiss();
       return value;
     });
     if (response.statusCode == 200) {

@@ -8,12 +8,12 @@ class Spinner extends StatefulWidget {
   final double wheelSize;
   final Function(void) onFinished;
   const Spinner({
-    Key? key,
+    super.key,
     required this.mySpinController,
     required this.onFinished,
     required this.itemList,
     required this.wheelSize,
-  }) : super(key: key);
+  });
 
   @override
   State<Spinner> createState() => _MySpinnerState();
@@ -38,7 +38,6 @@ class _MySpinnerState extends State<Spinner> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      //alignment: Alignment.center,
       children: [
         Container(
           margin: const EdgeInsets.only(top: 15),
@@ -67,16 +66,10 @@ class _MySpinnerState extends State<Spinner> with TickerProviderStateMixin {
                                   Colors.black,
                                   Colors.white,
                                   Colors.black
-                                ], // Define the colors for the gradient
-                                begin: Alignment
-                                    .topLeft, // Define the starting point of the gradient
-                                end: Alignment
-                                    .bottomRight, // Define the ending point of the gradient
-                                // You can also define more stops and their positions if needed
-                                // stops: [0.2, 0.7],
-                                // tileMode: TileMode.clamp,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
                               ),
-                              //color: Colors.white.withOpacity(0.2),
                               shape: BoxShape.circle),
                           child: Container(
                             decoration: const BoxDecoration(
@@ -101,7 +94,7 @@ class _MySpinnerState extends State<Spinner> with TickerProviderStateMixin {
                           ),
                         ),
                       );
-                    }).toList(),
+                    }),
                     Container(
                       alignment: Alignment.center,
                       width: 25,

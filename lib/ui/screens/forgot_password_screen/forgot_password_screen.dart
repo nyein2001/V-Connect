@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/assets.dart';
 import 'package:ndvpn/core/resources/colors.dart';
 import 'package:ndvpn/core/utils/constant.dart';
@@ -21,18 +22,27 @@ final class ForgotPasswordScreen extends StatefulWidget {
 class ForgotPasswordScreenState extends State<ForgotPasswordScreen>
     with _ForgotPasswordMixin {
   @override
+  void initState() {
+    customProgressDialog =
+        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ForgetPasswordBloc(),
       child: BlocListener<ForgetPasswordBloc, ForgetPasswordState>(
         listener: (context, state) {
           if (state is ForgetPasswordInitial) {
-            customLoadingDialog(context);
+            customProgressDialog.show();
           }
           if (state is ForgetPasswordFail) {
+            customProgressDialog.dismiss();
             alertBox(state.message, context);
           }
           if (state is ForgetPasswordSuccess) {
+            customProgressDialog.dismiss();
             alertBox(state.message, context);
           }
         },

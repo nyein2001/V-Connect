@@ -38,5 +38,10 @@
     "restore_purchase": "Restore Purchase",
     "no_restore_title": "Purchase not found",
     "no_restore_description": "You don't have any purchases in the past",
-    "understand": "Understand"
+    "understand": "Understand",
+    "photos_permission": "Photos Permission",
+    "permission_alert_msg": "Photos permission should be granted to use this feature, would you like to go to app settings to give photos permission?",
+    "cancel": "Cancel",
+    "storage_permission": "Storage Permission",
+    "storage_permission_msg": "Storage permission should be granted to use this feature, would you like to go to app settings to give storage permission?"
 }

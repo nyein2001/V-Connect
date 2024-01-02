@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -13,21 +14,20 @@ class GalleryPermission {
         await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text("Photos Permission"),
-            content: const Text(
-                "Photos permission should be granted to use this feature, would you like to go to app settings to give photos permission?"),
+            title: const Text("photos_permission").tr(),
+            content: const Text("permission_alert_msg").tr(),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
                 child: const Text(
-                  "Cancel",
+                  "cancel",
                   style: TextStyle(
                     color: Color(0xFF2E86C1),
                     fontSize: 16,
                   ),
-                ),
+                ).tr(),
               ),
               TextButton(
                 onPressed: () async {
@@ -35,12 +35,12 @@ class GalleryPermission {
                   Navigator.of(context).pop();
                 },
                 child: const Text(
-                  "Settings",
+                  "settings",
                   style: TextStyle(
                     color: Color(0xFF2E86C1),
                     fontSize: 16,
                   ),
-                ),
+                ).tr(),
               ),
             ],
           ),
@@ -66,21 +66,20 @@ class GalleryPermission {
           await showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text("Storage Permission"),
-              content: const Text(
-                  "Storage permission should be granted to use this feature, would you like to go to app settings to give storage permission?"),
+              title: const Text("storage_permission").tr(),
+              content: const Text("storage_permission_msg").tr(),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                   child: const Text(
-                    "Cancel",
+                    "cancel",
                     style: TextStyle(
                       color: Color(0xFF2E86C1),
                       fontSize: 16,
                     ),
-                  ),
+                  ).tr(),
                 ),
                 TextButton(
                   onPressed: () async {
@@ -88,12 +87,12 @@ class GalleryPermission {
                     Navigator.of(context).pop();
                   },
                   child: const Text(
-                    "Settings",
+                    "settings",
                     style: TextStyle(
                       color: Color(0xFF2E86C1),
                       fontSize: 16,
                     ),
-                  ),
+                  ).tr(),
                 ),
               ],
             ),
@@ -114,21 +113,20 @@ class GalleryPermission {
           await showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text("Photos Permission"),
-              content: const Text(
-                  "Photos permission should be granted to use this feature, would you like to go to app settings to give photos permission?"),
+              title: const Text("photos_permission").tr(),
+              content: const Text("permission_alert_msg").tr(),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                   child: const Text(
-                    "Cancel",
+                    "cancel",
                     style: TextStyle(
                       color: Color(0xFF2E86C1),
                       fontSize: 16,
                     ),
-                  ),
+                  ).tr(),
                 ),
                 TextButton(
                   onPressed: () async {
@@ -136,12 +134,12 @@ class GalleryPermission {
                     Navigator.of(context).pop();
                   },
                   child: const Text(
-                    "Settings",
+                    "settings",
                     style: TextStyle(
                       color: Color(0xFF2E86C1),
                       fontSize: 16,
                     ),
-                  ),
+                  ).tr(),
                 ),
               ],
             ),

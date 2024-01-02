@@ -3,12 +3,12 @@ part of '../forgot_password_screen.dart';
 mixin _ForgotPasswordMixin on State<ForgotPasswordScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
-  String email='';
+  late CustomProgressDialog customProgressDialog;
+  String email = '';
 
   @override
   void dispose() {
     _emailController.dispose();
-
     super.dispose();
   }
 
@@ -39,17 +39,18 @@ mixin _ForgotPasswordMixin on State<ForgotPasswordScreen> {
   }
 
   Future<void> submitButton() async {
-    email=_emailController.text;
+    email = _emailController.text;
     if (!_checkEmail(email) || email.isEmpty) {
       isEmailValid(email);
     } else {
       // forgetPassword(email);
-      BlocProvider.of<ForgetPasswordBloc>(context).add(ForgetPasswordCall(email: email));
+      BlocProvider.of<ForgetPasswordBloc>(context)
+          .add(ForgetPasswordCall(email: email));
     }
   }
 
-  void forgetPassword(String sentEmail) async{
-    customLoadingDialog(context);
+  void forgetPassword(String sentEmail) async {
+    customProgressDialog.show();
     String methodBody = jsonEncode({
       'sign': AppConstants.sign,
       'salt': AppConstants.randomSalt.toString(),
@@ -61,7 +62,10 @@ mixin _ForgotPasswordMixin on State<ForgotPasswordScreen> {
       http.Response response = await http.post(
         Uri.parse(AppConstants.baseURL),
         body: {'data': base64Encode(utf8.encode(methodBody))},
-      );
+      ).then((value) {
+        customProgressDialog.dismiss();
+        return value;
+      });
 
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
@@ -71,7 +75,7 @@ mixin _ForgotPasswordMixin on State<ForgotPasswordScreen> {
           alertBox(message, context);
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
-          String msg=data['msg'];
+          String msg = data['msg'];
           // String success=data['success'];
           alertBox(msg, context);
         }
@@ -81,7 +85,5 @@ mixin _ForgotPasswordMixin on State<ForgotPasswordScreen> {
     } catch (e) {
       alertBox('Server timeout', context);
     }
-    Navigator.of(context).pop();
   }
-
 }

@@ -37,5 +37,10 @@
     "restore_purchase": "Restore Purchase",
     "no_restore_title": "Transaksi tidak ada",
     "no_restore_description": "Kamu belum pernah melakukan transaksi sebelumnya",
-    "understand": "Mengerti"
+    "understand": "Mengerti",
+    "photos_permission": "Photos Permission",
+    "permission_alert_msg": "Photos permission should be granted to use this feature, would you like to go to app settings to give photos permission?",
+    "cancel": "Cancel",
+    "storage_permission": "Storage Permission",
+    "storage_permission_msg": "Storage permission should be granted to use this feature, would you like to go to app settings to give storage permission?"
 }

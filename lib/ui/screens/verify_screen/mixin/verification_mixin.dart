@@ -40,7 +40,7 @@ mixin _VerificationMixin on State<VerificationScreen> {
   void vertification() async {
     pinText = optController.text;
     if (pinText == '' || pinText.isEmpty) {
-      alertBox('Please enter verification code', context);
+      alertBox('Please enter verification code', false, context);
     } else {
       bool isConnected = await networkInfo.isConnected;
       if (isConnected) {
@@ -50,10 +50,10 @@ mixin _VerificationMixin on State<VerificationScreen> {
           customProgressDialog.show();
           register(name, email, password, phoneNO, reference);
         } else {
-          alertBox('Verification code does not match', context);
+          alertBox('Verification code does not match', false, context);
         }
       } else {
-        alertBox("Internet connection not available", context);
+        alertBox("Internet connection not available", false, context);
       }
     }
   }
@@ -85,7 +85,7 @@ mixin _VerificationMixin on State<VerificationScreen> {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       if (jsonResponse.containsKey('status')) {
         String message = jsonResponse['message'];
-        alertBox(message, context);
+        alertBox(message, false, context);
       } else {
         Map<String, dynamic> data = jsonResponse[AppConstants.tag];
         String msg = data['msg'];
@@ -135,7 +135,7 @@ mixin _VerificationMixin on State<VerificationScreen> {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         if (jsonResponse.containsKey(AppConstants.status)) {
           String message = jsonResponse['message'];
-          alertBox(message, context);
+          alertBox(message, false, context);
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           String msg = data['msg'];
@@ -143,7 +143,7 @@ mixin _VerificationMixin on State<VerificationScreen> {
           if (success == '1') {
             Preferences.setOtp(verificationCode: otp);
           }
-          alertBox(msg, context);
+          alertBox(msg, false, context);
         }
       }
     } on Exception catch (_) {}

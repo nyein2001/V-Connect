@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ndvpn/core/models/vpn_server.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/vpn_config.dart';
@@ -43,6 +44,11 @@ class Preferences {
         "server_cache", jsonEncode(value.map((e) => e.toJson()).toList()));
   }
 
+  void saveTrueServers({required List<VpnServer> value}) {
+    shared.setString(
+        "true_server_cache", jsonEncode(value.map((e) => e.toJson()).toList()));
+  }
+
   void setServer(VpnConfig? value) {
     if (value == null) {
       shared.remove("server");
@@ -59,11 +65,37 @@ class Preferences {
     return null;
   }
 
+  void setTrueServer(VpnServer? value) {
+    if (value == null) {
+      shared.remove("trueserver");
+      return;
+    }
+    shared.setString("trueserver", jsonEncode(value.toJson()));
+  }
+
+  VpnServer? getTrueServer() {
+    final server = shared.getString("trueserver");
+    if (server != null) {
+      return VpnServer.fromJson(jsonDecode(server));
+    }
+    return null;
+  }
+
   List<VpnConfig> loadServers() {
     var data = shared.getString("server_cache");
     if (data != null) {
       return (jsonDecode(data) as List)
           .map((e) => VpnConfig.fromJson(e))
+          .toList();
+    }
+    return [];
+  }
+
+  List<VpnServer> loadTrueServers() {
+    var data = shared.getString("true_server_cache");
+    if (data != null) {
+      return (jsonDecode(data) as List)
+          .map((e) => VpnServer.fromJson(e))
           .toList();
     }
     return [];

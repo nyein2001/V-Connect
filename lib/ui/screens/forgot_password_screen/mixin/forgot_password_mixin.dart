@@ -43,7 +43,6 @@ mixin _ForgotPasswordMixin on State<ForgotPasswordScreen> {
     if (!_checkEmail(email) || email.isEmpty) {
       isEmailValid(email);
     } else {
-      // forgetPassword(email);
       BlocProvider.of<ForgetPasswordBloc>(context)
           .add(ForgetPasswordCall(email: email));
     }
@@ -72,18 +71,17 @@ mixin _ForgotPasswordMixin on State<ForgotPasswordScreen> {
 
         if (jsonResponse.containsKey('status')) {
           String message = jsonResponse['message'];
-          alertBox(message, context);
+          alertBox(message, false, context);
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           String msg = data['msg'];
-          // String success=data['success'];
-          alertBox(msg, context);
+          alertBox(msg, false, context);
         }
       } else {
-        alertBox('Failed. Try again.', context);
+        alertBox('Failed. Try again.', false, context);
       }
     } catch (e) {
-      alertBox('Server timeout', context);
+      alertBox('Server timeout', false, context);
     }
   }
 }

@@ -3,6 +3,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 //TODO: Put your endpoint and vpn auth here
 const String endpoint = "https://new-flutter.truetest.xyz/api/"; //Please see the pattern, it must end with /
+const String trueendpoint = "https://vpn.truetest.xyz/includes/api.php?";
 const String vpnUsername = "";
 const String vpnPassword = "";
 const bool certificateVerify = true; //Turn it on if you use certificate

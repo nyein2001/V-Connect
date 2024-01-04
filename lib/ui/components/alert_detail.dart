@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ndvpn/core/resources/colors.dart';
 import 'package:ndvpn/core/utils/utils.dart';
+import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../core/resources/environment.dart';
@@ -10,7 +11,8 @@ import 'custom_divider.dart';
 
 class AlertScreen extends StatelessWidget {
   final String message;
-  const AlertScreen({super.key, required this.message});
+  final bool exit;
+  const AlertScreen({super.key, required this.message, required this.exit});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +58,14 @@ class AlertScreen extends StatelessWidget {
             SizedBox(
               height: 50,
               child: TextButton(
-                onPressed: () => closeScreen(context),
+                onPressed: () {
+                  if (exit) {
+                    closeScreen(context);
+                    startScreen(context, const LoginScreen());
+                  } else {
+                    closeScreen(context);
+                  }
+                },
                 style: TextButton.styleFrom(
                   foregroundColor: primaryColor,
                   backgroundColor: primaryColor.withOpacity(0.1),

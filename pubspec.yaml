@@ -51,6 +51,7 @@ dependencies:
   pin_input_text_field: ^4.5.1
   fluttertoast: ^8.2.4
   connectivity_plus: ^4.0.2
+  share_plus: ^7.2.1
 
   #state management
   flutter_bloc: ^8.1.3

@@ -20,11 +20,11 @@ class MapBackground extends StatelessWidget {
           );
         }
         return FutureBuilder<bool>(
-          future: assetExists("assets/images/maps/${provider.vpnConfig?.flag.toLowerCase()}.png"),
+          future: assetExists("assets/images/maps/${provider.vpnConfig?.flagUrl.toLowerCase()}.png"),
           builder: (context, snapshot2) {
             if (snapshot2.data ?? false) {
               return Image.asset(
-                "assets/images/maps/${provider.vpnConfig?.flag.toLowerCase()}.png",
+                "assets/images/maps/${provider.vpnConfig?.flagUrl.toLowerCase()}.png",
                 height: 150,
                 width: MediaQuery.of(context).size.width,
                 fit: BoxFit.fitWidth,

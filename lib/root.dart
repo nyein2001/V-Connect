@@ -125,9 +125,9 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
           String status = jsonResponse['status'];
           String message = jsonResponse['message'];
           if (status == "-2") {
-            alertBox(message, context);
+            alertBox(message, false, context);
           } else {
-            alertBox(message, context);
+            alertBox(message, false, context);
           }
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];

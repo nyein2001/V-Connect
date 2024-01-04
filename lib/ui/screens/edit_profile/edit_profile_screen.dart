@@ -16,7 +16,6 @@ import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/gallery_permission.dart';
 import 'package:ndvpn/core/utils/network_available.dart';
 import 'package:ndvpn/core/utils/utils.dart';
-import 'package:ndvpn/ui/components/build_snackbar.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/register_screen/register_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -55,7 +54,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
         getProfile();
       }
     } else {
-      alertBox("Internet connection not available", context);
+      alertBox("Internet connection not available", false, context);
     }
   }
 
@@ -83,9 +82,9 @@ class EditProfileScreenState extends State<EditProfileScreen>
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, context);
+            alertBox(message, false, context);
           } else {
-            alertBox(message, context);
+            alertBox(message, false, context);
           }
         } else {
           Map<String, dynamic> data = jsonData[AppConstants.tag];
@@ -371,7 +370,6 @@ class EditProfileScreenState extends State<EditProfileScreen>
                           autofillHints: const [AutofillHints.telephoneNumber],
                           keyboardType: TextInputType.phone,
                           textInputAction: TextInputAction.next,
-                          // validator: isPhoneValid,
                         ),
                         RegisterTextFormFieldWidget(
                           hintText: 'Youtube',
@@ -380,7 +378,6 @@ class EditProfileScreenState extends State<EditProfileScreen>
                           autofillHints: const [AutofillHints.url],
                           textCapitalization: TextCapitalization.none,
                           textInputAction: TextInputAction.next,
-                          // validator: isEmailValid,
                         ),
                         RegisterTextFormFieldWidget(
                           hintText: 'Instagram',
@@ -389,7 +386,6 @@ class EditProfileScreenState extends State<EditProfileScreen>
                           autofillHints: const [AutofillHints.url],
                           textCapitalization: TextCapitalization.none,
                           textInputAction: TextInputAction.next,
-                          // validator: isEmailValid,
                         ),
                       ].map((e) {
                         return Padding(
@@ -422,7 +418,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
                                 passwordController.text ||
                             passwordController.text.trim().isEmpty ||
                             confirmController.text.trim().isEmpty) {
-                          alertBox("Password and confirm password do not match",
+                          alertBox("Password and confirm password do not match", false,
                               context);
                         } else if (phoneController.text.trim().isEmpty) {
                           FocusScope.of(context).requestFocus(FocusNode());
@@ -501,15 +497,14 @@ class EditProfileScreenState extends State<EditProfileScreen>
             int status = jsonResponse['status'];
             String message = jsonResponse['message'];
             if (status == -2) {
-              alertBox(message, context);
+              alertBox(message, false, context);
             } else {
-              alertBox(message, context);
+              alertBox(message, false, context);
             }
           } else {
             Map<String, dynamic> data = jsonResponse[AppConstants.tag];
             String msg = data['msg'];
-            alertBox(msg, context);
-            // replaceScreen(context, const MainScreen());
+            alertBox(msg, false, context);
           }
         }
       } else {
@@ -527,73 +522,20 @@ class EditProfileScreenState extends State<EditProfileScreen>
             int status = jsonResponse['status'];
             String message = jsonResponse['message'];
             if (status == -2) {
-              alertBox(message, context);
+              alertBox(message, false, context);
             } else {
-              alertBox(message, context);
+              alertBox(message, false, context);
             }
           } else {
             Map<String, dynamic> data = jsonResponse[AppConstants.tag];
             String msg = data['msg'];
-            alertBox(msg, context);
-            // replaceScreen(context, const MainScreen());
+            alertBox(msg,false, context);
           }
         }
       }
-      // var request = http.MultipartRequest(
-      //   'POST',
-      //   Uri.parse(AppConstants.baseURL),
-      // );
-
-      // request.fields['data'] = base64Encode(utf8.encode(methodBody));
-      // request.headers.addAll(headers);
-
-      // // http.Response response = await http.post(
-      // //   Uri.parse(AppConstants.baseURL),
-      // //   body: {'data': base64Encode(utf8.encode(methodBody))},
-      // // );
-
-      // if (image != null) {
-      //   try {
-      //     var stream = http.ByteStream(image!.openRead());
-      //     var length = await image!.length();
-
-      //     var multipartFile = http.MultipartFile(
-      //       'profile_image',
-      //       stream,
-      //       length,
-      //       filename: image!.path.split('/').last,
-      //     );
-
-      //     request.files.add(multipartFile);
-      //   } catch (e) {
-      //     print('Error reading file: $e');
-      //     // Handle the error as needed
-      //   }
-      // }
-
-      // var response = await request.send();
-
-      // if (response.statusCode == 200) {
-      //   var jsonResponse = jsonDecode(await response.stream.bytesToString());
-
-      //   if (jsonResponse.containsKey(AppConstants.status)) {
-      //     int status = jsonResponse['status'];
-      //     String message = jsonResponse['message'];
-      //     if (status == -2) {
-      //       alertBox(message, context);
-      //     } else {
-      //       alertBox(message, context);
-      //     }
-      //   } else {
-      //     Map<String, dynamic> data = jsonResponse[AppConstants.tag];
-      //     String msg = data['msg'];
-      //     alertBox(msg, context);
-      //     replaceScreen(context, const MainScreen());
-      //   }
-      // }
     } catch (e) {
       print('Failed try again $e');
-      alertBox('Failed try again ', context);
+      alertBox('Failed try again ', false, context);
     }
   }
 
@@ -614,22 +556,6 @@ class EditProfileScreenState extends State<EditProfileScreen>
           if (imageTempoary != null) {
             image = imageTempoary;
             isnetworkimage = false;
-          }
-
-          if (image != null) {
-            // showDialog(
-            //   context: context,
-            //   barrierDismissible: false,
-            //   builder: (BuildContext context) {
-            //     return const CircularProgressIndicator();
-            //   },
-            // );
-            // PhotoUploadReq obj =
-            //     PhotoUploadReq(file: image ?? File(""), url: '');
-            // uploadPhoto(obj);
-          } else {
-            var snackBar = buildSnackBar("Please select a photo.", false);
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
         });
       } else {
@@ -652,22 +578,4 @@ class EditProfileScreenState extends State<EditProfileScreen>
     if (croppedImage == null) return null;
     return File(croppedImage.path);
   }
-
-  // Future<bool> uploadPhoto(PhotoUploadReq obj) async {
-  //   final imageBytes = await obj.file.readAsBytes();
-
-  //   final response = await http.put(
-  //     Uri.parse(AppConstants.baseURL),
-  //     headers: {
-  //       'Content-Type': 'image/jpeg',
-  //     },
-  //     body: imageBytes,
-  //   );
-
-  //   if (response.statusCode == 200) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
 }

@@ -40,7 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         getProfile();
       }
     } else {
-      alertBox("Internet connection not available", context);
+      alertBox("Internet connection not available", false, context);
     }
   }
 
@@ -63,9 +63,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, context);
+            alertBox(message, false, context);
           } else {
-            alertBox(message, context);
+            alertBox(message, false, context);
           }
         } else {
           Map<String, dynamic> data = jsonData[AppConstants.tag];

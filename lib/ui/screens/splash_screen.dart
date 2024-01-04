@@ -6,8 +6,6 @@ import '../../core/resources/colors.dart';
 import '../../core/resources/environment.dart';
 import '../components/custom_divider.dart';
 
-///Splash screen to show on root!
-///Use this if you got something to do and make some delay or loading when app is open
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 

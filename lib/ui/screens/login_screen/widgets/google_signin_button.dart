@@ -86,7 +86,7 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
             customProgressDialog);
       }).catchError((e) {});
     } else {
-      alertBox("Internet connection not available", context);
+      alertBox("Internet connection not available", false, context);
     }
   }
 
@@ -116,7 +116,7 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       if (jsonResponse.containsKey('status')) {
         String message = jsonResponse['message'];
-        alertBox(message, context);
+        alertBox(message, false, context);
       } else {
         Map<String, dynamic> data = jsonResponse[AppConstants.tag];
         String msg = data['msg'];

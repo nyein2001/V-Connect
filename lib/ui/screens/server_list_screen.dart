@@ -2,14 +2,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/https/servers_http.dart';
-import 'package:ndvpn/core/models/vpn_config.dart';
+import 'package:ndvpn/core/models/vpn_server.dart';
 import 'package:ndvpn/core/resources/environment.dart';
 import 'package:ndvpn/core/utils/preferences.dart';
 import 'package:ndvpn/ui/components/server_item.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
-
-/// Server list screen
 class ServerListScreen extends StatefulWidget {
   const ServerListScreen({super.key});
 
@@ -20,16 +19,21 @@ class ServerListScreen extends StatefulWidget {
 class _ServerListScreenState extends State<ServerListScreen> {
   final List<RefreshController> _refreshControllers = List.generate(
       2, (index) => RefreshController(initialRefresh: !cacheServerList));
-  List<VpnConfig> _servers = [];
+  List<VpnServer> _servers = [];
+  late CustomProgressDialog customProgressDialog;
 
   @override
   void initState() {
+    customProgressDialog =
+        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
     ServicesBinding.instance.addPostFrameCallback((timeStamp) {
+      customProgressDialog.show();
       if (cacheServerList) {
         Preferences.instance().then((value) {
-          if (value.loadServers().isNotEmpty && mounted) {
+          if (value.loadTrueServers().isNotEmpty && mounted) {
+            customProgressDialog.dismiss();
             setState(() {
-              _servers = value.loadServers();
+              _servers = value.loadTrueServers();
             });
           } else {
             loadData();
@@ -69,7 +73,8 @@ class _ServerListScreenState extends State<ServerListScreen> {
           ],
           body: ExtendedTabBarView(
             children: List.generate(2, (index) {
-              var data = _servers.where((e) => e.status == index).toList();
+              var data =
+                  _servers.where((e) => int.parse(e.isFree) == index).toList();
               return SmartRefresher(
                 onRefresh: loadData,
                 controller: _refreshControllers[index],
@@ -109,15 +114,15 @@ class _ServerListScreenState extends State<ServerListScreen> {
   }
 
   void loadData() async {
-    List<VpnConfig> resp =
-        await ServersHttp(context).allServers().then((value) {
+    List<VpnServer> resp =
+        await ServersHttp(context).allTrueServers().then((value) {
       for (var element in _refreshControllers) {
         element.refreshCompleted();
         element.loadComplete();
       }
       if (cacheServerList) {
         Preferences.instance().then((pref) {
-          pref.saveServers(value: value);
+          pref.saveTrueServers(value: value);
         });
       }
       return value;
@@ -125,9 +130,10 @@ class _ServerListScreenState extends State<ServerListScreen> {
       for (var element in _refreshControllers) {
         element.refreshFailed();
       }
-      return <VpnConfig>[];
+      return <VpnServer>[];
     });
     if (mounted) {
+      customProgressDialog.dismiss();
       setState(() {
         _servers = resp;
       });

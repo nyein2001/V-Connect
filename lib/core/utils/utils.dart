@@ -63,9 +63,12 @@ class AssetsPath {
   static const String imagepath = "assets/images/";
 }
 
-void alertBox(String message, BuildContext context) {
+void alertBox(String message, bool exit, BuildContext context) {
   DialogBackground(
-    dialog: AlertScreen(message: message),
+    dialog: AlertScreen(
+      message: message,
+      exit: exit,
+    ),
     blur: 10,
     dismissable: false,
   ).show(context);

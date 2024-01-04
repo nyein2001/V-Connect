@@ -26,7 +26,6 @@ class LuckyWheelController {
       {required int luckyIndex,
       int totalSpin = 10,
       int baseSpinDuration = 100}) async {
-    //getWhereToStop
     int itemsLength = itemList.length;
     int factor = luckyIndex % itemsLength;
     if (factor == 0) factor = itemsLength;

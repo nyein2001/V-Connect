@@ -52,16 +52,16 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
 
         if (jsonResponse.containsKey('status')) {
           String message = jsonResponse['message'];
-          alertBox(message, context);
+          alertBox(message, false, context);
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           status = data['otp_status'];
         }
       } else {
-        alertBox('Failed. Try again.', context);
+        alertBox('Failed. Try again.', false, context);
       }
     } catch (e) {
-      alertBox('Server timeout', context);
+      alertBox('Server timeout', false, context);
     }
   }
 
@@ -186,12 +186,10 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
       if (isConnected) {
         if (status == "true") {
           customProgressDialog.show();
-          // verificationCall(email, generateOTP().toString());
           otp = generateOTP().toString();
           BlocProvider.of<RegisterBloc>(context)
               .add(VerificationCall(email: email, otp: otp));
         } else {
-          // addToRegistation(name, email, password, phoneNo, reference);
           BlocProvider.of<RegisterBloc>(context).add(RegistationCall(
               deviceid: deviceid,
               name: name,
@@ -201,7 +199,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
               reference: reference));
         }
       } else {
-        alertBox("Internet connection not available", context);
+        alertBox("Internet connection not available", false, context);
       }
     }
   }
@@ -228,7 +226,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         if (jsonResponse.containsKey('status')) {
           String message = jsonResponse['message'];
-          alertBox(message, context);
+          alertBox(message, false, context);
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           String msg = data['msg'];
@@ -252,7 +250,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
                   reference: reference,
                 ));
           } else {
-            alertBox(msg, context);
+            alertBox(msg, false, context);
           }
         }
       }
@@ -287,7 +285,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       if (jsonResponse.containsKey('status')) {
         String message = jsonResponse['message'];
-        alertBox(message, context);
+        alertBox(message, false, context);
       } else {
         Map<String, dynamic> data = jsonResponse[AppConstants.tag];
         String msg = data['msg'];
@@ -323,7 +321,6 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
     });
 
     String jsonString = jsonEncode(data);
-    // Encode the string to base64
     String base64String = base64Encode(utf8.encode(jsonString));
 
     return ({'data': base64String});

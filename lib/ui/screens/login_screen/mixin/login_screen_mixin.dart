@@ -55,7 +55,7 @@ mixin _LoginScreenMixin on State<LoginScreen> {
         loginFun(_emailController.text, _passwordController.text, isCheck);
       }
     } else {
-      alertBox("Internet connection not available", context);
+      alertBox("Internet connection not available", false, context);
     }
   }
 
@@ -77,7 +77,7 @@ mixin _LoginScreenMixin on State<LoginScreen> {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         if (jsonResponse.containsKey('status')) {
           String message = jsonResponse['message'];
-          alertBox(message, context);
+          alertBox(message, false, context);
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           String msg = data['msg'];
@@ -126,13 +126,13 @@ mixin _LoginScreenMixin on State<LoginScreen> {
             }
             replaceScreen(context, const MainScreen());
           } else {
-            alertBox(msg, context);
+            alertBox(msg, false, context);
           }
         }
       }
     } catch (e) {
       print("Failed try again $e");
-      alertBox('Failed try again ', context);
+      alertBox('Failed try again ', false, context);
     }
   }
 }

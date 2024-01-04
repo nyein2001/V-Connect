@@ -1,5 +1,6 @@
 import 'package:ndvpn/core/https/http_connection.dart';
 import 'package:ndvpn/core/models/vpn_config.dart';
+import 'package:ndvpn/core/models/vpn_server.dart';
 
 import '../models/ip_detail.dart';
 
@@ -14,6 +15,13 @@ class ServersHttp extends HttpConnection {
       return resp.data!.map<VpnConfig>((e) => VpnConfig.fromJson(e)).toList();
     }
     return [];
+  }
+
+  Future<List<VpnServer>> allTrueServers() async {
+    List<VpnServer> vpnServerList = [];
+    vpnServerList.addAll(await fetchData(key: "frs"));
+    vpnServerList.addAll(await fetchData(key: "prs"));
+    return vpnServerList;
   }
 
   ///Get all free servers from backend

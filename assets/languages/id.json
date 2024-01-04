@@ -42,5 +42,15 @@
     "permission_alert_msg": "Photos permission should be granted to use this feature, would you like to go to app settings to give photos permission?",
     "cancel": "Cancel",
     "storage_permission": "Storage Permission",
-    "storage_permission_msg": "Storage permission should be granted to use this feature, would you like to go to app settings to give storage permission?"
+    "storage_permission_msg": "Storage permission should be granted to use this feature, would you like to go to app settings to give storage permission?",
+    "home": "Home",
+    "reward": "Reward",
+    "reference_code": "Reference Code",
+    "redeem": "Redeem",
+    "contact_us": "Contact Us",
+    "faq": "Faq",
+    "earn_point": "Earn Point",
+    "share_app": "Share App",
+    "rate_app": "Rate App",
+    "more_app": "More App"
 }

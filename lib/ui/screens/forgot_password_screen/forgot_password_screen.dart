@@ -39,11 +39,11 @@ class ForgotPasswordScreenState extends State<ForgotPasswordScreen>
           }
           if (state is ForgetPasswordFail) {
             customProgressDialog.dismiss();
-            alertBox(state.message, context);
+            alertBox(state.message, false, context);
           }
           if (state is ForgetPasswordSuccess) {
             customProgressDialog.dismiss();
-            alertBox(state.message, context);
+            alertBox(state.message, false, context);
           }
         },
         child: Scaffold(

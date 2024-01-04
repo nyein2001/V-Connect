@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
-
+import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:ndvpn/core/models/vpn_server.dart';
 import '../models/model.dart';
 import '../resources/environment.dart';
 
@@ -20,10 +21,15 @@ abstract class HttpConnection {
 
   HttpConnection(this.context);
 
-  Future get<T>(String url, {Map<String, String>? params, dynamic headers, bool pure = false, bool printDebug = false}) async {
+  Future get<T>(String url,
+      {Map<String, String>? params,
+      dynamic headers,
+      bool pure = false,
+      bool printDebug = false}) async {
     try {
       _printRequest("GET", url, body: params, showDebug: printDebug);
-      var resp = await _dio.get(url + paramsToString(params), options: Options(headers: headers));
+      var resp = await _dio.get(url + paramsToString(params),
+          options: Options(headers: headers));
       _printResponse(resp, printDebug);
       if (pure) return resp.data;
       if (resp.data != null) {
@@ -34,10 +40,31 @@ abstract class HttpConnection {
     }
   }
 
-  Future post<T>(String url, {Map<String, String>? params, dynamic body, dynamic headers, bool pure = false, bool printDebug = false}) async {
+  Future<List<VpnServer>> fetchData({required String key}) async {
+    final response = await http.get(Uri.parse('$trueendpoint$key'));
+
+    try {
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonData = json.decode(response.body);
+        return jsonData.map((data) => VpnServer.fromJson(data)).toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future post<T>(String url,
+      {Map<String, String>? params,
+      dynamic body,
+      dynamic headers,
+      bool pure = false,
+      bool printDebug = false}) async {
     try {
       _printRequest("POST", url, body: params, showDebug: printDebug);
-      var resp = await _dio.post(url + paramsToString(params), data: body, options: Options(headers: headers));
+      var resp = await _dio.post(url + paramsToString(params),
+          data: body, options: Options(headers: headers));
       _printResponse(resp, printDebug);
       if (pure) return resp.data;
       if (resp.data != null) {
@@ -48,10 +75,16 @@ abstract class HttpConnection {
     }
   }
 
-  Future put<T>(String url, {Map<String, String>? params, dynamic body, dynamic headers, bool pure = false, bool printDebug = false}) async {
+  Future put<T>(String url,
+      {Map<String, String>? params,
+      dynamic body,
+      dynamic headers,
+      bool pure = false,
+      bool printDebug = false}) async {
     try {
       _printRequest("PUT", url, body: params, showDebug: printDebug);
-      var resp = await _dio.put(url + paramsToString(params), data: body, options: Options(headers: headers));
+      var resp = await _dio.put(url + paramsToString(params),
+          data: body, options: Options(headers: headers));
       _printResponse(resp, printDebug);
       if (pure) return resp.data;
       if (resp.data != null) {
@@ -62,10 +95,16 @@ abstract class HttpConnection {
     }
   }
 
-  Future delete<T>(String url, {Map<String, String>? params, dynamic body, dynamic headers, bool pure = false, bool printDebug = false}) async {
+  Future delete<T>(String url,
+      {Map<String, String>? params,
+      dynamic body,
+      dynamic headers,
+      bool pure = false,
+      bool printDebug = false}) async {
     try {
       _printRequest("DELETE", url, body: params, showDebug: printDebug);
-      var resp = await _dio.delete(url + paramsToString(params), data: body, options: Options(headers: headers));
+      var resp = await _dio.delete(url + paramsToString(params),
+          data: body, options: Options(headers: headers));
       _printResponse(resp, printDebug);
       if (pure) return resp.data;
       if (resp.data != null) {
@@ -85,7 +124,8 @@ abstract class HttpConnection {
     return output.substring(0, output.length - 1);
   }
 
-  void _printRequest(String type, String url, {Map<String, dynamic>? body, bool showDebug = false}) {
+  void _printRequest(String type, String url,
+      {Map<String, dynamic>? body, bool showDebug = false}) {
     if (kDebugMode && showDebug) {
       log("${type.toUpperCase()} REQUEST : $url \n");
       if (body != null) {

@@ -63,7 +63,7 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
         init();
       }
     } else {
-      alertBox("Internet connection not available", context);
+      alertBox("Internet connection not available", false, context);
     }
   }
 
@@ -86,9 +86,9 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, context);
+            alertBox(message, false, context);
           } else {
-            alertBox(message, context);
+            alertBox(message, false, context);
           }
         } else {
           dailySpinnerLimit = jsonData["daily_spinner_limit"];
@@ -278,9 +278,7 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
       startLuckyRound();
       Future.delayed(const Duration(seconds: 5), () async {
         if (value != null) {
-          value.show(onUserEarnedReward: (ad, reward) {
-            // _itemClick();
-          });
+          value.show(onUserEarnedReward: (ad, reward) {});
         } else {
           if (unlockProServerWithRewardAdsFail) {
             await NAlertDialog(
@@ -293,7 +291,6 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
                     onPressed: () => Navigator.pop(context))
               ],
             ).show(context);
-            // _itemClick();
           } else {
             NAlertDialog(
               blur: 10,
@@ -352,9 +349,9 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, context);
+            alertBox(message, false, context);
           } else {
-            alertBox(message, context);
+            alertBox(message, false, context);
           }
         } else {
           final List<dynamic> jsonArray = jsonResponse[AppConstants.tag];
@@ -367,16 +364,16 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
             remainSpin = object['remain_spin'];
 
             Future.delayed(const Duration(seconds: 3), () {
-              alertBox("Congratulations, you have won $msg Point!", context);
+              alertBox("Congratulations, you have won $msg Point!", false, context);
               setState(() {});
             });
           }
         }
       } else {
-        alertBox('Something Wrong!. Please try again.', context);
+        alertBox('Something Wrong!. Please try again.', false, context);
       }
     } catch (e) {
-      alertBox('Something Wrong!. Please try again.', context);
+      alertBox('Something Wrong!. Please try again.', false, context);
     }
   }
 }

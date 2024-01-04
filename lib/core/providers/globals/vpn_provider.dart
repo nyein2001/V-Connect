@@ -1,9 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:ndialog/ndialog.dart';
-import 'package:ndvpn/core/https/servers_http.dart';
-import 'package:ndvpn/core/models/vpn_config.dart';
+import 'package:ndvpn/core/models/vpn_server.dart';
 import 'package:ndvpn/core/utils/preferences.dart';
 import 'package:openvpn_flutter/openvpn_flutter.dart';
 import 'package:provider/provider.dart';
@@ -13,13 +11,13 @@ import '../../resources/environment.dart';
 class VpnProvider extends ChangeNotifier {
   VPNStage? vpnStage;
   VpnStatus? vpnStatus;
-  VpnConfig? _vpnConfig;
+  VpnServer? _vpnConfig;
 
-  VpnConfig? get vpnConfig => _vpnConfig;
-  set vpnConfig(VpnConfig? value) {
+  VpnServer? get vpnConfig => _vpnConfig;
+  set vpnConfig(VpnServer? value) {
     _vpnConfig = value;
     Preferences.instance().then((prefs) {
-      prefs.setServer(value);
+      prefs.setTrueServer(value);
     });
     notifyListeners();
   }
@@ -32,7 +30,9 @@ class VpnProvider extends ChangeNotifier {
 
   ///Initialize VPN engine and load last server
   void initialize(BuildContext context) {
-    engine = OpenVPN(onVpnStageChanged: onVpnStageChanged, onVpnStatusChanged: onVpnStatusChanged)
+    engine = OpenVPN(
+        onVpnStageChanged: onVpnStageChanged,
+        onVpnStatusChanged: onVpnStatusChanged)
       ..initialize(
         lastStatus: onVpnStatusChanged,
         lastStage: (stage) => onVpnStageChanged(stage, stage.name),
@@ -42,7 +42,8 @@ class VpnProvider extends ChangeNotifier {
       );
 
     Preferences.instance().then((value) async {
-      vpnConfig = value.getServer() ?? await ServersHttp(context).random();
+      vpnConfig =
+          value.getTrueServer(); //?? await ServersHttp(context).random();
       notifyListeners();
     });
   }
@@ -66,33 +67,32 @@ class VpnProvider extends ChangeNotifier {
 
   ///Connect to VPN server
   void connect() async {
-    log("${vpnConfig?.config}");
+    // log("${vpnConfig?.ovpnConfiguration}");
+    log("username: ${vpnConfig?.vpnUserName}");
+    log("password: ${vpnConfig?.vpnPassword}");
     String? config;
     try {
-      config = await OpenVPN.filteredConfig(vpnConfig?.config);
+      config = await OpenVPN.filteredConfig(vpnConfig?.ovpnConfiguration);
     } catch (e) {
-      config = vpnConfig?.config;
+      config = vpnConfig?.ovpnConfiguration;
     }
     if (config == null) return;
+    log('$config');
     engine.connect(
       config,
-      vpnConfig!.name,
+      vpnConfig!.serverName,
       certIsRequired: certificateVerify,
-      username: vpnConfig!.username ?? vpnUsername,
-      password: vpnConfig!.password ?? vpnPassword,
+      username: vpnConfig!.vpnUserName,
+      password: vpnConfig!.vpnPassword,
     );
   }
 
   ///Select server from list
-  Future<VpnConfig?> selectServer(BuildContext context, VpnConfig config) async {
-    return ServersHttp(context).serverDetail(config.slug).showCustomProgressDialog(context).then((value) {
-      if (value != null) {
-        vpnConfig = value;
-        notifyListeners();
-        return value;
-      }
-      return null;
-    });
+  Future<VpnServer?> selectServer(
+      BuildContext context, VpnServer config) async {
+    vpnConfig = config;
+    notifyListeners();
+    return vpnConfig;
   }
 
   ///Disconnect from VPN server if connected

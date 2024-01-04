@@ -15,13 +15,22 @@ import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/custom_divider.dart';
 import 'package:ndvpn/ui/components/about_detail.dart';
 import 'package:ndvpn/ui/components/logout_alert.dart';
+import 'package:ndvpn/ui/screens/contact_us_screen.dart';
+import 'package:ndvpn/ui/screens/earn_point_screen.dart';
+import 'package:ndvpn/ui/screens/faq_screen.dart';
 import 'package:ndvpn/ui/screens/html_screen.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/profile_screen.dart';
+import 'package:ndvpn/ui/screens/reference_code_screen.dart';
+import 'package:ndvpn/ui/screens/reward_screen.dart';
 import 'package:ndvpn/ui/screens/server_list_screen.dart';
+import 'package:ndvpn/ui/screens/setting_screen.dart';
 import 'package:ndvpn/ui/screens/spin_wheel/lucky_wheel_screen.dart';
 import 'package:ndvpn/ui/screens/subscription_screen.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import '../../core/providers/globals/theme_provider.dart';
 import '../components/connection_button.dart';
@@ -50,30 +59,72 @@ class _MainScreenState extends State<MainScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Image.asset('assets/icons/logo_android.png',
+                  width: 75, height: 75),
+              const ColumnDivider(space: 20),
               Text("General", style: Theme.of(context).textTheme.bodySmall)
                   .tr(),
               const Divider(),
               ListTile(
+                  leading: const Icon(Icons.home),
+                  title: const Text('home').tr(),
+                  onTap: () {
+                    _controller.hideDrawer();
+                  }),
+              ListTile(
                   leading: const Icon(Icons.person),
                   title: const Text('Profile').tr(),
                   onTap: () {
+                    _controller.hideDrawer();
                     if (Preferences.isLogin()) {
                       startScreen(context, const ProfileScreen());
                     } else {
-                      alertBox("You have not login", context);
+                      alertBox("You have not login", true, context);
                     }
+                  }),
+              ListTile(
+                  leading: const Icon(Icons.emoji_events),
+                  title: const Text('reward').tr(),
+                  onTap: () {
                     _controller.hideDrawer();
+                    if (Preferences.isLogin()) {
+                      startScreen(context, const RewardScreen());
+                    } else {
+                      alertBox("You have not login", true, context);
+                    }
+                  }),
+              ListTile(
+                  leading: const Icon(Icons.link),
+                  title: const Text('reference_code').tr(),
+                  onTap: () {
+                    _controller.hideDrawer();
+                    if (Preferences.isLogin()) {
+                      startScreen(context, const ReferenceCodeScreen());
+                    } else {
+                      alertBox("You have not login", true, context);
+                    }
                   }),
               ListTile(
                   leading: const Icon(Icons.casino),
                   title: const Text('Lucky Wheel').tr(),
                   onTap: () {
+                    _controller.hideDrawer();
                     if (Preferences.isLogin()) {
                       startScreen(context, const SpinningWheelPage());
                     } else {
-                      alertBox("You have not login", context);
+                      alertBox("You have not login", true, context);
                     }
+                  }),
+              ListTile(
+                  leading: const Icon(Icons.card_giftcard),
+                  title: const Text('redeem').tr(),
+                  onTap: () {
                     _controller.hideDrawer();
+                    if (Preferences.isLogin()) {
+                      startScreen(context, const RewardScreen());
+                    } else {
+                      alertBox("You have not login", true, context);
+                    }
                   }),
               const ColumnDivider(space: 20),
               Text("settings", style: Theme.of(context).textTheme.bodySmall)
@@ -90,15 +141,64 @@ class _MainScreenState extends State<MainScreen> {
                   onTap: () =>
                       ThemeProvider.read(context).changeLanguage(context)),
               ListTile(
+                  leading: const Icon(Icons.settings),
+                  title: const Text('settings').tr(),
+                  onTap: () {
+                    _controller.hideDrawer();
+                    startScreen(context, const SettingScreen());
+                  }),
+              ListTile(
                   leading: const Icon(Icons.login),
                   title: const Text("Login or Logout").tr(),
                   onTap: () {
+                    _controller.hideDrawer();
                     if (Preferences.isLogin()) {
                       logout();
                     } else {
                       startScreen(context, const LoginScreen());
                     }
+                  }),
+              ListTile(
+                  leading: const Icon(Icons.mail),
+                  title: const Text('contact_us').tr(),
+                  onTap: () {
                     _controller.hideDrawer();
+                    startScreen(context, const ContactUsScreen());
+                  }),
+              ListTile(
+                  leading: const Icon(Icons.help),
+                  title: const Text('faq').tr(),
+                  onTap: () {
+                    _controller.hideDrawer();
+                    startScreen(context, const FaqScreen());
+                  }),
+              ListTile(
+                  leading: const Icon(Icons.score),
+                  title: const Text('earn_point').tr(),
+                  onTap: () {
+                    _controller.hideDrawer();
+                    startScreen(context, const EarnPointScreen());
+                  }),
+              ListTile(
+                  leading: const Icon(Icons.share),
+                  title: const Text('share_app').tr(),
+                  onTap: () {
+                    _controller.hideDrawer();
+                    shareApp();
+                  }),
+              ListTile(
+                  leading: const Icon(Icons.thumb_up),
+                  title: const Text('rate_app').tr(),
+                  onTap: () {
+                    _controller.hideDrawer();
+                    rateUs();
+                  }),
+              ListTile(
+                  leading: const Icon(Icons.apps),
+                  title: const Text('more_app').tr(),
+                  onTap: () {
+                    _controller.hideDrawer();
+                    rateUs();
                   }),
               ListTile(
                   leading: const Icon(Icons.update),
@@ -201,18 +301,18 @@ class _MainScreenState extends State<MainScreen> {
                         SizedBox(
                           width: 32,
                           height: 32,
-                          child: config.flag.contains("http")
+                          child: config.flagUrl.contains("http")
                               ? CustomImage(
-                                  url: config.flag,
+                                  url: config.flagUrl,
                                   fit: BoxFit.contain,
                                   borderRadius: BorderRadius.circular(5),
                                 )
                               : Image.asset(
-                                  "icons/flags/png/${config.flag}.png",
+                                  "icons/flags/png/${config.flagUrl}.png",
                                   package: "country_icons"),
                         ),
                       const SizedBox(width: 10),
-                      Text(config?.name ?? 'select_server'.tr(),
+                      Text(config?.serverName ?? 'select_server'.tr(),
                           style: Theme.of(context).textTheme.bodyLarge),
                       const Spacer(),
                       const Icon(Icons.chevron_right),
@@ -461,5 +561,45 @@ class _MainScreenState extends State<MainScreen> {
   ///Open the about dialog when user click on the about button
   void _aboutClick(BuildContext context) {
     const DialogBackground(dialog: AboutScreen(), blur: 10).show(context);
+  }
+
+  Future<void> shareApp() async {
+    try {
+      String packageName = (await PackageInfo.fromPlatform()).packageName;
+      String message =
+          "\n I recommend you this app \n\n${Platform.isAndroid ? "https://play.google.com/store/apps/details?id=$packageName" : "https://apps.apple.com/app/idYOUR_APP_ID"}";
+
+      if (Platform.isAndroid) {
+        await Share.share(
+          message,
+          subject: appName,
+        );
+      } else if (Platform.isIOS) {
+        launchUrlString("https://apps.apple.com/app/id$iosAppID");
+      }
+    } catch (e) {
+      // Handle exceptions as needed
+    }
+  }
+
+  Future<void> rateUs() async {
+    final String packageName = (await PackageInfo.fromPlatform()).packageName;
+
+    final Uri uri = Platform.isAndroid
+        ? Uri.parse('market://details?id=$packageName')
+        : Uri.parse('https://apps.apple.com/app/$iosAppID');
+
+    try {
+      await launchUrl(
+        uri,
+      );
+    } catch (e) {
+      if (Platform.isAndroid) {
+        await launch(
+            'https://play.google.com/store/apps/details?id=$packageName');
+      } else if (Platform.isIOS) {
+        launchUrlString("https://apps.apple.com/app/id$iosAppID");
+      }
+    }
   }
 }

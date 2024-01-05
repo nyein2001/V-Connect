@@ -65,9 +65,7 @@ class _VerificationScreenState extends State<VerificationScreen>
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleLarge
-                                    ?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white)),
+                                    ?.copyWith(fontWeight: FontWeight.w600)),
                             SizedBox(
                               height: MediaQuery.of(context).size.height / 10,
                             ),

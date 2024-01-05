@@ -21,13 +21,15 @@ class ConnectionButton extends StatefulWidget {
   State<ConnectionButton> createState() => _ConnectionButtonState();
 }
 
-class _ConnectionButtonState extends State<ConnectionButton> with SingleTickerProviderStateMixin {
+class _ConnectionButtonState extends State<ConnectionButton>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   InterstitialAd? interstitialAd;
   Timer? interstitialTimeout;
   @override
   void initState() {
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1000));
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       loadInterstitial();
     });
@@ -46,8 +48,8 @@ class _ConnectionButtonState extends State<ConnectionButton> with SingleTickerPr
       padding: EdgeInsets.zero,
       onPressed: () => _connectButtonClick(context),
       child: SizedBox(
-        height: 150,
-        width: 150,
+        height: 160,
+        width: 160,
         child: Consumer<VpnProvider>(
           builder: (context, value, child) {
             switch (value.vpnStage ?? VPNStage.disconnected) {
@@ -87,15 +89,21 @@ class _ConnectionButtonState extends State<ConnectionButton> with SingleTickerPr
       padding: const EdgeInsets.all(10),
       child: Container(
         alignment: Alignment.center,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).scaffoldBackgroundColor),
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Theme.of(context).scaffoldBackgroundColor),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Icon(Icons.power_settings_new_rounded, size: 70, color: Theme.of(context).colorScheme.primary),
+            Icon(Icons.power_settings_new_rounded,
+                size: 70, color: Theme.of(context).colorScheme.primary),
             Text(
               "CONNECTED",
-              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.primary, fontSize: 10, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
           ],
@@ -121,7 +129,8 @@ class _ConnectionButtonState extends State<ConnectionButton> with SingleTickerPr
               gradient: secondaryGradient,
               boxShadow: [
                 BoxShadow(
-                  color: Theme.of(context).colorScheme.secondary.withOpacity(0.4),
+                  color:
+                      Theme.of(context).colorScheme.secondary.withOpacity(0.4),
                   blurRadius: 20,
                   spreadRadius: 10,
                 ),
@@ -130,7 +139,9 @@ class _ConnectionButtonState extends State<ConnectionButton> with SingleTickerPr
             padding: const EdgeInsets.all(10),
             child: Container(
               alignment: Alignment.center,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).scaffoldBackgroundColor),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Theme.of(context).scaffoldBackgroundColor),
             ),
           ),
         ),
@@ -148,7 +159,10 @@ class _ConnectionButtonState extends State<ConnectionButton> with SingleTickerPr
               ),
               Text(
                 stage.name.toUpperCase().replaceAll("_", " "),
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.secondary, fontSize: 8, fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -176,7 +190,9 @@ class _ConnectionButtonState extends State<ConnectionButton> with SingleTickerPr
       padding: const EdgeInsets.all(10),
       child: Container(
         alignment: Alignment.center,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).scaffoldBackgroundColor),
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Theme.of(context).scaffoldBackgroundColor),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -188,7 +204,10 @@ class _ConnectionButtonState extends State<ConnectionButton> with SingleTickerPr
             ),
             Text(
               "DISCONNECTED",
-              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey.withOpacity(.8), fontSize: 10, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  color: Colors.grey.withOpacity(.8),
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
           ],
@@ -212,7 +231,9 @@ class _ConnectionButtonState extends State<ConnectionButton> with SingleTickerPr
 
   void loadInterstitial() {
     interstitialTimeout?.cancel();
-    AdsProvider.read(context).loadInterstitial(interstitialAdUnitID).then((value) {
+    AdsProvider.read(context)
+        .loadInterstitial(interstitialAdUnitID)
+        .then((value) {
       if (value != null) {
         interstitialAd = value;
         interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
@@ -223,7 +244,8 @@ class _ConnectionButtonState extends State<ConnectionButton> with SingleTickerPr
           },
         );
       } else {
-        interstitialTimeout = Timer(const Duration(minutes: 1), loadInterstitial);
+        interstitialTimeout =
+            Timer(const Duration(minutes: 1), loadInterstitial);
       }
     });
   }

@@ -85,3 +85,8 @@ flutter:
     - "assets/animations/"
     - "assets/languages/"
     - "assets/html/"
+
+  fonts:
+    - family: campton_bold
+      fonts:
+        - asset: assets/fonts/campton_bold.otf

@@ -33,11 +33,11 @@ LinearGradient primarySecondaryGradient = const LinearGradient(
 );
 
 ///Light Theme
-const Color backgroundLight = Colors.white;
-const Color surfaceLight = Colors.white;
+const Color backgroundLight = Color(0xff0D1543);
+const Color surfaceLight = Color(0xff202960);
 
 ///Dark theme
-const Color backgroundDark = Color(0xff212121);
+const Color backgroundDark = Color(0xff0D1543);
 const Color surfaceDark = Color(0xff1f2d5e);
 
 Color get shadowColor => Colors.black.withOpacity(.05);

@@ -156,7 +156,6 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
                       return SpinItem(
                           label: luckyItem.topText,
                           labelStyle: const TextStyle(
-                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                           color: luckyItem.color);
@@ -227,7 +226,6 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
       return SpinItem(
           label: luckyItem.topText,
           labelStyle: const TextStyle(
-            color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
           color: luckyItem.color);
@@ -364,7 +362,8 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
             remainSpin = object['remain_spin'];
 
             Future.delayed(const Duration(seconds: 3), () {
-              alertBox("Congratulations, you have won $msg Point!", false, context);
+              alertBox(
+                  "Congratulations, you have won $msg Point!", false, context);
               setState(() {});
             });
           }

@@ -1,3 +1,4 @@
+import 'package:dart_ping/dart_ping.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class _ServerItemState extends State<ServerItem>
     with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
-    // DateTime now = DateTime.now();
+    DateTime now = DateTime.now();
     bool selected = VpnProvider.read(context).vpnConfig?.vpnUserName ==
         widget.config.vpnUserName;
     super.build(context);
@@ -59,33 +60,33 @@ class _ServerItemState extends State<ServerItem>
             Expanded(
                 child: Text(widget.config.serverName,
                     style: const TextStyle(color: Colors.white))),
-            // const RowDivider(),
-            // if (showSignalStrength)
-            //   FutureBuilder(
-            //       future: Future.microtask(() =>
-            //           Ping(widget.config.serverIp, count: 1).stream.first),
-            //       builder: (context, snapshot) {
-            //         var ms = DateTime.now().difference(now).inMilliseconds;
-            //         if (snapshot.connectionState == ConnectionState.waiting) {
-            //           return Image.asset("assets/icons/signal0.png",
-            //               width: 32, height: 32, color: Colors.grey.shade400);
-            //         }
-            //         if (ms < 80) {
-            //           return Image.asset("assets/icons/signal3.png",
-            //               width: 32, height: 32);
-            //         } else if (ms < 150) {
-            //           return Image.asset("assets/icons/signal2.png",
-            //               width: 32, height: 32);
-            //         } else if (ms < 300) {
-            //           return Image.asset("assets/icons/signal1.png",
-            //               width: 32, height: 32);
-            //         } else if (ms > 300) {
-            //           return Image.asset("assets/icons/signal0.png",
-            //               width: 32, height: 32);
-            //         }
-            //         return Image.asset("assets/icons/signal0.png",
-            //             width: 32, height: 32, color: Colors.grey);
-            //       }),
+            const RowDivider(),
+            if (showSignalStrength)
+              FutureBuilder(
+                  future: Future.microtask(
+                      () => Ping(widget.config.server, count: 1).stream.first),
+                  builder: (context, snapshot) {
+                    var ms = DateTime.now().difference(now).inMilliseconds;
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Image.asset("assets/icons/signal0.png",
+                          width: 32, height: 32, color: Colors.grey.shade400);
+                    }
+                    if (ms < 80) {
+                      return Image.asset("assets/icons/signal3.png",
+                          width: 32, height: 32);
+                    } else if (ms < 150) {
+                      return Image.asset("assets/icons/signal2.png",
+                          width: 32, height: 32);
+                    } else if (ms < 300) {
+                      return Image.asset("assets/icons/signal1.png",
+                          width: 32, height: 32);
+                    } else if (ms > 300) {
+                      return Image.asset("assets/icons/signal0.png",
+                          width: 32, height: 32);
+                    }
+                    return Image.asset("assets/icons/signal0.png",
+                        width: 32, height: 32, color: Colors.grey);
+                  }),
           ],
         ),
       ),

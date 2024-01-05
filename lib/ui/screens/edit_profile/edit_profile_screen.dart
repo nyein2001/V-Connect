@@ -161,7 +161,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             border: Border.all(
-                              color: Colors.white,
+                              // color: Colors.white,
                               width: 1.5,
                             ),
                           ),
@@ -199,7 +199,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             border: Border.all(
-                              color: Colors.white,
+                              // color: Colors.white,
                               width: 1.5,
                             ),
                           ),
@@ -225,7 +225,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             border: Border.all(
-                              color: Colors.white,
+                              // color: Colors.white,
                               width: 1.5,
                             ),
                           ),
@@ -292,7 +292,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
                                 child: const Icon(
                                   Icons.add_a_photo,
                                   size: 18,
-                                  color: Colors.white,
+                                  // color: Colors.white,
                                 ),
                               ),
                             ),

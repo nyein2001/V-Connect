@@ -2,15 +2,11 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:lottie/lottie.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/providers/globals/ads_provider.dart';
 import 'package:ndvpn/core/providers/globals/vpn_provider.dart';
-import 'package:ndvpn/core/resources/colors.dart';
 import 'package:ndvpn/core/resources/environment.dart';
-import 'package:ndvpn/core/resources/themes.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/custom_divider.dart';
 import 'package:ndvpn/ui/components/about_detail.dart';
@@ -35,7 +31,6 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../../core/providers/globals/theme_provider.dart';
 import '../components/connection_button.dart';
 import '../components/custom_image.dart';
-import '../components/map_background.dart';
 import 'connection_detail_screen.dart';
 
 /// Main screen of the app
@@ -47,216 +42,200 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final AdvancedDrawerController _controller = AdvancedDrawerController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    return AdvancedDrawer(
-      controller: _controller,
-      drawer: ListView(children: [
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Scaffold(
+      // controller: _controller,
+      key: _scaffoldKey,
+      drawer: Drawer(
+          backgroundColor: Theme.of(context).colorScheme.background,
+          child: ListView(children: [
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Image.asset('assets/icons/logo_android.png',
+                      width: 75, height: 75),
+                  ListTile(
+                      leading: const Icon(Icons.home),
+                      title: const Text('home').tr(),
+                      onTap: () {
+                        menuClick();
+                        startScreen(context, const MainScreen());
+                      }),
+                  ListTile(
+                      leading: const Icon(Icons.person),
+                      title: const Text('Profile').tr(),
+                      onTap: () {
+                        menuClick();
+                        if (Preferences.isLogin()) {
+                          startScreen(context, const ProfileScreen());
+                        } else {
+                          alertBox("You have not login", true, context);
+                        }
+                      }),
+                  ListTile(
+                      leading: const Icon(Icons.emoji_events),
+                      title: const Text('reward').tr(),
+                      onTap: () {
+                        menuClick();
+                        if (Preferences.isLogin()) {
+                          startScreen(context, const RewardScreen());
+                        } else {
+                          alertBox("You have not login", true, context);
+                        }
+                      }),
+                  ListTile(
+                      leading: const Icon(Icons.link),
+                      title: const Text('reference_code').tr(),
+                      onTap: () {
+                        menuClick();
+                        if (Preferences.isLogin()) {
+                          startScreen(context, const ReferenceCodeScreen());
+                        } else {
+                          alertBox("You have not login", true, context);
+                        }
+                      }),
+                  ListTile(
+                      leading: const Icon(Icons.casino),
+                      title: const Text('Lucky Wheel').tr(),
+                      onTap: () {
+                        menuClick();
+                        if (Preferences.isLogin()) {
+                          startScreen(context, const SpinningWheelPage());
+                        } else {
+                          alertBox("You have not login", true, context);
+                        }
+                      }),
+                  ListTile(
+                      leading: const Icon(Icons.card_giftcard),
+                      title: const Text('redeem').tr(),
+                      onTap: () {
+                        menuClick();
+                        if (Preferences.isLogin()) {
+                          startScreen(context, const RewardScreen());
+                        } else {
+                          alertBox("You have not login", true, context);
+                        }
+                      }),
+                  ListTile(
+                      leading: const Icon(Icons.language),
+                      title: const Text('language').tr(),
+                      onTap: () =>
+                          ThemeProvider.read(context).changeLanguage(context)),
+                  ListTile(
+                      leading: const Icon(Icons.settings),
+                      title: const Text('settings').tr(),
+                      onTap: () {
+                        menuClick();
+                        startScreen(context, const SettingScreen());
+                      }),
+                  ListTile(
+                      leading: const Icon(Icons.login),
+                      title: const Text("Login or Logout").tr(),
+                      onTap: () {
+                        menuClick();
+                        if (Preferences.isLogin()) {
+                          logout();
+                        } else {
+                          startScreen(context, const LoginScreen());
+                        }
+                      }),
+                  ListTile(
+                      leading: const Icon(Icons.mail),
+                      title: const Text('contact_us').tr(),
+                      onTap: () {
+                        menuClick();
+                        startScreen(context, const ContactUsScreen());
+                      }),
+                  ListTile(
+                      leading: const Icon(Icons.help),
+                      title: const Text('faq').tr(),
+                      onTap: () {
+                        menuClick();
+                        startScreen(context, const FaqScreen());
+                      }),
+                  ListTile(
+                      leading: const Icon(Icons.score),
+                      title: const Text('earn_point').tr(),
+                      onTap: () {
+                        menuClick();
+                        startScreen(context, const EarnPointScreen());
+                      }),
+                  ListTile(
+                      leading: const Icon(Icons.share),
+                      title: const Text('share_app').tr(),
+                      onTap: () {
+                        menuClick();
+                        shareApp();
+                      }),
+                  ListTile(
+                      leading: const Icon(Icons.thumb_up),
+                      title: const Text('rate_app').tr(),
+                      onTap: () {
+                        menuClick();
+                        rateUs();
+                      }),
+                  ListTile(
+                      leading: const Icon(Icons.apps),
+                      title: const Text('more_app').tr(),
+                      onTap: () {
+                        menuClick();
+                        rateUs();
+                      }),
+                  ListTile(
+                      leading: const Icon(Icons.update),
+                      title: const Text('check_update').tr(),
+                      onTap: () => _checkUpdate()),
+                  ListTile(
+                      leading: const Icon(Icons.privacy_tip),
+                      title: const Text('privacy_policy').tr(),
+                      onTap: () => startScreen(
+                          context,
+                          HtmlScreen(
+                              title: "privacy_policy".tr(),
+                              asset: "assets/html/privacy-policy.html"))),
+                  ListTile(
+                      leading: const Icon(Icons.description),
+                      title: const Text('terms_of_service').tr(),
+                      onTap: () => startScreen(
+                          context,
+                          HtmlScreen(
+                              title: "terms_of_service".tr(),
+                              asset: "assets/html/tos.html"))),
+                  ListTile(
+                      leading: const Icon(Icons.info),
+                      title: const Text('about').tr(),
+                      onTap: () => _aboutClick(context)),
+                ],
+              ),
+            ),
+          ])),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          ListView(
+            physics: const ClampingScrollPhysics(),
+            shrinkWrap: true,
             children: [
-              Image.asset('assets/icons/logo_android.png',
-                  width: 75, height: 75),
+              _appbarWidget(context),
+              _connectionInfoWidget(context),
+              const Center(child: ConnectionButton()),
+              const ColumnDivider(),
+              _premiumWidget(context),
               const ColumnDivider(space: 20),
-              Text("General", style: Theme.of(context).textTheme.bodySmall)
-                  .tr(),
-              const Divider(),
-              ListTile(
-                  leading: const Icon(Icons.home),
-                  title: const Text('home').tr(),
-                  onTap: () {
-                    _controller.hideDrawer();
-                  }),
-              ListTile(
-                  leading: const Icon(Icons.person),
-                  title: const Text('Profile').tr(),
-                  onTap: () {
-                    _controller.hideDrawer();
-                    if (Preferences.isLogin()) {
-                      startScreen(context, const ProfileScreen());
-                    } else {
-                      alertBox("You have not login", true, context);
-                    }
-                  }),
-              ListTile(
-                  leading: const Icon(Icons.emoji_events),
-                  title: const Text('reward').tr(),
-                  onTap: () {
-                    _controller.hideDrawer();
-                    if (Preferences.isLogin()) {
-                      startScreen(context, const RewardScreen());
-                    } else {
-                      alertBox("You have not login", true, context);
-                    }
-                  }),
-              ListTile(
-                  leading: const Icon(Icons.link),
-                  title: const Text('reference_code').tr(),
-                  onTap: () {
-                    _controller.hideDrawer();
-                    if (Preferences.isLogin()) {
-                      startScreen(context, const ReferenceCodeScreen());
-                    } else {
-                      alertBox("You have not login", true, context);
-                    }
-                  }),
-              ListTile(
-                  leading: const Icon(Icons.casino),
-                  title: const Text('Lucky Wheel').tr(),
-                  onTap: () {
-                    _controller.hideDrawer();
-                    if (Preferences.isLogin()) {
-                      startScreen(context, const SpinningWheelPage());
-                    } else {
-                      alertBox("You have not login", true, context);
-                    }
-                  }),
-              ListTile(
-                  leading: const Icon(Icons.card_giftcard),
-                  title: const Text('redeem').tr(),
-                  onTap: () {
-                    _controller.hideDrawer();
-                    if (Preferences.isLogin()) {
-                      startScreen(context, const RewardScreen());
-                    } else {
-                      alertBox("You have not login", true, context);
-                    }
-                  }),
+              _selectVpnWidget(context),
               const ColumnDivider(space: 20),
-              Text("settings", style: Theme.of(context).textTheme.bodySmall)
-                  .tr(),
-              const Divider(),
-              ListTile(
-                  leading: const Icon(Icons.color_lens),
-                  title: const Text('theme_mode').tr(),
-                  onTap: () =>
-                      ThemeProvider.read(context).changeThemeMode(context)),
-              ListTile(
-                  leading: const Icon(Icons.language),
-                  title: const Text('language').tr(),
-                  onTap: () =>
-                      ThemeProvider.read(context).changeLanguage(context)),
-              ListTile(
-                  leading: const Icon(Icons.settings),
-                  title: const Text('settings').tr(),
-                  onTap: () {
-                    _controller.hideDrawer();
-                    startScreen(context, const SettingScreen());
-                  }),
-              ListTile(
-                  leading: const Icon(Icons.login),
-                  title: const Text("Login or Logout").tr(),
-                  onTap: () {
-                    _controller.hideDrawer();
-                    if (Preferences.isLogin()) {
-                      logout();
-                    } else {
-                      startScreen(context, const LoginScreen());
-                    }
-                  }),
-              ListTile(
-                  leading: const Icon(Icons.mail),
-                  title: const Text('contact_us').tr(),
-                  onTap: () {
-                    _controller.hideDrawer();
-                    startScreen(context, const ContactUsScreen());
-                  }),
-              ListTile(
-                  leading: const Icon(Icons.help),
-                  title: const Text('faq').tr(),
-                  onTap: () {
-                    _controller.hideDrawer();
-                    startScreen(context, const FaqScreen());
-                  }),
-              ListTile(
-                  leading: const Icon(Icons.score),
-                  title: const Text('earn_point').tr(),
-                  onTap: () {
-                    _controller.hideDrawer();
-                    startScreen(context, const EarnPointScreen());
-                  }),
-              ListTile(
-                  leading: const Icon(Icons.share),
-                  title: const Text('share_app').tr(),
-                  onTap: () {
-                    _controller.hideDrawer();
-                    shareApp();
-                  }),
-              ListTile(
-                  leading: const Icon(Icons.thumb_up),
-                  title: const Text('rate_app').tr(),
-                  onTap: () {
-                    _controller.hideDrawer();
-                    rateUs();
-                  }),
-              ListTile(
-                  leading: const Icon(Icons.apps),
-                  title: const Text('more_app').tr(),
-                  onTap: () {
-                    _controller.hideDrawer();
-                    rateUs();
-                  }),
-              ListTile(
-                  leading: const Icon(Icons.update),
-                  title: const Text('check_update').tr(),
-                  onTap: () => _checkUpdate()),
+              Center(
+                  child: AdsProvider.bannerAd(bannerAdUnitID,
+                      adsize: AdSize.mediumRectangle)),
               const ColumnDivider(space: 20),
-              Text("about_us", style: Theme.of(context).textTheme.bodySmall)
-                  .tr(),
-              const Divider(),
-              ListTile(
-                  leading: const Icon(Icons.privacy_tip),
-                  title: const Text('privacy_policy').tr(),
-                  onTap: () => startScreen(
-                      context,
-                      HtmlScreen(
-                          title: "privacy_policy".tr(),
-                          asset: "assets/html/privacy-policy.html"))),
-              ListTile(
-                  leading: const Icon(Icons.description),
-                  title: const Text('terms_of_service').tr(),
-                  onTap: () => startScreen(
-                      context,
-                      HtmlScreen(
-                          title: "terms_of_service".tr(),
-                          asset: "assets/html/tos.html"))),
-              ListTile(
-                  leading: const Icon(Icons.info),
-                  title: const Text('about').tr(),
-                  onTap: () => _aboutClick(context)),
             ],
           ),
-        ),
-      ]),
-      child: Scaffold(
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.asset("assets/images/background_world.png",
-                fit: BoxFit.cover, color: Colors.grey.withOpacity(.3)),
-            ListView(
-              physics: const ClampingScrollPhysics(),
-              shrinkWrap: true,
-              children: [
-                _appbarWidget(context),
-                _connectionInfoWidget(context),
-                const ColumnDivider(),
-                const Center(child: ConnectionButton()),
-                const ColumnDivider(),
-                _selectVpnWidget(context),
-                const ColumnDivider(space: 20),
-                Center(
-                    child: AdsProvider.bannerAd(bannerAdUnitID,
-                        adsize: AdSize.mediumRectangle)),
-                const ColumnDivider(space: 20),
-              ],
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -270,7 +249,7 @@ class _MainScreenState extends State<MainScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text("select_vpn_server".tr(),
-              style: Theme.of(context).textTheme.bodySmall),
+              style: const TextStyle(color: Colors.white)),
           const ColumnDivider(space: 5),
           CupertinoButton(
             padding: EdgeInsets.zero,
@@ -311,9 +290,11 @@ class _MainScreenState extends State<MainScreen> {
                                   "icons/flags/png/${config.flagUrl}.png",
                                   package: "country_icons"),
                         ),
+                      if (config == null)
+                        const SizedBox(
+                            width: 32, height: 32, child: Icon(Icons.language)),
                       const SizedBox(width: 10),
-                      Text(config?.serverName ?? 'select_server'.tr(),
-                          style: Theme.of(context).textTheme.bodyLarge),
+                      Text(config?.serverName ?? 'select_server'.tr()),
                       const Spacer(),
                       const Icon(Icons.chevron_right),
                       const SizedBox(width: 10),
@@ -332,151 +313,161 @@ class _MainScreenState extends State<MainScreen> {
   Widget _connectionInfoWidget(BuildContext context) {
     return CupertinoButton(
       onPressed: () => startScreen(context, const ConnectionDetailScreen()),
-      child: Container(
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          color: primaryColor,
-          gradient: const LinearGradient(
-              colors: [primaryColor, secondaryColor],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter),
-          boxShadow: [
-            BoxShadow(blurRadius: 20, color: primaryColor.withOpacity(.2))
-          ],
-          borderRadius: BorderRadius.circular(20),
-        ),
-        height: 120,
-        child: Stack(
-          children: [
-            //Map background
-            const MapBackground(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                //Connection info
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Consumer<VpnProvider>(
-                      builder: (context, value, child) {
-                        double bytein = 0;
-                        double byteout = 0;
-                        if ((value.vpnStatus?.byteIn?.trim().isEmpty ??
-                                false) ||
-                            value.vpnStatus?.byteIn == "0") {
-                          bytein = 0;
-                        } else {
-                          bytein = double.tryParse(
-                                  value.vpnStatus!.byteIn.toString()) ??
-                              0;
-                        }
+      child: SizedBox(
+        height: 100,
+        child: Consumer<VpnProvider>(builder: (context, value, child) {
+          double bytein = 0;
+          double byteout = 0;
+          if ((value.vpnStatus?.byteIn?.trim().isEmpty ?? false) ||
+              value.vpnStatus?.byteIn == "0") {
+            bytein = 0;
+          } else {
+            bytein = double.tryParse(value.vpnStatus!.byteIn.toString()) ?? 0;
+          }
 
-                        if ((value.vpnStatus?.byteOut?.trim().isEmpty ??
-                                false) ||
-                            value.vpnStatus?.byteIn == "0") {
-                          byteout = 0;
-                        } else {
-                          byteout = double.tryParse(
-                                  value.vpnStatus!.byteOut.toString()) ??
-                              0;
-                        }
+          if ((value.vpnStatus?.byteOut?.trim().isEmpty ?? false) ||
+              value.vpnStatus?.byteIn == "0") {
+            byteout = 0;
+          } else {
+            byteout = double.tryParse(value.vpnStatus!.byteOut.toString()) ?? 0;
+          }
 
-                        return Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                          child: const Text("download",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 12))
-                                              .tr()),
-                                      const SizedBox(
-                                          width: 30,
-                                          height: 25,
-                                          child: CircleAvatar(
-                                              backgroundColor: Colors.white,
-                                              child: Icon(
-                                                  Icons.arrow_downward_rounded,
-                                                  size: 20,
-                                                  color: secondaryColor))),
-                                    ],
-                                  ),
-                                  Text("${formatBytes(bytein.floor(), 0)}/s",
-                                      style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white)),
-                                ],
-                              ),
+          return Row(
+            children: [
+              Expanded(
+                child: Card(
+                  color: const Color(0xFF2A3875),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 20,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'download',
+                        style: TextStyle(
+                          fontSize: 14,
+                          // color: Colors.white,
+                          fontFamily: 'campton_bold',
+                        ),
+                      ).tr(),
+                      Text(
+                        "${formatBytes(bytein.floor(), 0)}/s",
+                        style: const TextStyle(
+                          fontSize: 24,
+                          // color: Colors.white,
+                          fontFamily: 'campton_bold',
+                        ),
+                      ),
+                      const Text(
+                        'Status',
+                        style: TextStyle(
+                            // color: Colors.white,
                             ),
-                            Container(
-                                height: 50,
-                                width: 1,
-                                color: Colors.white,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 15)),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                          child: const Text("upload",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 12))
-                                              .tr()),
-                                      const SizedBox(
-                                          width: 50,
-                                          height: 25,
-                                          child: CircleAvatar(
-                                              backgroundColor: Colors.white,
-                                              child: Icon(
-                                                  Icons.arrow_upward_rounded,
-                                                  size: 20,
-                                                  color: secondaryColor))),
-                                    ],
-                                  ),
-                                  Text("${formatBytes(byteout.floor(), 0)}/s",
-                                      style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white)),
-                                ],
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                Container(
-                  color: primaryColor,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  child: const Text(
-                    "see_more_details",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white, fontSize: 12),
-                  ).tr(),
-                )
-              ],
-            ),
-          ],
-        ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Card(
+                  color: const Color(0xFF2A3875),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 20,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'upload',
+                        style: TextStyle(
+                          fontSize: 14,
+                          // color: Colors.white,
+                          fontFamily: 'campton_bold',
+                        ),
+                      ).tr(),
+                      Text(
+                        "${formatBytes(byteout.floor(), 0)}/s",
+                        style: const TextStyle(
+                          fontSize: 24,
+                          // color: Colors.white,
+                          fontFamily: 'campton_bold',
+                        ),
+                      ),
+                      const Text(
+                        'Status',
+                        style: TextStyle(
+                            // color: Colors.white,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        }),
       ),
     );
+  }
+
+  Widget _premiumWidget(BuildContext context) {
+    return GestureDetector(
+        onTap: () => _upgradeProClick(context),
+        child: Container(
+          padding: const EdgeInsets.all(10.0),
+          width: double.infinity,
+          height: 120.0,
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width -
+                    MediaQuery.of(context).size.width / 8,
+                height: 90.0,
+                decoration: BoxDecoration(
+                  image: const DecorationImage(
+                    image: AssetImage('assets/images/primier_design.png'),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(width: 10.0),
+                    Container(
+                      width: 60.0,
+                      height: 60.0,
+                      margin: const EdgeInsets.only(left: 15.0),
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/icon_crown.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 20.0),
+                    const Center(
+                      child: Text(
+                        'Unlock Premium Servers\nWith No Ads',
+                        style: TextStyle(
+                          // color: Colors.white,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 
   logout() {
@@ -491,26 +482,51 @@ class _MainScreenState extends State<MainScreen> {
   Widget _appbarWidget(BuildContext context) {
     return SafeArea(
       child: SizedBox(
-        height: 60,
+        height: 50,
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Center(
-                child: Text(appName,
-                    style: textTheme(context).titleLarge,
-                    textAlign: TextAlign.center)),
-            Positioned(
-                left: 0,
-                child: IconButton(
-                    onPressed: _menuClick, icon: const Icon(Icons.menu))),
             Positioned(
               right: 0,
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                onPressed: () => _upgradeProClick(context),
-                icon: LottieBuilder.asset("assets/animations/crown_free.json"),
+              top: 5,
+              child: Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(25),
+                    bottomLeft: Radius.circular(25),
+                  ),
+                  color: Theme.of(context).colorScheme.surface,
+                ),
+                height: 50,
+                width: 150,
+                padding: const EdgeInsets.only(left: 10, top: 10),
+                child: Text(
+                  appName,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineSmall!
+                      .copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
+            Positioned(
+                left: 5,
+                top: 5,
+                child: IconButton(
+                    onPressed: () {
+                      menuClick();
+                    },
+                    icon: const Icon(Icons.menu))),
+            // Positioned(
+            //   right: 0,
+            //   child: IconButton(
+            //     padding: EdgeInsets.zero,
+            //     onPressed: () => _upgradeProClick(context),
+            //     icon: LottieBuilder.asset("assets/animations/crown_free.json"),
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -527,8 +543,12 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   ///Open the menu when user click on the menu icon
-  void _menuClick() {
-    _controller.showDrawer();
+  void menuClick() {
+    if (_scaffoldKey.currentState!.isDrawerOpen) {
+      _scaffoldKey.currentState!.openEndDrawer();
+    } else {
+      _scaffoldKey.currentState!.openDrawer();
+    }
   }
 
   ///Open the server list screen when user click on the select server button

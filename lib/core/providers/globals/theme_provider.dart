@@ -10,7 +10,7 @@ import '../../utils/navigations.dart';
 
 ///Theme related provider
 class ThemeProvider extends ChangeNotifier {
-  ThemeMode _themeMode = ThemeMode.system;
+  ThemeMode _themeMode = ThemeMode.dark;
 
   ThemeMode get themeMode => _themeMode;
 

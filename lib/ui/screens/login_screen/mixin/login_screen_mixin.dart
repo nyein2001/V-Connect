@@ -72,6 +72,9 @@ mixin _LoginScreenMixin on State<LoginScreen> {
       ).then((value) {
         customProgressDialog.dismiss();
         return value;
+      }).onError((error, stackTrace) {
+        customProgressDialog.dismiss();
+        throw 'UnExpected Error $error';
       });
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);

@@ -226,4 +226,13 @@ class Preferences {
   static String getDeviceId() {
     return _getValue<String>(deviceIdKey) ?? 'unknown';
   }
+
+  static const String notificationActiveKey = 'notificationActiveKey';
+  static void setNotificationSetting({required bool isActive}) {
+    _setValue<bool>(notificationActiveKey, isActive);
+  }
+
+  static bool getNotificationSetting() {
+    return _getValue<bool>(notificationActiveKey) ?? true;
+  }
 }

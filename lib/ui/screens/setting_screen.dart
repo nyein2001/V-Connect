@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ndvpn/core/utils/preferences.dart';
+import 'package:ndvpn/core/utils/settings_item_widget.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -8,12 +10,44 @@ class SettingScreen extends StatefulWidget {
 }
 
 class SettingScreenState extends State<SettingScreen> {
+  bool _notificationActive = true;
+
+  @override
+  void initState() {
+    _getData();
+    super.initState();
+  }
+
+  _getData() {
+    _notificationActive = Preferences.getNotificationSetting();
+    setState(() {});
+  }
+
+  void _updateOnSignal(bool value) {
+    setState(() {
+      _notificationActive = value;
+    });
+    Preferences.setNotificationSetting(isActive: _notificationActive);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Settings Screen'),
-      ),
-    );
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Settings'),
+          automaticallyImplyLeading: true,
+          centerTitle: false,
+        ),
+        body: SingleChildScrollView(
+            child: Column(children: [
+          SettingItemWidget(
+            leading: const Icon(Icons.notifications_active),
+            title: 'Enable Push Notification',
+            trailing: Switch(
+              value: _notificationActive,
+              onChanged: _updateOnSignal,
+            ),
+          ),
+        ])));
   }
 }

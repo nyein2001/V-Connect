@@ -48,7 +48,6 @@ class ForgotPasswordScreenState extends State<ForgotPasswordScreen>
         },
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Theme.of(context).primaryColor,
             title: const Text(
               "Forgot  Password",
               style: TextStyle(

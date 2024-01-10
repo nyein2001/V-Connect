@@ -52,5 +52,17 @@
     "earn_point": "Earn Point",
     "share_app": "Share App",
     "rate_app": "Rate App",
-    "more_app": "More App"
+    "more_app": "More App",
+    "reward_point_claim": "REWARD  POINT  CLAIM",
+    "current_point" : "Current Point",
+    "withdrawal_history": "Withdrawal History",
+    "reference_title": "Your Reference Code",
+    "reference_desc": "Share your reference code to others and earn more points",
+    "copy": "Tap To Copy",
+    "enter_redemption_code": "Enter Redemption Code",
+    "redemption_code_msg": "Enter your special code to receive amazing gifts from us for free!",
+    "enter_code": "Enter Code",
+    "back" : "Back",
+    "redeem_status" : "Redeem Status",
+    "contact_us_desc" : "Please enter you contact details and admin will soon contact you"
 }

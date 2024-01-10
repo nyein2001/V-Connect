@@ -405,7 +405,22 @@ class EditProfileScreenState extends State<EditProfileScreen>
                   width: double.infinity,
                   child: GestureDetector(
                     onTap: () {
-                      profileUpdateFun();
+                      if (nameController.text.trim().isEmpty) {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                      } else if (Preferences.getLoginType() == "normal" &&
+                          (emailController.text.trim().isEmpty)) {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                      } else if (passwordController.text !=
+                              passwordController.text ||
+                          passwordController.text.trim().isEmpty ||
+                          confirmController.text.trim().isEmpty) {
+                        alertBox("Password and confirm password do not match",
+                            false, context);
+                      } else if (phoneController.text.trim().isEmpty) {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                      } else {
+                        profileUpdateFun();
+                      }
                     },
                     child: ElevatedButton(
                       onPressed: () {
@@ -418,8 +433,8 @@ class EditProfileScreenState extends State<EditProfileScreen>
                                 passwordController.text ||
                             passwordController.text.trim().isEmpty ||
                             confirmController.text.trim().isEmpty) {
-                          alertBox("Password and confirm password do not match", false,
-                              context);
+                          alertBox("Password and confirm password do not match",
+                              false, context);
                         } else if (phoneController.text.trim().isEmpty) {
                           FocusScope.of(context).requestFocus(FocusNode());
                         } else {
@@ -529,7 +544,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
           } else {
             Map<String, dynamic> data = jsonResponse[AppConstants.tag];
             String msg = data['msg'];
-            alertBox(msg,false, context);
+            alertBox(msg, false, context);
           }
         }
       }

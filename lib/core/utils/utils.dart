@@ -61,6 +61,7 @@ Future<bool> checkUpdate(BuildContext context) async {
 
 class AssetsPath {
   static const String imagepath = "assets/images/";
+  static const String iconpath = "assets/icons/";
 }
 
 void alertBox(String message, bool exit, BuildContext context) {

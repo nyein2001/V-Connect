@@ -11,14 +11,15 @@ import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/custom_divider.dart';
 import 'package:ndvpn/ui/components/about_detail.dart';
 import 'package:ndvpn/ui/components/logout_alert.dart';
-import 'package:ndvpn/ui/screens/contact_us_screen.dart';
-import 'package:ndvpn/ui/screens/earn_point_screen.dart';
+import 'package:ndvpn/ui/screens/contact_us/contact_us_screen.dart';
+import 'package:ndvpn/ui/screens/earn_point/earn_point_screen.dart';
 import 'package:ndvpn/ui/screens/faq_screen.dart';
 import 'package:ndvpn/ui/screens/html_screen.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/profile_screen.dart';
+import 'package:ndvpn/ui/screens/redeem/redeem_screen.dart';
 import 'package:ndvpn/ui/screens/reference_code_screen.dart';
-import 'package:ndvpn/ui/screens/reward_screen.dart';
+import 'package:ndvpn/ui/screens/reward/reward_screen.dart';
 import 'package:ndvpn/ui/screens/server_list_screen.dart';
 import 'package:ndvpn/ui/screens/setting_screen.dart';
 import 'package:ndvpn/ui/screens/spin_wheel/lucky_wheel_screen.dart';
@@ -116,7 +117,7 @@ class _MainScreenState extends State<MainScreen> {
                       onTap: () {
                         menuClick();
                         if (Preferences.isLogin()) {
-                          startScreen(context, const RewardScreen());
+                          startScreen(context, const RedeemScreen());
                         } else {
                           alertBox("You have not login", true, context);
                         }
@@ -149,21 +150,33 @@ class _MainScreenState extends State<MainScreen> {
                       title: const Text('contact_us').tr(),
                       onTap: () {
                         menuClick();
-                        startScreen(context, const ContactUsScreen());
+                        if (Preferences.isLogin()) {
+                          startScreen(context, const ContactUsScreen());
+                        } else {
+                          alertBox("You have not login", true, context);
+                        }
                       }),
                   ListTile(
                       leading: const Icon(Icons.help),
                       title: const Text('faq').tr(),
                       onTap: () {
                         menuClick();
-                        startScreen(context, const FaqScreen());
+                        if (Preferences.isLogin()) {
+                          startScreen(context, const FaqScreen());
+                        } else {
+                          alertBox("You have not login", true, context);
+                        }
                       }),
                   ListTile(
                       leading: const Icon(Icons.score),
                       title: const Text('earn_point').tr(),
                       onTap: () {
                         menuClick();
-                        startScreen(context, const EarnPointScreen());
+                        if (Preferences.isLogin()) {
+                          startScreen(context, const EarnPointScreen());
+                        } else {
+                          alertBox("You have not login", true, context);
+                        }
                       }),
                   ListTile(
                       leading: const Icon(Icons.share),
@@ -498,7 +511,7 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                   color: Theme.of(context).colorScheme.surface,
                 ),
-                height: 50,
+                height: 45,
                 width: 150,
                 padding: const EdgeInsets.only(left: 10, top: 10),
                 child: Text(

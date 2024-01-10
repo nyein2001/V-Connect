@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/models/get_req_with_userid.dart';
 import 'package:ndvpn/core/models/reward_point.dart';
 import 'package:ndvpn/core/utils/constant.dart';
@@ -25,42 +24,44 @@ class RewardCurrentFragmentState extends State<RewardCurrentFragment>
   Widget build(BuildContext context) {
     return Scaffold(
       body: noData
-          ? const Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                            child: Icon(
-                          Icons.not_listed_location,
-                          size: 80,
-                          color: Colors.blue,
-                        )),
-                        SizedBox(height: 16),
-                        Text(
-                          'Empty Withdrawal',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+          ? const Center(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                              child: Icon(
+                            Icons.not_listed_location,
+                            size: 80,
+                            color: Colors.blue,
+                          )),
+                          SizedBox(height: 16),
+                          Text(
+                            'Empty Point',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Looks like there are no withdrawal to display.',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
+                          SizedBox(height: 8),
+                          Text(
+                            'Looks like there are no point to display.',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 16),
-                      ],
+                          SizedBox(height: 16),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             )
           : ListView.separated(
               itemBuilder: (BuildContext context, int index) {

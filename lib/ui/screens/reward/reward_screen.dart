@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/reward/fragment/reward_current_fragment.dart';
 import 'package:ndvpn/ui/screens/reward/fragment/withdrawal_history_fragment.dart';
+import 'package:ndvpn/ui/screens/reward_point/reward_point_claim.dart';
 part 'mixin/reward_mixin.dart';
 
 class RewardScreen extends StatefulWidget {
@@ -40,76 +41,43 @@ class RewardScreenState extends State<RewardScreen>
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _rewardDisplayWidget(context),
-          Expanded(
-            child: DefaultTabController(
-              length: 2,
-              child: Scaffold(
-                appBar: AppBar(
-                  automaticallyImplyLeading: false,
-                  bottom: TabBar(
-                    controller: _tabController,
-                    tabs: [
-                      Tab(text: 'current_point'.tr()),
-                      Tab(text: 'withdrawal_history'.tr()),
-                    ],
-                  ),
-                  backgroundColor: Colors.transparent,
+          Padding(
+            padding: const EdgeInsets.only(top: 25, bottom: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'You Have ',
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.center,
                 ),
-                body: TabBarView(
-                  controller: _tabController,
-                  children: const [
-                    RewardCurrentFragment(),
-                    WithdrawalHistoryFragment(),
-                  ],
+                Text(
+                  totalPoint,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.center,
                 ),
-              ),
+                Text(
+                  ' Reward Point',
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.center,
+                )
+              ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _rewardDisplayWidget(BuildContext context) {
-    return SafeArea(
-      child: SizedBox(
-        height: 150,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 25, bottom: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'You Have ',
-                    style: Theme.of(context).textTheme.titleMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    totalPoint,
-                    style: Theme.of(context).textTheme.titleMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    ' Reward Point',
-                    style: Theme.of(context).textTheme.titleMedium,
-                    textAlign: TextAlign.center,
-                  )
-                ],
-              ),
-            ),
-            Text(
-              money,
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Visibility(
-                visible: totalPoint != "0",
+          Text(
+            money,
+            style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Visibility(
+              visible: totalPoint == "0",
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width / 5,
+                    vertical: 5),
                 child: ElevatedButton(
                   onPressed: () async => await rewardPointClaim(),
                   style: ElevatedButton.styleFrom(
@@ -125,15 +93,40 @@ class RewardScreenState extends State<RewardScreen>
                               ?.copyWith(
                                   color:
                                       Theme.of(context).colorScheme.background,
-                                  letterSpacing: 2,
+                                  letterSpacing: 1,
                                   fontWeight: FontWeight.w600))
                       .tr(),
-                )),
-          ],
-        ),
+                ),
+              )),
+          Expanded(
+            child: DefaultTabController(
+              length: 2,
+              child: Scaffold(
+                body: Column(
+                  children: [
+                    TabBar(
+                      controller: _tabController,
+                      tabs: [
+                        Tab(text: 'current_point'.tr()),
+                        Tab(text: 'withdrawal_history'.tr()),
+                      ],
+                    ),
+                    Expanded(
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: const [
+                          RewardCurrentFragment(),
+                          WithdrawalHistoryFragment(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
-
-  Future<void> rewardPointClaim() async {}
 }

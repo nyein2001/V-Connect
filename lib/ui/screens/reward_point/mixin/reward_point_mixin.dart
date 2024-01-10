@@ -1,14 +1,12 @@
-part of '../contact_us_screen.dart';
+part of '../reward_point_claim.dart';
 
-mixin _ContactUsMixin on State<ContactUsScreen> {
+mixin _RewardPointMixin on State<RewardPointClaim> {
   NetworkInfo networkInfo = NetworkInfo(Connectivity());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  List<ContactList> items = [
-    ContactList(id: "007", subject: "Select contact type")
+  List<PaymentList> items = [
+    PaymentList(id: "007", modeTitle: "Select contact type")
   ];
   String dropdownvalue = '007';
 
@@ -31,7 +29,7 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
 
   Future<void> getContact() async {
     ReqWithUserId req = ReqWithUserId(
-        methodName: 'get_contact', userId: Preferences.getProfileId());
+        methodName: 'get_payment_mode', userId: Preferences.getProfileId());
     String methodBody = jsonEncode(req.toJson());
     CustomProgressDialog customProgressDialog =
         CustomProgressDialog(context, dismissable: false, onDismiss: () {});
@@ -59,15 +57,12 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
             alertBox(message, false, context);
           }
         } else {
-          _nameController.text = jsonData["name"];
-          _emailController.text = jsonData["email"];
           final data = jsonData[AppConstants.tag];
           for (var i = 0; i < data.length; i++) {
             final object = data[i];
             final id = object['id'];
-            final subject = object['subject'];
-
-            items.add(ContactList(id: id, subject: subject));
+            final modeTitle = object['mode_title'];
+            items.add(PaymentList(id: id, modeTitle: modeTitle));
           }
           setState(() {});
         }
@@ -77,34 +72,12 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
     }
   }
 
-  Future<void> login() async {
-    bool isConnected = await networkInfo.isConnected;
-    if (isConnected) {
-      String name = _nameController.text;
-      String email = _emailController.text;
-      String desc = _descriptionController.text;
-      if (dropdownvalue == "007") {
-        alertBox("Please select category", false, context);
-      } else if (name == '' || name.isEmpty) {
-        validate();
-      } else if (!_checkEmail(email) || email.isEmpty) {
-        validate();
-      } else if (desc == '' || desc.isEmpty) {
-        validate();
-      } else {
-        form();
-      }
-    } else {
-      alertBox("Internet connection not available", false, context);
-    }
-  }
-
   Future<void> form() async {
-    ContactUSMsgReq req = ContactUSMsgReq(
-        sendEmail: _emailController.text,
-        sendName: _nameController.text,
-        sendMessage: _descriptionController.text,
-        contactSubject: dropdownvalue);
+    PaymentReq req = PaymentReq(
+        userId: Preferences.getProfileId(),
+        userPoints: widget.userPoints,
+        paymentMode: dropdownvalue,
+        detail: _descriptionController.text);
     String methodBody = jsonEncode(req.toJson());
     CustomProgressDialog customProgressDialog =
         CustomProgressDialog(context, dismissable: false, onDismiss: () {});
@@ -132,18 +105,30 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
             alertBox(message, false, context);
           }
         } else {
-          Map<String, dynamic> data = jsonData[AppConstants.tag];
-          String msg = data['msg'];
-          String success = '${data['success']}';
-          print(data.toString());
-          if (success == '1') {
-            _descriptionController.clear();
-            dropdownvalue = "007";
-            alertBox(msg, false, context);
-          } else {
-            alertBox(msg, false, context);
+          final data = jsonData[AppConstants.tag];
+          for (var i = 0; i < data.length; i++) {
+            final object = data[i];
+            final msg = object['msg'];
+            final success = object['success'];
+
+            if (success == "1") {}
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(msg),
+                duration: const Duration(seconds: 2),
+              ),
+            );
           }
-          setState(() {});
+          // String msg = data['msg'];
+          // String success = '${data['success']}';
+          // print(data.toString());
+          // if (success == '1') {
+          //   _descriptionController.clear();
+          //   dropdownvalue = "007";
+          //   alertBox(msg, false, context);
+          // } else {
+          //   alertBox(msg, false, context);
+          // }
         }
       }
     } catch (error) {

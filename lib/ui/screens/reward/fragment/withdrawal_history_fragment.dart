@@ -113,18 +113,15 @@ class WithdrawalHistoryFragmentState extends State<WithdrawalHistoryFragment>
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: Text(
-                          status == "0"
-                              ? "Pending"
-                              : status == "1"
-                                  ? "Approve"
-                                  : "Reject",
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                      )
+                      Text(
+                        status == "0"
+                            ? "Pending"
+                            : status == "1"
+                                ? "Approve"
+                                : "Reject",
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
                     ],
                   ),
                   visualDensity: VisualDensity.compact,

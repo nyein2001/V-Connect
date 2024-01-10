@@ -26,15 +26,11 @@ mixin _RewardCurrentMixin on State<RewardCurrentFragment> {
     ReqWithUserId req = ReqWithUserId(
         methodName: 'user_rewads_point', userId: Preferences.getProfileId());
     String methodBody = jsonEncode(req.toJson());
-    CustomProgressDialog customProgressDialog =
-        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
-    customProgressDialog.show();
     try {
       http.Response response = await http.post(
         Uri.parse(AppConstants.baseURL),
         body: {'data': base64Encode(utf8.encode(methodBody))},
       ).then((value) {
-        customProgressDialog.dismiss();
         return value;
       });
 

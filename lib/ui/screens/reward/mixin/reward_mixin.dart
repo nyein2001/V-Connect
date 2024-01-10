@@ -8,6 +8,7 @@ mixin _RewardScreenMixin on State<RewardScreen> {
   bool noData = false;
   String totalPoint = '0';
   String money = '';
+  String minimumRedeemPoints = "0";
 
   @override
   void initState() {
@@ -62,6 +63,7 @@ mixin _RewardScreenMixin on State<RewardScreen> {
             totalPoint = data["total_point"];
             String redeemPoints = '${data["redeem_points"]}';
             String redeemMoney = '${data["redeem_money"]}';
+            minimumRedeemPoints = '${data["minimum_redeem_points"]}';
             money = "$redeemPoints Point = $redeemMoney";
             setState(() {});
           }
@@ -69,6 +71,17 @@ mixin _RewardScreenMixin on State<RewardScreen> {
       }
     } catch (error) {
       print("Error updateUIWithData  $error");
+    }
+  }
+
+  Future<void> rewardPointClaim() async {
+    int point = int.parse(minimumRedeemPoints);
+    int compair = int.parse(totalPoint);
+    if (compair >= point) {
+      startScreen(context, RewardPointClaim(userPoints: totalPoint));
+    } else {
+      alertBox("Minimum $minimumRedeemPoints Reward point is required to claim",
+          false, context);
     }
   }
 }

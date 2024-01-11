@@ -91,8 +91,6 @@ class ReferenceCodeScreenState extends State<ReferenceCodeScreen> {
           style: const TextStyle(
               fontSize: 20, letterSpacing: 1, fontWeight: FontWeight.w600),
         ),
-        automaticallyImplyLeading: true,
-        centerTitle: false,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

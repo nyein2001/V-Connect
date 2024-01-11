@@ -12,6 +12,7 @@ import 'package:ndvpn/core/resources/environment.dart';
 import 'package:ndvpn/core/utils/config.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/utils.dart';
+import 'package:ndvpn/ui/screens/introduction_screen.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/main_screen.dart';
 import 'package:ndvpn/ui/screens/verify_screen/verification_screen.dart';
@@ -33,6 +34,7 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
   DateTime _lastShownTime = DateTime.now();
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   String deviceid = '';
+  bool isFirstTime = Preferences.isFirstTime();
 
   @override
   void initState() {
@@ -103,11 +105,13 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return _ready
-        ? Preferences.showLogin()
-            ? const LoginScreen()
-            : Preferences.isVerification()
-                ? const VerificationScreen()
-                : const MainScreen()
+        ? isFirstTime
+            ? const OnBoardingPage()
+            : Preferences.showLogin()
+                ? const LoginScreen()
+                : Preferences.isVerification()
+                    ? const VerificationScreen()
+                    : const MainScreen()
         : const SplashScreen();
   }
 
@@ -145,15 +149,27 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
           Config.expiration = exp;
 
           if (success == '1') {
-            replaceScreen(context, const MainScreen());
+            if (isFirstTime) {
+              replaceScreen(context, const OnBoardingPage());
+            } else {
+              replaceScreen(context, const MainScreen());
+            }
           } else {
             Preferences.setLogin(isLogin: false);
-            replaceScreen(context, const LoginScreen());
+            if (isFirstTime) {
+              replaceScreen(context, const OnBoardingPage());
+            } else {
+              replaceScreen(context, const LoginScreen());
+            }
           }
         }
       }
     } catch (e) {
-      replaceScreen(context, const MainScreen());
+      if (isFirstTime) {
+        replaceScreen(context, const OnBoardingPage());
+      } else {
+        replaceScreen(context, const MainScreen());
+      }
     }
   }
 

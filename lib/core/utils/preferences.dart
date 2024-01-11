@@ -235,4 +235,13 @@ class Preferences {
   static bool getNotificationSetting() {
     return _getValue<bool>(notificationActiveKey) ?? true;
   }
+
+  static const String isFirstTimeKey = 'isFirstTimeKey';
+  static void setFirstTime({required bool isFirsTime}) {
+    _setValue<bool>(isFirstTimeKey, isFirsTime);
+  }
+
+  static bool isFirstTime() {
+    return _getValue<bool>(isFirstTimeKey) ?? true;
+  }
 }

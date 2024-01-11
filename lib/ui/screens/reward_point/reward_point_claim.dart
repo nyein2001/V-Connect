@@ -30,8 +30,6 @@ class RewardPointClaimState extends State<RewardPointClaim>
     return Scaffold(
       appBar: AppBar(
         title: const Text("payment_detail").tr(),
-        automaticallyImplyLeading: true,
-        centerTitle: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(25),

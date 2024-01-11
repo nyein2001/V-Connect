@@ -26,8 +26,6 @@ class EarnPointScreenState extends State<EarnPointScreen> with _EarnPointMixin {
     return Scaffold(
       appBar: AppBar(
         title: const Text("earn_point").tr(),
-        automaticallyImplyLeading: true,
-        centerTitle: false,
       ),
       body: noData
           ? const Column(

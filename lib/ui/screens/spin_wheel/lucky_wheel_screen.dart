@@ -125,12 +125,10 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: false,
         title: const Text('Lucky Wheel',
             textAlign: TextAlign.center,
             style: TextStyle(
                 fontSize: 22, letterSpacing: 1, fontWeight: FontWeight.w600)),
-        automaticallyImplyLeading: true,
       ),
       body: isloading
           ? const Center(

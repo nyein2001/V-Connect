@@ -106,8 +106,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           'Profile',
           textAlign: TextAlign.center,
         ),
-        automaticallyImplyLeading: true,
-        centerTitle: true,
       ),
       body: Column(
         children: [

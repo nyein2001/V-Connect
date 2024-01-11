@@ -30,10 +30,7 @@ class RedeemScreenState extends State<RedeemScreen> with _RedeemMixin {
       appBar: AppBar(
         title: const Text(
           "redeem",
-          style: TextStyle(
-              fontSize: 20, letterSpacing: 1, fontWeight: FontWeight.w600),
         ).tr(),
-        centerTitle: false,
       ),
       body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         SingleChildScrollView(

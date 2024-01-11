@@ -27,8 +27,6 @@ class FaqScreenState extends State<FaqScreen> with _FaqMixin {
     return Scaffold(
       appBar: AppBar(
         title: const Text("faq").tr(),
-        automaticallyImplyLeading: true,
-        centerTitle: false,
       ),
       body: text == ''
           ? Container()

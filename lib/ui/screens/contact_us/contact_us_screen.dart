@@ -29,8 +29,6 @@ class ContactUsScreenState extends State<ContactUsScreen> with _ContactUsMixin {
     return Scaffold(
       appBar: AppBar(
         title: const Text("contact_us").tr(),
-        automaticallyImplyLeading: true,
-        centerTitle: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(25),

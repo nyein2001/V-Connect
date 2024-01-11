@@ -53,7 +53,6 @@ class ForgotPasswordScreenState extends State<ForgotPasswordScreen>
               style: TextStyle(
                   fontSize: 20, letterSpacing: 1, fontWeight: FontWeight.w600),
             ),
-            centerTitle: false,
           ),
           body: Stack(children: [
             Container(

@@ -1,8 +1,6 @@
 part of '../reward_screen.dart';
 
 mixin _RewardScreenMixin on State<RewardScreen> {
-  // final PageController _pageController = PageController(initialPage: 0);
-  late TabController _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   NetworkInfo networkInfo = NetworkInfo(Connectivity());
   bool noData = false;

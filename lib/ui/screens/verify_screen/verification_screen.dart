@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ndialog/ndialog.dart';
@@ -37,6 +38,11 @@ class _VerificationScreenState extends State<VerificationScreen>
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: backgroundDark,
+        appBar: AppBar(
+          title: const Text(
+            "verification",
+          ).tr(),
+        ),
         body: Stack(
           children: [
             Container(

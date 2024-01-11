@@ -127,7 +127,6 @@ class EditProfileScreenState extends State<EditProfileScreen>
                     name: nameController.text, email: emailController.text));
           },
         ),
-        centerTitle: true,
         title: const Column(
           children: [
             Text("Edit Profile",

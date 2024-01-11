@@ -34,13 +34,15 @@ class ConnectionDetailScreen extends StatelessWidget {
           builder: (context, value, child) => value.isPro
               ? const SizedBox.shrink()
               : CustomCard(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   boxShadow: BoxShadow(
                     color: Colors.black.withOpacity(0.1),
                     blurRadius: 10,
                     offset: const Offset(0, 5),
                   ),
-                  child: AdsProvider.bannerAd(bannerAdUnitID, adsize: AdSize.mediumRectangle),
+                  child: AdsProvider.bannerAd(bannerAdUnitID,
+                      adsize: AdSize.mediumRectangle),
                 ),
         ),
       ]),

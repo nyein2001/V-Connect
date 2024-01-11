@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ndvpn/core/utils/preferences.dart';
 import 'package:ndvpn/core/utils/settings_item_widget.dart';
@@ -34,9 +35,7 @@ class SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Settings'),
-          automaticallyImplyLeading: true,
-          centerTitle: false,
+          title: const Text('settings').tr(),
         ),
         body: SingleChildScrollView(
             child: Column(children: [

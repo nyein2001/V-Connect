@@ -67,7 +67,6 @@
     "redeem_status" : "REDEEM STATUS",
     "contact_us_desc" : "Please enter you contact details and admin will soon contact you",
     "claim_desc" : "Please select your transaction type and fill the details and admin will soon contact you",
-    "payment_detail": "Payment detail"
-
-
+    "payment_detail": "Payment detail",
+    "verification": "Verification"
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/models/get_req_with_userid.dart';
@@ -25,17 +26,10 @@ class RewardScreen extends StatefulWidget {
 class RewardScreenState extends State<RewardScreen>
     with _RewardScreenMixin, TickerProviderStateMixin {
   @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: const Text("reward").tr(),
       ),
       body: Column(
@@ -69,9 +63,11 @@ class RewardScreenState extends State<RewardScreen>
             style: Theme.of(context).textTheme.titleMedium,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(
-            height: 20,
-          ),
+          Visibility(
+              visible: totalPoint == "0",
+              child: const SizedBox(
+                height: 20,
+              )),
           Visibility(
               visible: totalPoint == "0",
               child: Padding(
@@ -99,34 +95,49 @@ class RewardScreenState extends State<RewardScreen>
                 ),
               )),
           Expanded(
-            child: DefaultTabController(
-              length: 2,
-              child: Scaffold(
-                body: Column(
-                  children: [
-                    TabBar(
-                      controller: _tabController,
-                      tabs: [
-                        Tab(text: 'current_point'.tr()),
-                        Tab(text: 'withdrawal_history'.tr()),
-                      ],
-                    ),
-                    Expanded(
-                      child: TabBarView(
-                        controller: _tabController,
-                        children: const [
+              child: DefaultTabController(
+                  length: 2,
+                  child: Scaffold(
+                    body: NestedScrollView(
+                        headerSliverBuilder: (context, innnerBoxisScrolled) => [
+                              SliverAppBar(
+                                backgroundColor: Colors.transparent,
+                                floating: true,
+                                pinned: true,
+                                automaticallyImplyLeading: false,
+                                forceElevated: innnerBoxisScrolled,
+                                bottom: PreferredSize(
+                                    preferredSize: const Size.fromHeight(30),
+                                    child: _rewardTab()),
+                              )
+                            ],
+                        body: const ExtendedTabBarView(children: [
                           RewardCurrentFragment(),
-                          WithdrawalHistoryFragment(),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+                          WithdrawalHistoryFragment()
+                        ])),
+                  )))
         ],
       ),
+    );
+  }
+
+  Widget _rewardTab() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+          color: Colors.grey.withOpacity(.3),
+          borderRadius: BorderRadius.circular(20)),
+      child: TabBar(
+          splashBorderRadius: BorderRadius.circular(20),
+          indicatorColor: Colors.white,
+          indicator: BoxDecoration(
+              color: Colors.grey.shade100.withOpacity(.4),
+              borderRadius: BorderRadius.circular(20)),
+          tabs: [
+            Tab(text: 'current_point'.tr()),
+            Tab(text: 'withdrawal_history'.tr()),
+          ]),
     );
   }
 }

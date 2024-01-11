@@ -8,7 +8,7 @@ mixin _RedeemMixin on State<RedeemScreen> {
 
   String? isCodeValid(String? value) {
     if (value?.isEmpty == true) {
-      return 'Please enter your name';
+      return 'Please enter code';
     } else if ((value?.length ?? 0) < 3) {
       return 'Name must be at least 3 characters long';
     } else {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/assets.dart';
 import 'package:ndvpn/core/models/redeem_req.dart';
+import 'package:ndvpn/core/models/user_reference_code.dart';
 import 'package:ndvpn/core/resources/colors.dart';
 import 'package:ndvpn/core/utils/config.dart';
 import 'package:ndvpn/core/utils/constant.dart';
@@ -14,22 +15,24 @@ import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/main_screen.dart';
 import 'package:ndvpn/ui/screens/register_screen/register_screen.dart';
-part 'mixin/redeem_mixin.dart';
+part 'mixin/enter_reference_code_mixin.dart';
 
-class RedeemScreen extends StatefulWidget {
-  const RedeemScreen({super.key});
+class EnterReferenceCodeScreen extends StatefulWidget {
+  const EnterReferenceCodeScreen({super.key});
 
   @override
-  State<RedeemScreen> createState() => RedeemScreenState();
+  State<EnterReferenceCodeScreen> createState() =>
+      EnterReferenceCodeScreenState();
 }
 
-class RedeemScreenState extends State<RedeemScreen> with _RedeemMixin {
+class EnterReferenceCodeScreenState extends State<EnterReferenceCodeScreen>
+    with _EnterReferenceCodeMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "redeem",
+          "reference_code",
         ).tr(),
       ),
       body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -72,7 +75,7 @@ class RedeemScreenState extends State<RedeemScreen> with _RedeemMixin {
                         padding: const EdgeInsets.only(top: 15),
                         child: Center(
                           child: Text(
-                            "redemption_code_msg".tr(),
+                            "enter_ref_code_des".tr(),
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.w600),
@@ -159,35 +162,6 @@ class RedeemScreenState extends State<RedeemScreen> with _RedeemMixin {
                     ],
                   )),
             ),
-            const SizedBox(
-              height: 25,
-            ),
-            InkWell(
-              onTap: () => btnRedeemStatus,
-              child: Container(
-                width: MediaQuery.of(context).size.width / 2,
-                height: 45,
-                decoration: BoxDecoration(
-                    color: const Color(0xff0D1543),
-                    border: Border.all(color: Colors.blueAccent),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('redeem_status',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: const Color(0xffDDDDDD),
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 1,
-                            )).tr(),
-                    const SizedBox(
-                      width: 25,
-                    ),
-                    const Icon(Icons.keyboard_double_arrow_up)
-                  ],
-                ),
-              ),
-            )
           ],
         ))
       ]),

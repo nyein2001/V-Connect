@@ -52,6 +52,7 @@ dependencies:
   fluttertoast: ^8.2.4
   connectivity_plus: ^4.0.2
   share_plus: ^7.2.1
+  flutter_inappwebview: ^5.8.0
 
   #state management
   flutter_bloc: ^8.1.3

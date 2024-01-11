@@ -13,7 +13,7 @@ import 'package:ndvpn/ui/components/about_detail.dart';
 import 'package:ndvpn/ui/components/logout_alert.dart';
 import 'package:ndvpn/ui/screens/contact_us/contact_us_screen.dart';
 import 'package:ndvpn/ui/screens/earn_point/earn_point_screen.dart';
-import 'package:ndvpn/ui/screens/faq_screen.dart';
+import 'package:ndvpn/ui/screens/faq/faq_screen.dart';
 import 'package:ndvpn/ui/screens/html_screen.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/profile_screen.dart';

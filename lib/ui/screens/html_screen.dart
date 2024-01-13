@@ -22,8 +22,14 @@ class HtmlScreen extends StatelessWidget {
           FutureBuilder<String>(
             future: rootBundle.loadString(asset!),
             builder: (context, snapshot) => snapshot.hasData
-                ? Html(data: snapshot.data ?? "", shrinkWrap: true, onLinkTap: (link, _, __) => launchUrlString(link!))
-                : Container(height: 300, alignment: Alignment.center, child: const AdaptiveProgressIndicator()),
+                ? Html(
+                    data: snapshot.data ?? "",
+                    shrinkWrap: true,
+                    onLinkTap: (link, _, __) => launchUrlString(link!))
+                : Container(
+                    height: 300,
+                    alignment: Alignment.center,
+                    child: const AdaptiveProgressIndicator()),
           ),
         ],
       ),

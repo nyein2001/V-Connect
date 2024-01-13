@@ -11,11 +11,13 @@ import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/custom_divider.dart';
 import 'package:ndvpn/ui/components/about_detail.dart';
 import 'package:ndvpn/ui/components/logout_alert.dart';
+import 'package:ndvpn/ui/screens/about_us/about_us_screen.dart';
 import 'package:ndvpn/ui/screens/contact_us/contact_us_screen.dart';
 import 'package:ndvpn/ui/screens/earn_point/earn_point_screen.dart';
 import 'package:ndvpn/ui/screens/faq/faq_screen.dart';
 import 'package:ndvpn/ui/screens/html_screen.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
+import 'package:ndvpn/ui/screens/privacy_policy/privacy_policy_screen.dart';
 import 'package:ndvpn/ui/screens/profile_screen.dart';
 import 'package:ndvpn/ui/screens/redeem/redeem_screen.dart';
 import 'package:ndvpn/ui/screens/reference_code_screen.dart';
@@ -206,11 +208,8 @@ class _MainScreenState extends State<MainScreen> {
                   ListTile(
                       leading: const Icon(Icons.privacy_tip),
                       title: const Text('privacy_policy').tr(),
-                      onTap: () => startScreen(
-                          context,
-                          HtmlScreen(
-                              title: "privacy_policy".tr(),
-                              asset: "assets/html/privacy-policy.html"))),
+                      onTap: () =>
+                          startScreen(context, const PrivacyPolicyScreen())),
                   ListTile(
                       leading: const Icon(Icons.description),
                       title: const Text('terms_of_service').tr(),
@@ -222,7 +221,7 @@ class _MainScreenState extends State<MainScreen> {
                   ListTile(
                       leading: const Icon(Icons.info),
                       title: const Text('about').tr(),
-                      onTap: () => _aboutClick(context)),
+                      onTap: () => startScreen(context, const AboutUsScreen())),
                 ],
               ),
             ),

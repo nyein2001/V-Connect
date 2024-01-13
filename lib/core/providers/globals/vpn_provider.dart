@@ -77,7 +77,7 @@ class VpnProvider extends ChangeNotifier {
       config = vpnConfig?.ovpnConfiguration;
     }
     if (config == null) return;
-    log('$config');
+    log(config);
     engine.connect(
       config,
       vpnConfig!.serverName,

@@ -1,7 +1,6 @@
 part of '../earn_point_screen.dart';
 
 mixin _EarnPointMixin on State<EarnPointScreen> {
-  NetworkInfo networkInfo = NetworkInfo(Connectivity());
   List<EarnPoint> earnPointLists = [];
   bool noData = false;
 

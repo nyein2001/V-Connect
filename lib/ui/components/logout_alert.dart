@@ -68,8 +68,7 @@ class LogoutScreen extends StatelessWidget {
   }
 
   void logout(BuildContext context) async {
-    String userId = Preferences.getProfileId();
-    ReqWithUserId req = ReqWithUserId(methodName: "logout", userId: userId);
+    ReqWithUserId req = ReqWithUserId(methodName: "logout");
     String methodBody = jsonEncode(req.toJson());
     try {
       http.Response response = await http.post(

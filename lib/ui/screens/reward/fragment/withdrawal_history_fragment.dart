@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http;
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/models/get_req_with_userid.dart';
 import 'package:ndvpn/core/models/user_redeem.dart';
 import 'package:ndvpn/core/utils/constant.dart';
-import 'package:ndvpn/core/utils/network_available.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 part '../mixin/withdrawal_history_mixin.dart';
@@ -74,32 +71,9 @@ class WithdrawalHistoryFragmentState extends State<WithdrawalHistoryFragment>
                   leading: CircleAvatar(
                     radius: 25,
                     child: ClipOval(
-                      child: CachedNetworkImage(
-                        imageUrl: '',
-                        placeholder: (context, url) => Image.asset(
-                          "${AssetsPath.iconpath}logo_android.png",
-                          fit: BoxFit.cover,
-                          height: 125,
-                          width: 125,
-                        ),
-                        errorWidget: (context, url, error) => Image.asset(
-                          "${AssetsPath.iconpath}logo_android.png",
-                          fit: BoxFit.cover,
-                          height: 125,
-                          width: 125,
-                        ),
-                        imageBuilder: (context, imageProvider) => Container(
-                          height: 125,
-                          width: 125,
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(50)),
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
+                      child: Image.asset(
+                        "${AssetsPath.iconpath}logo_android.png",
+                        fit: BoxFit.cover,
                         height: 125,
                         width: 125,
                       ),

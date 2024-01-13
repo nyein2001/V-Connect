@@ -1,7 +1,6 @@
 part of '../reward_point_claim.dart';
 
 mixin _RewardPointMixin on State<RewardPointClaim> {
-  NetworkInfo networkInfo = NetworkInfo(Connectivity());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _descriptionController = TextEditingController();
 
@@ -28,8 +27,7 @@ mixin _RewardPointMixin on State<RewardPointClaim> {
   }
 
   Future<void> getContact() async {
-    ReqWithUserId req = ReqWithUserId(
-        methodName: 'get_payment_mode', userId: Preferences.getProfileId());
+    ReqWithUserId req = ReqWithUserId(methodName: 'get_payment_mode');
     String methodBody = jsonEncode(req.toJson());
     CustomProgressDialog customProgressDialog =
         CustomProgressDialog(context, dismissable: false, onDismiss: () {});

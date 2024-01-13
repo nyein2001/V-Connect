@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -13,7 +12,6 @@ import 'package:ndvpn/core/models/save_spinner_points_req.dart';
 import 'package:ndvpn/core/providers/globals/ads_provider.dart';
 import 'package:ndvpn/core/resources/environment.dart';
 import 'package:ndvpn/core/utils/constant.dart';
-import 'package:ndvpn/core/utils/network_available.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/spin_wheel/controller/lucky_wheel_controller.dart';
@@ -34,7 +32,6 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
   String remainSpin = '';
   String adOnSpin = "false";
   bool isloading = true;
-  NetworkInfo networkInfo = NetworkInfo(Connectivity());
   LuckyWheelController mySpinController = LuckyWheelController();
   InterstitialAd? interstitialAd;
   Timer? interstitialTimeout;

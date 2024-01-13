@@ -2,7 +2,6 @@ part of '../reward_screen.dart';
 
 mixin _RewardScreenMixin on State<RewardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  NetworkInfo networkInfo = NetworkInfo(Connectivity());
   bool noData = false;
   String totalPoint = '0';
   String money = '';
@@ -26,8 +25,7 @@ mixin _RewardScreenMixin on State<RewardScreen> {
   }
 
   Future<void> userData() async {
-    ReqWithUserId req = ReqWithUserId(
-        methodName: 'reward_points', userId: Preferences.getProfileId());
+    ReqWithUserId req = ReqWithUserId(methodName: 'reward_points');
     String methodBody = jsonEncode(req.toJson());
     CustomProgressDialog customProgressDialog =
         CustomProgressDialog(context, dismissable: false, onDismiss: () {});

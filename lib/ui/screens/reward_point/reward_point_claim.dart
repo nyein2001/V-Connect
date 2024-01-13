@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
@@ -8,7 +7,6 @@ import 'package:ndvpn/core/models/get_req_with_userid.dart';
 import 'package:ndvpn/core/models/payment_list.dart';
 import 'package:ndvpn/core/models/payment_req.dart';
 import 'package:ndvpn/core/utils/constant.dart';
-import 'package:ndvpn/core/utils/network_available.dart';
 import 'package:http/http.dart' as http;
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';

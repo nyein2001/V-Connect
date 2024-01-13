@@ -1,7 +1,6 @@
 part of '../fragment/reward_current_fragment.dart';
 
 mixin _RewardCurrentMixin on State<RewardCurrentFragment> {
-  NetworkInfo networkInfo = NetworkInfo(Connectivity());
   List<RewardPoint> rewardPointLists = [];
   bool noData = false;
 
@@ -23,8 +22,7 @@ mixin _RewardCurrentMixin on State<RewardCurrentFragment> {
   }
 
   Future<void> rewardPoint() async {
-    ReqWithUserId req = ReqWithUserId(
-        methodName: 'user_rewads_point', userId: Preferences.getProfileId());
+    ReqWithUserId req = ReqWithUserId(methodName: 'user_rewads_point');
     String methodBody = jsonEncode(req.toJson());
     try {
       http.Response response = await http.post(

@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
@@ -8,12 +6,10 @@ import 'package:ndvpn/core/models/contact_list.dart';
 import 'package:ndvpn/core/models/get_req_with_userid.dart';
 import 'package:ndvpn/core/models/send_contact_msg_req.dart';
 import 'package:ndvpn/core/utils/constant.dart';
-import 'package:ndvpn/core/utils/network_available.dart';
 import 'package:http/http.dart' as http;
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/register_screen/register_screen.dart';
-
 part 'mixin/contact_us_mixin.dart';
 
 final class ContactUsScreen extends StatefulWidget {

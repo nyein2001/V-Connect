@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/models/earn_point.dart';
 import 'package:ndvpn/core/models/points_details_req.dart';
 import 'package:ndvpn/core/utils/constant.dart';
-import 'package:ndvpn/core/utils/network_available.dart';
 import 'package:http/http.dart' as http;
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
@@ -72,32 +69,9 @@ class EarnPointScreenState extends State<EarnPointScreen> with _EarnPointMixin {
                   leading: CircleAvatar(
                     radius: 25,
                     child: ClipOval(
-                      child: CachedNetworkImage(
-                        imageUrl: '',
-                        placeholder: (context, url) => Image.asset(
-                          "${AssetsPath.iconpath}logo_android.png",
-                          fit: BoxFit.cover,
-                          height: 125,
-                          width: 125,
-                        ),
-                        errorWidget: (context, url, error) => Image.asset(
-                          "${AssetsPath.iconpath}logo_android.png",
-                          fit: BoxFit.cover,
-                          height: 125,
-                          width: 125,
-                        ),
-                        imageBuilder: (context, imageProvider) => Container(
-                          height: 125,
-                          width: 125,
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(50)),
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
+                      child: Image.asset(
+                        "${AssetsPath.iconpath}logo_android.png",
+                        fit: BoxFit.cover,
                         height: 125,
                         width: 125,
                       ),
@@ -123,33 +97,6 @@ class EarnPointScreenState extends State<EarnPointScreen> with _EarnPointMixin {
                   ),
                   visualDensity: VisualDensity.compact,
                   contentPadding: const EdgeInsets.all(12),
-                  // subtitle: Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: [
-                  //     Column(
-                  //       crossAxisAlignment: CrossAxisAlignment.baseline,
-                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //       textBaseline: TextBaseline.alphabetic,
-                  //       children: [
-                  //         Text(
-                  //           "${rewardPoint.date} - ${rewardPoint.time}",
-                  //           overflow: TextOverflow.fade,
-                  //           softWrap: false,
-                  //           style: const TextStyle(
-                  //               fontWeight: FontWeight.w400, fontSize: 14),
-                  //         ),
-                  //         Text(
-                  //           rewardPoint.activityType,
-                  //           overflow: TextOverflow.fade,
-                  //           softWrap: false,
-                  //           style: const TextStyle(
-                  //               fontSize: 14, color: Color(0xfff20056)),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //     const Text('Points'),
-                  //   ],
-                  // ),
                 );
               },
               separatorBuilder: (BuildContext context, int index) =>

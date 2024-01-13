@@ -1,7 +1,6 @@
 part of '../redeem_screen.dart';
 
 mixin _RedeemMixin on State<RedeemScreen> {
-  NetworkInfo networkInfo = NetworkInfo(Connectivity());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _codeController = TextEditingController();
   String code = '';

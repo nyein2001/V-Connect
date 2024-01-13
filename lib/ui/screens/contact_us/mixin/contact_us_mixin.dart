@@ -1,7 +1,6 @@
 part of '../contact_us_screen.dart';
 
 mixin _ContactUsMixin on State<ContactUsScreen> {
-  NetworkInfo networkInfo = NetworkInfo(Connectivity());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -30,8 +29,7 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
   }
 
   Future<void> getContact() async {
-    ReqWithUserId req = ReqWithUserId(
-        methodName: 'get_contact', userId: Preferences.getProfileId());
+    ReqWithUserId req = ReqWithUserId(methodName: 'get_contact');
     String methodBody = jsonEncode(req.toJson());
     CustomProgressDialog customProgressDialog =
         CustomProgressDialog(context, dismissable: false, onDismiss: () {});

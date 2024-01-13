@@ -1,7 +1,6 @@
 part of '../fragment/withdrawal_history_fragment.dart';
 
 mixin _WithdrawalHistoryMixin on State<WithdrawalHistoryFragment> {
-  NetworkInfo networkInfo = NetworkInfo(Connectivity());
   List<UserRedeem> userRedeemLists = [];
   bool noData = false;
 
@@ -23,8 +22,7 @@ mixin _WithdrawalHistoryMixin on State<WithdrawalHistoryFragment> {
   }
 
   Future<void> history() async {
-    ReqWithUserId req = ReqWithUserId(
-        methodName: 'user_redeem_history', userId: Preferences.getProfileId());
+    ReqWithUserId req = ReqWithUserId(methodName: 'user_redeem_history');
     String methodBody = jsonEncode(req.toJson());
     CustomProgressDialog customProgressDialog =
         CustomProgressDialog(context, dismissable: false, onDismiss: () {});

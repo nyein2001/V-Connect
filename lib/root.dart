@@ -56,10 +56,15 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
       Preferences.setShowLogin(showLogin: false);
     }
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
-      Future.delayed(const Duration(seconds: 5)).then((value) {
+      Future.delayed(const Duration(seconds: 5)).then((value) async {
         if (!_ready) {
           if (Preferences.isLogin()) {
-            loginFun();
+            bool isConnected = await networkInfo.isConnected;
+            if (isConnected) {
+              loginFun();
+            } else {
+              replaceScreen(context, const MainScreen());
+            }
           } else {
             setState(() {
               _ready = true;
@@ -72,7 +77,12 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
           .then((value) => _appOpenAd?.showIfNotPro(context))
           .catchError((_) {});
       if (Preferences.isLogin()) {
-        loginFun();
+        bool isConnected = await networkInfo.isConnected;
+        if (isConnected) {
+          loginFun();
+        } else {
+          replaceScreen(context, const MainScreen());
+        }
       } else {
         setState(() {
           _ready = true;
@@ -119,10 +129,16 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
     LoginWithUserid req = LoginWithUserid(userid: Preferences.getProfileId());
     String requestBody = jsonEncode(req.toJson());
     try {
-      http.Response response = await http.post(
-        Uri.parse(AppConstants.baseURL),
-        body: {'data': base64Encode(utf8.encode(requestBody))},
-      );
+      http.Response response = await http
+          .post(
+            Uri.parse(AppConstants.baseURL),
+            body: {'data': base64Encode(utf8.encode(requestBody))},
+          )
+          .timeout(const Duration(seconds: 25))
+          .onError((error, stackTrace) {
+            replaceScreen(context, const MainScreen());
+            return http.Response('Error occurred', 500);
+          });
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         if (jsonResponse.containsKey(AppConstants.status)) {

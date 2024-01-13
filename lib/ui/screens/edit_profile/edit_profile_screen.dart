@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
@@ -9,12 +8,11 @@ import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ndialog/ndialog.dart';
-import 'package:ndvpn/core/models/get_profile_req.dart';
+import 'package:ndvpn/core/models/get_req_with_userid.dart';
 import 'package:ndvpn/core/models/user_info.dart';
 import 'package:ndvpn/core/models/user_profile_update.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/gallery_permission.dart';
-import 'package:ndvpn/core/utils/network_available.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/register_screen/register_screen.dart';
@@ -35,7 +33,6 @@ class EditProfileScreenState extends State<EditProfileScreen>
   File? image;
   bool isValidate = false;
   String profileImage = "";
-  NetworkInfo networkInfo = NetworkInfo(Connectivity());
   String name = Preferences.getName();
   String email = Preferences.getEmail();
   String phone = Preferences.getPhoneNo();
@@ -59,7 +56,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
   }
 
   void getProfile() async {
-    UserProfileReq req = UserProfileReq(userId: Preferences.getProfileId());
+    ReqWithUserId req = ReqWithUserId(methodName: "user_profile");
     String methodBody = jsonEncode(req.toJson());
     CustomProgressDialog customProgressDialog =
         CustomProgressDialog(context, dismissable: false, onDismiss: () {});

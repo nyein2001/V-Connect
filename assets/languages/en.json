@@ -69,5 +69,10 @@
     "claim_desc" : "Please select your transaction type and fill the details and admin will soon contact you",
     "payment_detail": "Payment detail",
     "verification": "Verification",
-    "enter_ref_code_des": "Enter your friends reference code to earn more points."
+    "enter_ref_code_des": "Enter your friends reference code to earn more points.",
+    "renew_on": "Renews on: ",
+    "cancel_subscription": "Cancel Subscription",
+    "profile": "Profile",
+    "confirm_cancellation": "Confirm Cancellation",
+    "confirm_cancellation_msg": "Are you sure you want to cancel your subscription?"
 }

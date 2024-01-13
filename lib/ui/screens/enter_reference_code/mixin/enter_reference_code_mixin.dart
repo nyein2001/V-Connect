@@ -1,7 +1,6 @@
 part of '../enter_reference_code_screen.dart';
 
 mixin _EnterReferenceCodeMixin on State<EnterReferenceCodeScreen> {
-  NetworkInfo networkInfo = NetworkInfo(Connectivity());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _codeController = TextEditingController();
   String code = '';

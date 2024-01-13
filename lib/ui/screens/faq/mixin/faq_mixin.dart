@@ -1,7 +1,6 @@
 part of '../faq_screen.dart';
 
 mixin _FaqMixin on State<FaqScreen> {
-  NetworkInfo networkInfo = NetworkInfo(Connectivity());
   GlobalKey key = GlobalKey();
   String appFaq = 'appFaq';
   String text = '';
@@ -24,8 +23,7 @@ mixin _FaqMixin on State<FaqScreen> {
   }
 
   Future<void> getRefCode() async {
-    ReqWithUserId req = ReqWithUserId(
-        methodName: 'app_faq', userId: Preferences.getProfileId());
+    ReqWithUserId req = ReqWithUserId(methodName: 'app_faq');
     String methodBody = jsonEncode(req.toJson());
     CustomProgressDialog customProgressDialog =
         CustomProgressDialog(context, dismissable: false, onDismiss: () {});

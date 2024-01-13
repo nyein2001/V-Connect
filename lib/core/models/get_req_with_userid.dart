@@ -1,15 +1,15 @@
 import 'package:ndvpn/core/utils/constant.dart';
+import 'package:ndvpn/core/utils/preferences.dart';
 
 class ReqWithUserId {
   static String sign = AppConstants.sign;
   static String salt = AppConstants.randomSalt.toString();
   static String packageName = AppConstants.packageName;
+  static String userId = Preferences.getProfileId();
   final String methodName;
-  final String userId;
 
   ReqWithUserId({
     required this.methodName,
-    required this.userId,
   });
 
   Map<String, dynamic> toJson() {

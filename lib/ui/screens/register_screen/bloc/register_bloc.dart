@@ -38,7 +38,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
             } else {
               Map<String, dynamic> data = jsonResponse[AppConstants.tag];
               String msg = data['msg'];
-              String success = data['success'];
+              String success = "${data['success']}";
               if (success == '1') {
                 Fluttertoast.showToast(
                     msg: msg, toastLength: Toast.LENGTH_SHORT);
@@ -88,7 +88,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           String msg = data['msg'];
-          String success = data['success'];
+          String success = "${data['success']}";
           Preferences.setVerification(isVerification: false);
           if (success == '1') {
             emit(const RegisterSuccess());

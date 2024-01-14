@@ -89,7 +89,7 @@ mixin _VerificationMixin on State<VerificationScreen> {
       } else {
         Map<String, dynamic> data = jsonResponse[AppConstants.tag];
         String msg = data['msg'];
-        String success = data['success'];
+        String success = "${data['success']}";
         Preferences.setVerification(isVerification: false);
         if (success == '1') {
           startScreen(context, const LoginScreen());
@@ -139,7 +139,7 @@ mixin _VerificationMixin on State<VerificationScreen> {
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           String msg = data['msg'];
-          String success = data['success'];
+          String success = "${data['success']}";
           if (success == '1') {
             Preferences.setOtp(verificationCode: otp);
           }

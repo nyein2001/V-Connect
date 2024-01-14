@@ -118,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           }
         } else {
           Map<String, dynamic> data = jsonData[AppConstants.tag];
-          String success = data['success'];
+          String success = "${data['success']}";
           if (success == "1") {
             name = data["name"];
             email = data["email"];

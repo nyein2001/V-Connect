@@ -151,20 +151,21 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
           }
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
-          String success = data['success'];
-          String noAds = data["no_ads"];
-          String premiumServers = data["premium_servers"];
-          String isPremium = data["is_premium"];
-          String perks = data["perks"];
-          String exp = data["exp"];
-
-          Config.noAds = noAds == "1";
-          Config.premiumServersAccess = premiumServers == "1";
-          Config.isPremium = isPremium == "1";
-          Config.perks = perks;
-          Config.expiration = exp;
+          String success = "${data['success']}";
 
           if (success == '1') {
+            String noAds = data["no_ads"];
+            String premiumServers = data["premium_servers"];
+            String isPremium = data["is_premium"];
+            String perks = data["perks"];
+            String exp = data["exp"];
+
+            Config.noAds = noAds == "1";
+            Config.premiumServersAccess = premiumServers == "1";
+            Config.isPremium = isPremium == "1";
+            Config.perks = perks;
+            Config.expiration = exp;
+
             if (isFirstTime) {
               replaceScreen(context, const OnBoardingPage());
             } else {

@@ -120,7 +120,7 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
       } else {
         Map<String, dynamic> data = jsonResponse[AppConstants.tag];
         String msg = data['msg'];
-        String success = data['success'];
+        String success = "${data['success']}";
         if (success == '1') {
           String userId = data["user_id"];
           String email = data["email"];

@@ -132,7 +132,7 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
         } else {
           Map<String, dynamic> data = jsonData[AppConstants.tag];
           String msg = data['msg'];
-          String success = '${data['success']}';
+          String success = "${data['success']}";
           print(data.toString());
           if (success == '1') {
             _descriptionController.clear();

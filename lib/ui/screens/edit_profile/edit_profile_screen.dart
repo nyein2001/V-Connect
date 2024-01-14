@@ -85,7 +85,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
           }
         } else {
           Map<String, dynamic> data = jsonData[AppConstants.tag];
-          String success = data['success'];
+          String success = "${data['success']}";
           if (success == "1") {
             nameController.text = data["name"];
             emailController.text = data["email"];

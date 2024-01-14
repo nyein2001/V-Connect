@@ -58,7 +58,7 @@ mixin _AboutUsMixin on State<AboutUsScreen> {
           }
         } else {
           Map<String, dynamic> data = jsonData[AppConstants.tag];
-          String success = '${data['success']}';
+          String success = "${data['success']}";
           if (success == "1") {
             appFaq = data["app_description"];
             appName = data["app_name"];

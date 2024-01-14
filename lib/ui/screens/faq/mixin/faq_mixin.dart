@@ -52,7 +52,7 @@ mixin _FaqMixin on State<FaqScreen> {
           }
         } else {
           Map<String, dynamic> data = jsonData[AppConstants.tag];
-          String success = '${data['success']}';
+          String success = "${data['success']}";
           if (success == "1") {
             appFaq = data["app_faq"];
             text = '''

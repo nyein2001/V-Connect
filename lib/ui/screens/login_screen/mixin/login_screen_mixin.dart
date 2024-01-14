@@ -84,7 +84,7 @@ mixin _LoginScreenMixin on State<LoginScreen> {
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           String msg = data['msg'];
-          String success = '${data['success']}';
+          String success = "${data['success']}";
           print(data.toString());
           if (success == '1') {
             String userid = data['user_id'];

@@ -50,7 +50,7 @@ mixin _PrivacyPolicyMixin on State<PrivacyPolicyScreen> {
           }
         } else {
           Map<String, dynamic> data = jsonData[AppConstants.tag];
-          String success = '${data['success']}';
+          String success = "${data['success']}";
           if (success == "1") {
             appFaq = data["app_privacy_policy"];
             text = '''

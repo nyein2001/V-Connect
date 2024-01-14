@@ -230,7 +230,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           String msg = data['msg'];
-          String success = data['success'];
+          String success = "${data['success']}";
           if (success == '1') {
             Fluttertoast.showToast(msg: msg, toastLength: Toast.LENGTH_SHORT);
             Preferences.setVerification(isVerification: true);
@@ -289,7 +289,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
       } else {
         Map<String, dynamic> data = jsonResponse[AppConstants.tag];
         String msg = data['msg'];
-        String success = data['success'];
+        String success = "${data['success']}";
         if (success == '1') {
           replaceScreen(context, const LoginScreen());
         }

@@ -54,7 +54,7 @@ mixin _RewardScreenMixin on State<RewardScreen> {
           }
         } else {
           Map<String, dynamic> data = jsonData[AppConstants.tag];
-          String success = '${data['success']}';
+          String success = "${data['success']}";
           if (success == "1") {
             totalPoint = data["total_point"];
             String redeemPoints = '${data["redeem_points"]}';

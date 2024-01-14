@@ -164,7 +164,7 @@ class RedeemScreenState extends State<RedeemScreen> with _RedeemMixin {
               child: Container(
                 width: MediaQuery.of(context).size.width / 2,
                 height: 45,
-                padding: EdgeInsets.only(left: 10, right: 10),
+                padding: const EdgeInsets.only(left: 10, right: 10),
                 decoration: BoxDecoration(
                     color: const Color(0xff0D1543),
                     border: Border.all(color: Colors.blueAccent),

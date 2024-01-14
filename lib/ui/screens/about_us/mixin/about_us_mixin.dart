@@ -22,9 +22,7 @@ mixin _AboutUsMixin on State<AboutUsScreen> {
   void callData() async {
     bool isConnected = await networkInfo.isConnected;
     if (isConnected) {
-      if (Preferences.isLogin()) {
-        getRefCode();
-      }
+      getRefCode();
     } else {
       alertBox("Internet connection not available", false, context);
     }

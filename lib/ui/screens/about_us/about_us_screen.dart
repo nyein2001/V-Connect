@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +11,8 @@ import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/custom_card.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'dart:core';
+
+import 'package:url_launcher/url_launcher.dart';
 part 'mixin/about_us_mixin.dart';
 
 class AboutUsScreen extends StatefulWidget {
@@ -81,77 +82,121 @@ class AboutUsScreenState extends State<AboutUsScreen> with _AboutUsMixin {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: CustomCard(
-                          padding: const EdgeInsets.only(top: 10, bottom: 10),
                           child: ListTile(
-                            leading: const Icon(
-                              Icons.info_outline_rounded,
-                              size: 50,
-                            ),
-                            title: const Text('Version').tr(),
-                            subtitle: Text(appVersion),
-                          )),
+                        leading: const Icon(
+                          Icons.info_outline_rounded,
+                        ),
+                        title: const Text('Version').tr(),
+                        subtitle: Text(appVersion),
+                      )),
                     ),
                     Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: CustomCard(
-                            padding: const EdgeInsets.only(top: 10, bottom: 10),
                             child: ListTile(
-                              leading: const Icon(Icons.business),
-                              title: const Text('Company').tr(),
-                              subtitle: Text(appAuthor),
-                            ))),
+                          leading: const Icon(Icons.business),
+                          title: const Text('Company').tr(),
+                          subtitle: Text(appAuthor),
+                        ))),
                     Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: CustomCard(
-                            padding: const EdgeInsets.only(top: 10, bottom: 10),
                             child: ListTile(
-                              leading: const Icon(Icons.email),
-                              title: const Text('Email').tr(),
-                              subtitle: Text(appEmail),
-                            ))),
+                          leading: const Icon(Icons.email),
+                          title: const Text('Email').tr(),
+                          subtitle: Text(appEmail),
+                          onTap: () => launchEmail(),
+                        ))),
                     Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: CustomCard(
-                            padding: const EdgeInsets.only(top: 10, bottom: 10),
                             child: ListTile(
-                              leading: const Icon(Icons.language),
-                              title: const Text('Website').tr(),
-                              subtitle: Text(appWebsite),
-                            ))),
+                          leading: const Icon(Icons.language),
+                          title: const Text('Website').tr(),
+                          subtitle: Text(appWebsite),
+                          onTap: () => launchWebsite(),
+                        ))),
                     Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: CustomCard(
-                            padding: const EdgeInsets.only(top: 10, bottom: 10),
                             child: ListTile(
-                              leading: const Icon(Icons.phone),
-                              title: const Text('Contact').tr(),
-                              subtitle: Text(appContact),
-                            ))),
-                    // Padding(
-                    //     padding: const EdgeInsets.only(bottom: 10),
-                    //     child: CustomCard(
-                    //         padding: const EdgeInsets.only(top: 10, bottom: 10),
-                    //         child: ListTile(
-                    //           title: const Text('About').tr(),
-                    //           subtitle: text == ''
-                    //               ? Container()
-                    //               : InAppWebView(
-                    //                   key: key,
-                    //                   initialOptions: InAppWebViewGroupOptions(
-                    //                       crossPlatform: InAppWebViewOptions(
-                    //                           transparentBackground: true)),
-                    //                   initialUrlRequest: URLRequest(
-                    //                       url: Uri.parse(
-                    //                           'https://www.youtube.com/')),
-                    //                   onWebViewCreated: (controller) async {
-                    //                     await controller.loadData(
-                    //                         data: text,
-                    //                         mimeType: 'text/html',
-                    //                         encoding: 'utf-8');
-                    //                   },
-                    //                 ),
-                    //         ))),
+                          leading: const Icon(Icons.phone),
+                          title: const Text(
+                            'Contact',
+                          ).tr(),
+                          subtitle: Text(appContact),
+                          onTap: () => makePhoneCall(),
+                        ))),
+                    Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: CustomCard(
+                            child: ListTile(
+                                title: const Text('About').tr(),
+                                subtitle: text == ''
+                                    ? Container()
+                                    : SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height,
+                                        child: InAppWebView(
+                                          key: key,
+                                          initialOptions:
+                                              InAppWebViewGroupOptions(
+                                                  crossPlatform:
+                                                      InAppWebViewOptions(
+                                                          transparentBackground:
+                                                              true)),
+                                          initialUrlRequest: URLRequest(
+                                              url: Uri.parse(
+                                                  'https://www.youtube.com/')),
+                                          onWebViewCreated: (controller) async {
+                                            await controller.loadData(
+                                                data: text,
+                                                mimeType: 'text/html',
+                                                encoding: 'utf-8');
+                                          },
+                                        ),
+                                      )))),
                   ]))
         ]));
+  }
+
+  void launchEmail() async {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: appEmail,
+    );
+
+    try {
+      await launchUrl(emailLaunchUri);
+    } catch (e) {
+      alertBox('Something went wrong.', false, context);
+    }
+  }
+
+  void launchWebsite() async {
+    String url = appWebsite;
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      url = "http://$url";
+    }
+
+    try {
+      await launchUrl(Uri.parse(url));
+    } catch (e) {
+      alertBox('Something went wrong.', false, context);
+    }
+  }
+
+  void makePhoneCall() async {
+    if (appContact != "Not Available") {
+      final Uri phoneCallUri = Uri(scheme: 'tel', path: appContact);
+
+      try {
+        if (await canLaunchUrl(phoneCallUri)) {
+          await launchUrl(phoneCallUri);
+        }
+      } catch (e) {
+        alertBox('Something went wrong.', false, context);
+      }
+    }
   }
 }

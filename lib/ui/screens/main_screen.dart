@@ -1,12 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ndialog/ndialog.dart';
+import 'package:ndvpn/core/models/get_req_with_userid.dart';
 import 'package:ndvpn/core/providers/globals/ads_provider.dart';
 import 'package:ndvpn/core/providers/globals/vpn_provider.dart';
 import 'package:ndvpn/core/resources/environment.dart';
+import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/custom_divider.dart';
 import 'package:ndvpn/ui/components/about_detail.dart';
@@ -35,6 +38,7 @@ import '../../core/providers/globals/theme_provider.dart';
 import '../components/connection_button.dart';
 import '../components/custom_image.dart';
 import 'connection_detail_screen.dart';
+import 'package:http/http.dart' as http;
 
 /// Main screen of the app
 class MainScreen extends StatefulWidget {
@@ -46,6 +50,128 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    callData();
+  }
+
+  void callData() async {
+    bool isConnected = await networkInfo.isConnected;
+    if (isConnected) {
+      getRefCode();
+    } else {
+      alertBox("Internet connection not available", false, context);
+    }
+  }
+
+  Future<void> getRefCode() async {
+    ReqWithUserId req = ReqWithUserId(methodName: 'app_settings');
+    String methodBody = jsonEncode(req.toJson());
+    try {
+      http.Response response = await http.post(
+        Uri.parse(AppConstants.baseURL),
+        body: {'data': base64Encode(utf8.encode(methodBody))},
+      ).then((value) {
+        return value;
+      });
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonData = jsonDecode(response.body);
+
+        if (jsonData.containsKey("status")) {
+          String status = jsonData["status"];
+          String message = jsonData["message"];
+
+          if (status == "-2") {
+            replaceScreen(context, const LoginScreen());
+            alertBox(message, false, context);
+          } else {
+            alertBox(message, false, context);
+          }
+        } else {
+          Map<String, dynamic> data = jsonData[AppConstants.tag];
+          String success = '${data['success']}';
+          if (success == "1") {
+            String appUpdateStatus = data["app_update_status"];
+            String appUpdateDesc = data["app_update_desc"];
+            String appRedirectUrl = data["app_redirect_url"];
+            String cancelUpdateStatus = data["cancel_update_status"];
+            String appNewVersion = "${data["app_new_version"]}";
+            final String version = (await PackageInfo.fromPlatform()).version;
+            if (appUpdateStatus == "true" && appNewVersion != version) {
+              showUpdateDialog(
+                  desc: appUpdateDesc,
+                  url: appRedirectUrl,
+                  status: cancelUpdateStatus);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      print("Error updateUIWithData  $error");
+    }
+  }
+
+  void showUpdateDialog(
+      {required String desc,
+      required String url,
+      required String status}) async {
+    return NAlertDialog(
+      blur: 10,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CircleAvatar(
+              radius: 20,
+              child: ClipRRect(
+                  child: Image.asset(
+                "${AssetsPath.iconpath}logo_android.png",
+                fit: BoxFit.cover,
+                height: 125,
+                width: 125,
+              ))),
+          const SizedBox(
+            width: 10,
+          ),
+          Text(
+            appName,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge!
+                .copyWith(fontWeight: FontWeight.bold, fontSize: 18),
+          )
+        ],
+      ),
+      content: Text(desc),
+      actions: [
+        TextButton(
+          child: const Text("Yes"),
+          onPressed: () {
+            _launchURL(url);
+            Navigator.pop(context);
+          },
+        ),
+        Visibility(
+            visible: status == "true",
+            child: TextButton(
+              child: const Text("No"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )),
+      ],
+    ).show(context);
+  }
+
+  _launchURL(String link) async {
+    if (await canLaunchUrl(Uri.parse(link))) {
+      await launchUrl(Uri.parse(link));
+    } else {
+      throw 'Could not launch $link';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

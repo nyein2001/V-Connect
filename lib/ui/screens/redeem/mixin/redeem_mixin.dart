@@ -26,7 +26,6 @@ mixin _RedeemMixin on State<RedeemScreen> {
 
   void redeemProcess() async {
     code = _codeController.text;
-    _codeController.clear();
     bool isConnected = await networkInfo.isConnected;
     if (isConnected) {
       if (Preferences.isLogin()) {
@@ -56,6 +55,7 @@ mixin _RedeemMixin on State<RedeemScreen> {
       });
 
       if (response.statusCode == 200) {
+        _codeController.clear();
         Map<String, dynamic> jsonData = jsonDecode(response.body);
 
         if (jsonData.containsKey("status")) {
@@ -70,19 +70,19 @@ mixin _RedeemMixin on State<RedeemScreen> {
           }
         } else {
           Map<String, dynamic> data = jsonData[AppConstants.tag];
-          String success = data['success'];
-
-          String noAds = "${data['no_ads']}";
-          String premiumServers = "${data['premium_servers']}";
-          String perks = data['perks'];
-          String exp = data['exp'];
+          String success = "${data['success']}";
           String msg = data['msg'];
-
-          Config.noAds = noAds == "1";
-          Config.premiumServersAccess = premiumServers == "1";
-          Config.perks = perks;
-          Config.expiration = exp;
           if (success == "1") {
+            String noAds = "${data['no_ads']}";
+            String premiumServers = "${data['premium_servers']}";
+            String perks = data['perks'];
+            String exp = data['exp'];
+
+            Config.noAds = noAds == "1";
+            Config.premiumServersAccess = premiumServers == "1";
+            Config.perks = perks;
+            Config.expiration = exp;
+
             _showRedeemDialog(
                 title: 'Success!',
                 perks: perks,
@@ -94,8 +94,11 @@ mixin _RedeemMixin on State<RedeemScreen> {
           }
           setState(() {});
         }
+      } else {
+        _codeController.clear();
       }
     } catch (error) {
+      _codeController.clear();
       print("Error updateUIWithData  $error");
     }
   }

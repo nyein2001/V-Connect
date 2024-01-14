@@ -125,7 +125,7 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
           String userId = data["user_id"];
           String email = data["email"];
           String name = data["name"];
-          bool referralCode = data["referral_code"];
+          String referralCode = "${data["referral_code"]}";
           String stripeJson = data["stripe"];
 
           if (stripeJson != "") {
@@ -147,7 +147,7 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
 
           if (Config.loginBack) {
           } else {
-            if (referralCode) {
+            if (referralCode == "true") {
               replaceScreen(context, EnterReferenceCodeScreen(userId: userId));
             } else {
               if (data['no_ads'] != null) {

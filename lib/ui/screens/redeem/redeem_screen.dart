@@ -29,9 +29,9 @@ class RedeemScreenState extends State<RedeemScreen> with _RedeemMixin {
           "redeem",
         ).tr(),
       ),
-      body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        SingleChildScrollView(
-            child: Column(
+      body: SingleChildScrollView(
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Column(
           children: [
             Card(
               color: Theme.of(context).cardColor,
@@ -109,7 +109,7 @@ class RedeemScreenState extends State<RedeemScreen> with _RedeemMixin {
                               width: double.infinity,
                               height: 45,
                               child: ElevatedButton(
-                                onPressed: () => redeemProcess,
+                                onPressed: () => redeemProcess(),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xffFF4081),
                                   padding: const EdgeInsets.symmetric(
@@ -160,16 +160,17 @@ class RedeemScreenState extends State<RedeemScreen> with _RedeemMixin {
               height: 25,
             ),
             InkWell(
-              onTap: () => btnRedeemStatus,
+              onTap: () => btnRedeemStatus(),
               child: Container(
                 width: MediaQuery.of(context).size.width / 2,
                 height: 45,
+                padding: EdgeInsets.only(left: 10, right: 10),
                 decoration: BoxDecoration(
                     color: const Color(0xff0D1543),
                     border: Border.all(color: Colors.blueAccent),
                     borderRadius: BorderRadius.circular(10)),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('redeem_status',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -177,17 +178,14 @@ class RedeemScreenState extends State<RedeemScreen> with _RedeemMixin {
                               fontWeight: FontWeight.w400,
                               letterSpacing: 1,
                             )).tr(),
-                    const SizedBox(
-                      width: 25,
-                    ),
                     const Icon(Icons.keyboard_double_arrow_up)
                   ],
                 ),
               ),
             )
           ],
-        ))
-      ]),
+        )
+      ])),
     );
   }
 }

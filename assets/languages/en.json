@@ -31,7 +31,7 @@
     "version": "Version {}",
     "about_description": "{name} is a free and unlimited VPN (Virtual Private Network) proxy. {name} allows you to unblock sites and apps, browse privately, and secure your device",
     "not_allowed_description": "Server only available for premium users",
-    "also_allowed_with_watch_ad_description": "Server only available for premium users, but you can also use it by watching an ad",
+    "also_allowed_with_watch_ad_description": "You want to purchase to continue?",
     "watch_ad": "Watch Ad",
     "go_premium": "Go Premium",
     "not_allowed": "Not Allowed",

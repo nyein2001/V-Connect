@@ -10,6 +10,7 @@ import 'package:ndvpn/core/resources/colors.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/custom_divider.dart';
 import 'package:ndvpn/ui/components/custom_image.dart';
+import 'package:ndvpn/ui/screens/redeem/redeem_screen.dart';
 import 'package:ndvpn/ui/screens/subscription_screen.dart';
 
 import '../../core/providers/globals/ads_provider.dart';
@@ -99,7 +100,7 @@ class _ServerItemState extends State<ServerItem>
         !force) {
       return NAlertDialog(
         blur: 10,
-        title: const Text("not_allowed").tr(),
+        title: const Text("premium_servers").tr(),
         content: Text(unlockProServerWithRewardAds
                 ? "also_allowed_with_watch_ad_description"
                 : "not_allowed_description")
@@ -116,6 +117,10 @@ class _ServerItemState extends State<ServerItem>
           TextButton(
             child: Text("go_premium".tr()),
             onPressed: () => replaceScreen(context, const SubscriptionScreen()),
+          ),
+          TextButton(
+            child: Text("redeem".tr()),
+            onPressed: () => replaceScreen(context, const RedeemScreen()),
           ),
         ],
       ).show(context);

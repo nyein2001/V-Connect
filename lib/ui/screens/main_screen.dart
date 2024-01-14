@@ -7,6 +7,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/models/get_req_with_userid.dart';
 import 'package:ndvpn/core/providers/globals/ads_provider.dart';
+import 'package:ndvpn/core/providers/globals/iap_provider.dart';
 import 'package:ndvpn/core/providers/globals/vpn_provider.dart';
 import 'package:ndvpn/core/resources/environment.dart';
 import 'package:ndvpn/core/utils/constant.dart';
@@ -368,8 +369,11 @@ class _MainScreenState extends State<MainScreen> {
               _selectVpnWidget(context),
               const ColumnDivider(space: 20),
               Center(
-                  child: AdsProvider.bannerAd(bannerAdUnitID,
-                      adsize: AdSize.mediumRectangle)),
+                  child: Consumer<IAPProvider>(
+                      builder: (context, value, child) => value.isPro
+                          ? const SizedBox.shrink()
+                          : AdsProvider.bannerAd(bannerAdUnitID,
+                              adsize: AdSize.mediumRectangle))),
               const ColumnDivider(space: 20),
             ],
           ),

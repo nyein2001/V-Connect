@@ -30,7 +30,7 @@
     "version": "Versi {}",
     "about_description": "{name} adalah VPN (Virtual Private Network) proxy gratis dan tak terbatas. {name} memungkinkan Anda membuka situs dan aplikasi, menelusuri secara pribadi, dan mengamankan perangkat Anda",
     "not_allowed_description": "Server hanya tersedia untuk pengguna premium",
-    "also_allowed_with_watch_ad_description": "Server hanya tersedia untuk pengguna premium, tetapi Anda juga dapat menggunakannya dengan menonton iklan",
+    "also_allowed_with_watch_ad_description": "You want to purchase to continue?",
     "watch_ad": "Tonton Iklan",
     "go_premium": "Jadi Premium",
     "not_allowed": "Not Allowed",

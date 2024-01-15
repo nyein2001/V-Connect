@@ -78,10 +78,10 @@ mixin _ForgotPasswordMixin on State<ForgotPasswordScreen> {
           alertBox(msg, false, context);
         }
       } else {
-        alertBox('Failed. Try again.', false, context);
+        alertBox('error'.tr(), false, context);
       }
     } catch (e) {
-      alertBox('Server timeout', false, context);
+      alertBox('error'.tr(), false, context);
     }
   }
 }

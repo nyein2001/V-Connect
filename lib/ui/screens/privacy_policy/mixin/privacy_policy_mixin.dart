@@ -16,7 +16,7 @@ mixin _PrivacyPolicyMixin on State<PrivacyPolicyScreen> {
     if (isConnected) {
       getRefCode();
     } else {
-      alertBox("Internet connection not available", false, context);
+      alertBox("no_internet_msg".tr(), false, context);
     }
   }
 

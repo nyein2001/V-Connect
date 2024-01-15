@@ -19,7 +19,6 @@ import 'package:ndvpn/ui/screens/about_us/about_us_screen.dart';
 import 'package:ndvpn/ui/screens/contact_us/contact_us_screen.dart';
 import 'package:ndvpn/ui/screens/earn_point/earn_point_screen.dart';
 import 'package:ndvpn/ui/screens/faq/faq_screen.dart';
-import 'package:ndvpn/ui/screens/html_screen.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/privacy_policy/privacy_policy_screen.dart';
 import 'package:ndvpn/ui/screens/profile_screen.dart';
@@ -63,7 +62,7 @@ class _MainScreenState extends State<MainScreen> {
     if (isConnected) {
       getRefCode();
     } else {
-      alertBox("Internet connection not available", false, context);
+      alertBox("no_internet_msg".tr(), false, context);
     }
   }
 
@@ -204,7 +203,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const ProfileScreen());
                         } else {
-                          alertBox("You have not login", true, context);
+                          alertBox("no_login_msg".tr(), true, context);
                         }
                       }),
                   ListTile(
@@ -215,7 +214,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const RewardScreen());
                         } else {
-                          alertBox("You have not login", true, context);
+                          alertBox("no_login_msg".tr(), true, context);
                         }
                       }),
                   ListTile(
@@ -226,7 +225,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const ReferenceCodeScreen());
                         } else {
-                          alertBox("You have not login", true, context);
+                          alertBox("no_login_msg".tr(), true, context);
                         }
                       }),
                   ListTile(
@@ -237,7 +236,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const SpinningWheelPage());
                         } else {
-                          alertBox("You have not login", true, context);
+                          alertBox("no_login_msg".tr(), true, context);
                         }
                       }),
                   ListTile(
@@ -248,7 +247,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const RedeemScreen());
                         } else {
-                          alertBox("You have not login", true, context);
+                          alertBox("no_login_msg".tr(), true, context);
                         }
                       }),
                   ListTile(
@@ -282,7 +281,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const ContactUsScreen());
                         } else {
-                          alertBox("You have not login", true, context);
+                          alertBox("no_login_msg".tr(), true, context);
                         }
                       }),
                   ListTile(
@@ -293,7 +292,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const FaqScreen());
                         } else {
-                          alertBox("You have not login", true, context);
+                          alertBox("no_login_msg".tr(), true, context);
                         }
                       }),
                   ListTile(
@@ -304,7 +303,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const EarnPointScreen());
                         } else {
-                          alertBox("You have not login", true, context);
+                          alertBox("no_login_msg".tr(), true, context);
                         }
                       }),
                   ListTile(
@@ -335,20 +334,17 @@ class _MainScreenState extends State<MainScreen> {
                   ListTile(
                       leading: const Icon(Icons.privacy_tip),
                       title: const Text('privacy_policy').tr(),
-                      onTap: () =>
-                          startScreen(context, const PrivacyPolicyScreen())),
-                  ListTile(
-                      leading: const Icon(Icons.description),
-                      title: const Text('terms_of_service').tr(),
-                      onTap: () => startScreen(
-                          context,
-                          HtmlScreen(
-                              title: "terms_of_service".tr(),
-                              asset: "assets/html/tos.html"))),
+                      onTap: () {
+                        menuClick();
+                        startScreen(context, const PrivacyPolicyScreen());
+                      }),
                   ListTile(
                       leading: const Icon(Icons.info),
                       title: const Text('about').tr(),
-                      onTap: () => startScreen(context, const AboutUsScreen())),
+                      onTap: () {
+                        menuClick();
+                        startScreen(context, const AboutUsScreen());
+                      }),
                 ],
               ),
             ),

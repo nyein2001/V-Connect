@@ -40,7 +40,7 @@ mixin _VerificationMixin on State<VerificationScreen> {
   void vertification() async {
     pinText = optController.text;
     if (pinText == '' || pinText.isEmpty) {
-      alertBox('Please enter verification code', false, context);
+      alertBox('enter_verification_code_msg'.tr(), false, context);
     } else {
       bool isConnected = await networkInfo.isConnected;
       if (isConnected) {
@@ -50,10 +50,10 @@ mixin _VerificationMixin on State<VerificationScreen> {
           customProgressDialog.show();
           register(name, email, password, phoneNO, reference);
         } else {
-          alertBox('Verification code does not match', false, context);
+          alertBox('verfication_not_match'.tr(), false, context);
         }
       } else {
-        alertBox("Internet connection not available", false, context);
+        alertBox("no_internet_msg".tr(), false, context);
       }
     }
   }

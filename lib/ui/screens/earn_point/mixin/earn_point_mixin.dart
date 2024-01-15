@@ -17,7 +17,7 @@ mixin _EarnPointMixin on State<EarnPointScreen> {
         rewardPoint();
       }
     } else {
-      alertBox("Internet connection not available", false, context);
+      alertBox("no_internet_msg".tr(), false, context);
     }
   }
 

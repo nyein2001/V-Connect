@@ -32,7 +32,7 @@ mixin _RedeemMixin on State<RedeemScreen> {
         redeem();
       }
     } else {
-      alertBox("Internet connection not available", false, context);
+      alertBox("no_internet_msg".tr(), false, context);
     }
   }
 
@@ -105,7 +105,7 @@ mixin _RedeemMixin on State<RedeemScreen> {
 
   void btnRedeemStatus() {
     if (Config.perks == "") {
-      alertBox("You have not redeemed any code yet", false, context);
+      alertBox("no_redeem_code_msg".tr(), false, context);
     } else {
       _showRedeemDialog(
           title: 'redeem_status'.tr(),

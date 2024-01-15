@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
@@ -86,7 +87,7 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
             customProgressDialog);
       }).catchError((e) {});
     } else {
-      alertBox("Internet connection not available", false, context);
+      alertBox("no_internet_msg".tr(), false, context);
     }
   }
 

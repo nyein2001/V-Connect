@@ -45,7 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         getProfile();
       }
     } else {
-      alertBox("Internet connection not available", false, context);
+      alertBox("no_internet_msg".tr(), false, context);
     }
   }
 

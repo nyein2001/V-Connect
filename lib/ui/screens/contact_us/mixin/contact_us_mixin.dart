@@ -24,7 +24,7 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
         getContact();
       }
     } else {
-      alertBox("Internet connection not available", false, context);
+      alertBox("no_internet_msg".tr(), false, context);
     }
   }
 
@@ -82,7 +82,7 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
       String email = _emailController.text;
       String desc = _descriptionController.text;
       if (dropdownvalue == "007") {
-        alertBox("Please select category", false, context);
+        alertBox("select_cat_msg".tr(), false, context);
       } else if (name == '' || name.isEmpty) {
         validate();
       } else if (!_checkEmail(email) || email.isEmpty) {
@@ -93,7 +93,7 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
         form();
       }
     } else {
-      alertBox("Internet connection not available", false, context);
+      alertBox("no_internet_msg".tr(), false, context);
     }
   }
 

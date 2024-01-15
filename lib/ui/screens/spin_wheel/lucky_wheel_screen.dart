@@ -60,7 +60,7 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
         init();
       }
     } else {
-      alertBox("Internet connection not available", false, context);
+      alertBox("no_internet_msg".tr(), false, context);
     }
   }
 
@@ -364,10 +364,10 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
           }
         }
       } else {
-        alertBox('Something Wrong!. Please try again.', false, context);
+        alertBox('error'.tr(), false, context);
       }
     } catch (e) {
-      alertBox('Something Wrong!. Please try again.', false, context);
+      alertBox('error'.tr(), false, context);
     }
   }
 }

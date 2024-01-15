@@ -22,7 +22,7 @@ mixin _RewardPointMixin on State<RewardPointClaim> {
         getContact();
       }
     } else {
-      alertBox("Internet connection not available", false, context);
+      alertBox("no_internet_msg".tr(), false, context);
     }
   }
 
@@ -117,16 +117,6 @@ mixin _RewardPointMixin on State<RewardPointClaim> {
               ),
             );
           }
-          // String msg = data['msg'];
-          // String success = '${data['success']}';
-          // print(data.toString());
-          // if (success == '1') {
-          //   _descriptionController.clear();
-          //   dropdownvalue = "007";
-          //   alertBox(msg, false, context);
-          // } else {
-          //   alertBox(msg, false, context);
-          // }
         }
       }
     } catch (error) {

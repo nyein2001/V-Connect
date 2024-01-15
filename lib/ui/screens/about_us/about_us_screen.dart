@@ -169,7 +169,7 @@ class AboutUsScreenState extends State<AboutUsScreen> with _AboutUsMixin {
     try {
       await launchUrl(emailLaunchUri);
     } catch (e) {
-      alertBox('Something went wrong.', false, context);
+      alertBox('error'.tr(), false, context);
     }
   }
 
@@ -182,7 +182,7 @@ class AboutUsScreenState extends State<AboutUsScreen> with _AboutUsMixin {
     try {
       await launchUrl(Uri.parse(url));
     } catch (e) {
-      alertBox('Something went wrong.', false, context);
+      alertBox('error'.tr(), false, context);
     }
   }
 
@@ -195,7 +195,7 @@ class AboutUsScreenState extends State<AboutUsScreen> with _AboutUsMixin {
           await launchUrl(phoneCallUri);
         }
       } catch (e) {
-        alertBox('Something went wrong.', false, context);
+        alertBox('error'.tr(), false, context);
       }
     }
   }

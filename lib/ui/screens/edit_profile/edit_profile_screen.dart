@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
@@ -51,7 +52,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
         getProfile();
       }
     } else {
-      alertBox("Internet connection not available", false, context);
+      alertBox("no_internet_msg".tr(), false, context);
     }
   }
 
@@ -410,8 +411,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
                               passwordController.text ||
                           passwordController.text.trim().isEmpty ||
                           confirmController.text.trim().isEmpty) {
-                        alertBox("Password and confirm password do not match",
-                            false, context);
+                        alertBox("not_match_password".tr(), false, context);
                       } else if (phoneController.text.trim().isEmpty) {
                         FocusScope.of(context).requestFocus(FocusNode());
                       } else {
@@ -429,8 +429,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
                                 passwordController.text ||
                             passwordController.text.trim().isEmpty ||
                             confirmController.text.trim().isEmpty) {
-                          alertBox("Password and confirm password do not match",
-                              false, context);
+                          alertBox("not_match_password".tr(), false, context);
                         } else if (phoneController.text.trim().isEmpty) {
                           FocusScope.of(context).requestFocus(FocusNode());
                         } else {
@@ -546,7 +545,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
       }
     } catch (e) {
       print('Failed try again $e');
-      alertBox('Failed try again ', false, context);
+      alertBox('error'.tr(), false, context);
     }
   }
 

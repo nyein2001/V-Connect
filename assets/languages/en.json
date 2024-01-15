@@ -74,5 +74,13 @@
     "cancel_subscription": "Cancel Subscription",
     "profile": "Profile",
     "confirm_cancellation": "Confirm Cancellation",
-    "confirm_cancellation_msg": "Are you sure you want to cancel your subscription?"
+    "confirm_cancellation_msg": "Are you sure you want to cancel your subscription?",
+    "no_internet_msg": "Internet connection not available",
+    "no_login_msg": "You have not login",
+    "select_cat_msg": "Please select category",
+    "not_match_password": "Password and confirm password do not match",
+    "error": "Something Wrong!. Please try again.",
+    "no_redeem_code_msg" : "You have not redeemed any code yet!",
+    "verfication_not_match": "Verification code does not match",
+    "enter_verification_code_msg": "Please enter verification code"
 }

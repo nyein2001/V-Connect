@@ -55,7 +55,7 @@ mixin _LoginScreenMixin on State<LoginScreen> {
         loginFun(_emailController.text, _passwordController.text, isCheck);
       }
     } else {
-      alertBox("Internet connection not available", false, context);
+      alertBox("no_internet_msg".tr(), false, context);
     }
   }
 
@@ -135,7 +135,7 @@ mixin _LoginScreenMixin on State<LoginScreen> {
       }
     } catch (e) {
       print("Failed try again $e");
-      alertBox('Failed try again ', false, context);
+      alertBox('error'.tr(), false, context);
     }
   }
 }

@@ -58,10 +58,10 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
           status = data['otp_status'];
         }
       } else {
-        alertBox('Failed. Try again.', false, context);
+        alertBox('error'.tr(), false, context);
       }
     } catch (e) {
-      alertBox('Server timeout', false, context);
+      alertBox('error'.tr(), false, context);
     }
   }
 
@@ -199,7 +199,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
               reference: reference));
         }
       } else {
-        alertBox("Internet connection not available", false, context);
+        alertBox("no_internet_msg".tr(), false, context);
       }
     }
   }

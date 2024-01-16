@@ -125,13 +125,14 @@ class EditProfileScreenState extends State<EditProfileScreen>
                     name: nameController.text, email: emailController.text));
           },
         ),
-        title: const Column(
+        title: Column(
           children: [
-            Text("Edit Profile",
-                style: TextStyle(
-                    fontSize: 22,
-                    letterSpacing: 1,
-                    fontWeight: FontWeight.w600))
+            const Text("edit_profile",
+                    style: TextStyle(
+                        fontSize: 22,
+                        letterSpacing: 1,
+                        fontWeight: FontWeight.w600))
+                .tr()
           ],
         ),
       ),
@@ -252,7 +253,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
                                   builder: (context) => Wrap(children: [
                                     ListTile(
                                       leading: const Icon(Icons.camera_alt),
-                                      title: const Text('Camera'),
+                                      title: const Text('camera').tr(),
                                       onTap: () {
                                         Navigator.pop(context);
                                         pickImage(ImageSource.camera);
@@ -260,7 +261,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
                                     ),
                                     ListTile(
                                       leading: const Icon(Icons.photo_album),
-                                      title: const Text('Gallery'),
+                                      title: const Text('gallery').tr(),
                                       onTap: () async {
                                         Navigator.pop(context);
                                         if (Platform.isAndroid) {
@@ -289,7 +290,6 @@ class EditProfileScreenState extends State<EditProfileScreen>
                                 child: const Icon(
                                   Icons.add_a_photo,
                                   size: 18,
-                                  // color: Colors.white,
                                 ),
                               ),
                             ),
@@ -442,12 +442,12 @@ class EditProfileScreenState extends State<EditProfileScreen>
                         shape: const StadiumBorder(),
                       ),
                       child: Text(
-                        'SAVE',
+                        'save',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               color: Theme.of(context).colorScheme.onPrimary,
                               fontWeight: FontWeight.w400,
                             ),
-                      ),
+                      ).tr(),
                     ),
                   ),
                 ),

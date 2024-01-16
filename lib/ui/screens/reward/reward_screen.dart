@@ -34,64 +34,39 @@ class RewardScreenState extends State<RewardScreen>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 25, bottom: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'You Have ',
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  totalPoint,
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  ' Reward Point',
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ),
-          ),
+              padding: const EdgeInsets.only(top: 25, bottom: 15),
+              child: Text(
+                'total_point_msg',
+                style: Theme.of(context).textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ).tr(namedArgs: {"total": totalPoint})),
           Text(
             money,
             style: Theme.of(context).textTheme.titleMedium,
             textAlign: TextAlign.center,
           ),
-          Visibility(
-              visible: totalPoint == "0",
-              child: const SizedBox(
-                height: 20,
-              )),
-          Visibility(
-              visible: totalPoint == "0",
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width / 5,
-                    vertical: 5),
-                child: ElevatedButton(
-                  onPressed: () async => await rewardPointClaim(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff69D54B),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 14, horizontal: 12),
-                    shape: const StadiumBorder(),
-                  ),
-                  child: Text('reward_point_claim',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.background,
-                                  letterSpacing: 1,
-                                  fontWeight: FontWeight.w600))
-                      .tr(),
-                ),
-              )),
+          const SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width / 5, vertical: 5),
+            child: ElevatedButton(
+              onPressed: () async => await rewardPointClaim(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xff69D54B),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                shape: const StadiumBorder(),
+              ),
+              child: Text('reward_point_claim',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.background,
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.w600))
+                  .tr(),
+            ),
+          ),
           Expanded(
               child: DefaultTabController(
                   length: 2,

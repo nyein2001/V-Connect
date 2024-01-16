@@ -10,6 +10,7 @@ import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/assets.dart';
 import 'package:ndvpn/core/https/sign_http/register_http.dart';
 import 'package:ndvpn/core/resources/colors.dart';
+import 'package:ndvpn/core/resources/environment.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
@@ -95,7 +96,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                 child: Image.asset(Assets.logo_png,
                                     filterQuality: FilterQuality.medium)))),
                     const SizedBox(height: 12),
-                    Text('ND VPN',
+                    Text(appName,
                         style: Theme.of(context)
                             .textTheme
                             .titleLarge

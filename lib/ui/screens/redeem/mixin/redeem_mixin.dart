@@ -143,7 +143,7 @@ mixin _RedeemMixin on State<RedeemScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const Text('Perks:'),
+              const Text('perks').tr(),
               const SizedBox(
                 width: 10,
               ),
@@ -159,7 +159,7 @@ mixin _RedeemMixin on State<RedeemScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const Text('Valid Until:'),
+              const Text('valid_until').tr(),
               const SizedBox(
                 width: 10,
               ),

@@ -7,6 +7,7 @@ import 'package:ndvpn/assets.dart';
 import 'package:ndvpn/core/models/user_login_req.dart';
 import 'package:ndvpn/core/providers/globals/iap_provider.dart';
 import 'package:ndvpn/core/resources/colors.dart';
+import 'package:ndvpn/core/resources/environment.dart';
 import 'package:ndvpn/core/utils/config.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/utils.dart';
@@ -54,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> with _LoginScreenMixin {
                               child: Image.asset(Assets.logo_png,
                                   filterQuality: FilterQuality.medium)))),
                   const SizedBox(height: 12),
-                  Text('ND VPN',
+                  Text(appName,
                       style: Theme.of(context)
                           .textTheme
                           .titleLarge
@@ -68,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> with _LoginScreenMixin {
                 child: Column(
                   children: [
                     RegisterTextFormFieldWidget(
-                      hintText: 'E-mail',
+                      hintText: 'email'.tr(),
                       prefixIcon: Icons.email,
                       controller: _emailController,
                       autofillHints: const [AutofillHints.email],
@@ -77,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> with _LoginScreenMixin {
                       validator: isEmailValid,
                     ),
                     RegisterTextFormFieldWidget(
-                      hintText: 'Password',
+                      hintText: 'password'.tr(),
                       prefixIcon: Icons.remove_red_eye_rounded,
                       controller: _passwordController,
                       obscure: true,
@@ -108,10 +109,15 @@ class _LoginScreenState extends State<LoginScreen> with _LoginScreenMixin {
                         vertical: 14, horizontal: 42),
                     shape: const StadiumBorder(),
                   ),
-                  child: Text('LOGIN',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          fontWeight: FontWeight.w400)),
+                  child: Text('button_text_login',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                  fontWeight: FontWeight.w400))
+                      .tr(),
                 ),
                 ElevatedButton(
                   onPressed: () async =>
@@ -122,10 +128,15 @@ class _LoginScreenState extends State<LoginScreen> with _LoginScreenMixin {
                         vertical: 14, horizontal: 42),
                     shape: const StadiumBorder(),
                   ),
-                  child: Text('SKIP',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          fontWeight: FontWeight.w400)),
+                  child: Text('button_text_skip',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                  fontWeight: FontWeight.w400))
+                      .tr(),
                 ),
               ],
             ),
@@ -138,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> with _LoginScreenMixin {
                   },
                   child: Text.rich(
                     TextSpan(
-                      text: "Forgot your password? ",
+                      text: "forgot_password_question".tr(),
                       style: Theme.of(context).textTheme.labelLarge,
                     ),
                   )),
@@ -154,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> with _LoginScreenMixin {
                     },
                     child: Text.rich(
                       TextSpan(
-                        text: "Don't have have an account? ",
+                        text: "dont_have_an_account".tr(),
                         style: Theme.of(context).textTheme.labelLarge,
                         children: [
                           TextSpan(

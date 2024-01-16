@@ -13,7 +13,6 @@ import 'package:ndvpn/core/resources/environment.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/custom_divider.dart';
-import 'package:ndvpn/ui/components/about_detail.dart';
 import 'package:ndvpn/ui/components/logout_alert.dart';
 import 'package:ndvpn/ui/screens/about_us/about_us_screen.dart';
 import 'package:ndvpn/ui/screens/contact_us/contact_us_screen.dart';
@@ -197,7 +196,7 @@ class _MainScreenState extends State<MainScreen> {
                       }),
                   ListTile(
                       leading: const Icon(Icons.person),
-                      title: const Text('Profile').tr(),
+                      title: const Text('profile').tr(),
                       onTap: () {
                         menuClick();
                         if (Preferences.isLogin()) {
@@ -230,7 +229,7 @@ class _MainScreenState extends State<MainScreen> {
                       }),
                   ListTile(
                       leading: const Icon(Icons.casino),
-                      title: const Text('Lucky Wheel').tr(),
+                      title: const Text('lucky_wheel').tr(),
                       onTap: () {
                         menuClick();
                         if (Preferences.isLogin()) {
@@ -527,7 +526,6 @@ class _MainScreenState extends State<MainScreen> {
                         'upload',
                         style: TextStyle(
                           fontSize: 14,
-                          // color: Colors.white,
                           fontFamily: 'campton_bold',
                         ),
                       ).tr(),
@@ -535,16 +533,12 @@ class _MainScreenState extends State<MainScreen> {
                         "${formatBytes(byteout.floor(), 0)}/s",
                         style: const TextStyle(
                           fontSize: 24,
-                          // color: Colors.white,
                           fontFamily: 'campton_bold',
                         ),
                       ),
                       const Text(
-                        'Status',
-                        style: TextStyle(
-                            // color: Colors.white,
-                            ),
-                      ),
+                        'status',
+                      ).tr(),
                     ],
                   ),
                 ),
@@ -594,15 +588,14 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     ),
                     const SizedBox(width: 20.0),
-                    const Center(
-                      child: Text(
-                        'Unlock Premium Servers\nWith No Ads',
+                    Center(
+                      child: const Text(
+                        'unlock_msg',
                         style: TextStyle(
-                          // color: Colors.white,
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                         ),
-                      ),
+                      ).tr(),
                     ),
                   ],
                 ),
@@ -718,11 +711,6 @@ class _MainScreenState extends State<MainScreen> {
     } else {
       launchUrlString("https://apps.apple.com/app/id$iosAppID");
     }
-  }
-
-  ///Open the about dialog when user click on the about button
-  void _aboutClick(BuildContext context) {
-    const DialogBackground(dialog: AboutScreen(), blur: 10).show(context);
   }
 
   Future<void> shareApp() async {

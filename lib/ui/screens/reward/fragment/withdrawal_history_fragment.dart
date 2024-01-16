@@ -24,7 +24,7 @@ class WithdrawalHistoryFragmentState extends State<WithdrawalHistoryFragment>
   Widget build(BuildContext context) {
     return Scaffold(
       body: noData
-          ? const Center(
+          ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -34,29 +34,29 @@ class WithdrawalHistoryFragmentState extends State<WithdrawalHistoryFragment>
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                               child: Icon(
                             Icons.not_listed_location,
                             size: 80,
                             color: Colors.blue,
                           )),
-                          SizedBox(height: 16),
-                          Text(
-                            'Empty Withdrawal',
+                          const SizedBox(height: 16),
+                          const Text(
+                            'empty_withdrawal',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Looks like there are no withdrawal to display.',
+                          ).tr(),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'empty_withdrawal_msg',
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.grey,
                             ),
-                          ),
-                          SizedBox(height: 16),
+                          ).tr(),
+                          const SizedBox(height: 16),
                         ],
                       ),
                     ),

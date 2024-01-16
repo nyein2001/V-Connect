@@ -23,7 +23,7 @@ class RewardCurrentFragmentState extends State<RewardCurrentFragment>
   Widget build(BuildContext context) {
     return Scaffold(
       body: noData
-          ? const Center(
+          ? Center(
               child: Column(
                 children: [
                   Expanded(
@@ -32,29 +32,29 @@ class RewardCurrentFragmentState extends State<RewardCurrentFragment>
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                               child: Icon(
                             Icons.not_listed_location,
                             size: 80,
                             color: Colors.blue,
                           )),
-                          SizedBox(height: 16),
-                          Text(
-                            'Empty Point',
+                          const SizedBox(height: 16),
+                          const Text(
+                            'empty_point',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Looks like there are no point to display.',
+                          ).tr(),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'empty_point_msg',
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.grey,
                             ),
-                          ),
-                          SizedBox(height: 16),
+                          ).tr(),
+                          const SizedBox(height: 16),
                         ],
                       ),
                     ),

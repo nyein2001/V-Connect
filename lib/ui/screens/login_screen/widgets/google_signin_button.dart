@@ -62,9 +62,9 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
                     Padding(
                       padding: const EdgeInsets.only(left: 10),
                       child: Text(
-                        'Login With Gmail',
+                        'google_login',
                         style: Theme.of(context).textTheme.labelLarge,
-                      ),
+                      ).tr(),
                     )
                   ],
                 ),

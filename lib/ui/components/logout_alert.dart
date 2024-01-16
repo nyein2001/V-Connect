@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ndvpn/core/models/get_req_with_userid.dart';
@@ -25,10 +26,10 @@ class LogoutScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Are you Sure you want to logout?',
+              'logout_message',
               textAlign: TextAlign.justify,
               style: Theme.of(context).textTheme.bodyLarge,
-            ),
+            ).tr(),
             const ColumnDivider(space: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -43,7 +44,7 @@ class LogoutScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
                     ),
-                    child: const Text("Cancel"),
+                    child: const Text("cancel").tr(),
                   ),
                 ),
                 SizedBox(
@@ -56,7 +57,7 @@ class LogoutScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
                     ),
-                    child: const Text("Logout"),
+                    child: const Text("logout").tr(),
                   ),
                 ),
               ],

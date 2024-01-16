@@ -10,7 +10,6 @@ import 'package:in_app_update/in_app_update.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/utils/network_available.dart';
 import 'package:ndvpn/ui/components/alert_detail.dart';
-import '../providers/globals/iap_provider.dart';
 
 export 'preferences.dart';
 export 'navigations.dart';

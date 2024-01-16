@@ -67,11 +67,12 @@ class _VerificationScreenState extends State<VerificationScreen>
                         child: Center(
                             child: Column(
                           children: [
-                            Text('Enter Verification Code',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge
-                                    ?.copyWith(fontWeight: FontWeight.w600)),
+                            Text('enter_ver_code',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(fontWeight: FontWeight.w600))
+                                .tr(),
                             SizedBox(
                               height: MediaQuery.of(context).size.height / 10,
                             ),
@@ -82,7 +83,7 @@ class _VerificationScreenState extends State<VerificationScreen>
                               width: 120,
                             ),
                             const SizedBox(height: 12),
-                            Text('Enter code',
+                            Text('enter_code'.tr(),
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleLarge
@@ -92,13 +93,14 @@ class _VerificationScreenState extends State<VerificationScreen>
                             const SizedBox(
                               height: 5,
                             ),
-                            Text('We Have Send OTP On Your Email',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleSmall
-                                    ?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.grey)),
+                            Text('already_send_otp',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.grey))
+                                .tr(),
                             Padding(
                                 padding: const EdgeInsets.only(top: 25),
                                 child: SizedBox(
@@ -161,7 +163,7 @@ class _VerificationScreenState extends State<VerificationScreen>
                                         startScreen(
                                             context, const RegisterScreen());
                                       },
-                                      child: const Text('AGAIN REGISTRATION'))
+                                      child: const Text('re_register').tr())
                                 ],
                               ),
                             ),
@@ -173,7 +175,7 @@ class _VerificationScreenState extends State<VerificationScreen>
                                 },
                                 child: Center(
                                   child: Text.rich(TextSpan(
-                                    text: 'Resend Your OTP  ',
+                                    text: 'resend_your_otp'.tr(),
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelLarge!
@@ -181,7 +183,7 @@ class _VerificationScreenState extends State<VerificationScreen>
                                             fontSize: 17, color: Colors.grey),
                                     children: [
                                       TextSpan(
-                                        text: 'Click Here',
+                                        text: 'click_here'.tr(),
                                         style: Theme.of(context)
                                             .textTheme
                                             .labelLarge

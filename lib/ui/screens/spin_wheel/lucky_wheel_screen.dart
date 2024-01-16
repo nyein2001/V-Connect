@@ -122,10 +122,13 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lucky Wheel',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 22, letterSpacing: 1, fontWeight: FontWeight.w600)),
+        title: const Text('lucky_wheel',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 22,
+                    letterSpacing: 1,
+                    fontWeight: FontWeight.w600))
+            .tr(),
       ),
       body: isloading
           ? const Center(
@@ -165,9 +168,10 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Daily Total Spins ',
-                            style: TextStyle(
-                                fontSize: 22, fontWeight: FontWeight.w400)),
+                        const Text('total_spins',
+                                style: TextStyle(
+                                    fontSize: 22, fontWeight: FontWeight.w400))
+                            .tr(),
                         Text(dailySpinnerLimit,
                             style: const TextStyle(
                                 fontSize: 22, fontWeight: FontWeight.w400))
@@ -182,9 +186,10 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Today Remaining Spins',
-                            style: TextStyle(
-                                fontSize: 22, fontWeight: FontWeight.w400)),
+                        const Text('remaining_spins',
+                                style: TextStyle(
+                                    fontSize: 22, fontWeight: FontWeight.w400))
+                            .tr(),
                         Text(remainSpin,
                             style: const TextStyle(
                                 fontSize: 22, fontWeight: FontWeight.w400))
@@ -208,7 +213,7 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
                               showReward();
                             }
                           },
-                          child: const Text('Spin Now'))),
+                          child: const Text('spin_now').tr())),
                 ],
               ),
             ),
@@ -234,8 +239,8 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
   void _itemClick() async {
     return NAlertDialog(
       blur: 10,
-      title: const Text("Watch Rewarded Video"),
-      content: const Text("Do you want to watch rewarded video ads?"),
+      title: const Text("watch_ad_title").tr(),
+      content: const Text("watch_ad_msg_2").tr(),
       actions: [
         TextButton(
           child: Text("watch_ad".tr()),

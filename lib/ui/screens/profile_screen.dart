@@ -270,11 +270,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Account Type:',
-                            style: TextStyle(
-                                fontSize: 16,
-                                letterSpacing: 1,
-                                fontWeight: FontWeight.w400)),
+                        const Text('account_type',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    letterSpacing: 1,
+                                    fontWeight: FontWeight.w400))
+                            .tr(),
                         Text(
                             Config.allSubscription &&
                                     Config.premiumServersAccess
@@ -343,14 +344,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.all(10),
+            Padding(
+              padding: const EdgeInsets.all(10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text('Purchase History',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600))
+                  const Text('purchase_history',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w600))
+                      .tr()
                 ],
               ),
             ),
@@ -382,20 +384,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               height: MediaQuery.of(context).size.width / 16,
                             ),
                             const Text(
-                              'No Purchase History',
+                              'no_purchase',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
-                            ),
+                            ).tr(),
                             const SizedBox(height: 8),
                             const Text(
-                              'Looks like there are no purchase history to display.',
+                              'no_purchase_msg',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.grey,
                               ),
-                            ),
+                            ).tr(),
                             SizedBox(
                               height: MediaQuery.of(context).size.width / 8,
                             ),

@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
+import 'package:ndvpn/core/providers/globals/iap_provider.dart';
 import 'package:ndvpn/core/utils/config.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/utils.dart';
@@ -164,6 +165,7 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
                 Config.perks = perks;
                 Config.expiration = exp;
               }
+              IAPProvider.read(context).updateProStatus();
               replaceScreen(context, const MainScreen());
             }
           }

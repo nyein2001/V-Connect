@@ -360,16 +360,20 @@ class _MainScreenState extends State<MainScreen> {
               _connectionInfoWidget(context),
               const Center(child: ConnectionButton()),
               const ColumnDivider(),
-              _premiumWidget(context),
-              const ColumnDivider(space: 20),
+              context.watch<IAPProvider>().isPro
+                  ? const SizedBox.shrink()
+                  : _premiumWidget(context),
+              Center(
+                  child: context.watch<IAPProvider>().isPro
+                      ? const SizedBox.shrink()
+                      : const ColumnDivider(space: 20)),
               _selectVpnWidget(context),
               const ColumnDivider(space: 20),
               Center(
-                  child: Consumer<IAPProvider>(
-                      builder: (context, value, child) => value.isPro
-                          ? const SizedBox.shrink()
-                          : AdsProvider.bannerAd(bannerAdUnitID,
-                              adsize: AdSize.mediumRectangle))),
+                  child: context.watch<IAPProvider>().isPro
+                      ? const SizedBox.shrink()
+                      : AdsProvider.bannerAd(bannerAdUnitID,
+                          adsize: AdSize.mediumRectangle)),
               const ColumnDivider(space: 20),
             ],
           ),

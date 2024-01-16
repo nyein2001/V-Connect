@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 //TODO: Put your endpoint and vpn auth here
-const String endpoint = "https://new-flutter.truetest.xyz/api/"; //Please see the pattern, it must end with /
+const String endpoint =
+    "https://new-flutter.truetest.xyz/api/"; //Please see the pattern, it must end with /
 const String trueendpoint = "https://vpn.truetest.xyz/includes/api.php?";
 const String vpnUsername = "";
 const String vpnPassword = "";
@@ -27,7 +28,8 @@ const bool showSignalStrength = true;
 const bool cacheServerList = true;
 
 //TODO: iOS setup
-const String providerBundleIdentifier = "com.ndvpn.ios.app.VPNExtension"; //Before it was VpnExtensionIdentifier
+const String providerBundleIdentifier =
+    "com.ndvpn.ios.app.VPNExtension"; //Before it was VpnExtensionIdentifier
 const String groupIdentifier = "com.ndvpn.ios.app";
 const String iosAppID = "1234567890";
 const String localizationDescription = "Nd VPN - Fast & Secure VPN";
@@ -45,27 +47,9 @@ bool unlockProServerWithRewardAdsFail = false;
 ///TODO: Set your ad unit id here
 const String interstitialAdUnitID = "ca-app-pub-3940256099942544/1033173712";
 const String bannerAdUnitID = "ca-app-pub-3940256099942544/6300978111";
-const String interstitialRewardAdUnitID = "ca-app-pub-3940256099942544/5354046379";
+const String interstitialRewardAdUnitID =
+    "ca-app-pub-3940256099942544/5354046379";
 const String openAdUnitID = "ca-app-pub-3940256099942544/3419835294";
 
 ///TODO: Set your custom subscription identifier here
-const Map<String, Map<String, dynamic>> subscriptionIdentifier = { 
-  "one_week_subs": {
-    "name": "One Week Subscription", //This is your subscription name
-    "duration": Duration(days: 7), //This is your subscription duration
-    "grace_period": Duration(days: 1), //This is your subscription grace period
-    "featured": false, //This is your subscription if it featured or not
-  },
-  "one_month_subs": {
-    "name": "One Month Subscription",
-    "duration": Duration(days: 30),
-    "grace_period": Duration(days: 7),
-    "featured": true,
-  },
-  "one_year_subs": {
-    "name": "One Year Subscription",
-    "duration": Duration(days: 365),
-    "grace_period": Duration(days: 7),
-    "featured": false,
-  },
-};
+Map<String, Map<String, dynamic>> subscriptionIdentifier = {};

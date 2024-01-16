@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/models/get_req_with_userid.dart';
 import 'package:ndvpn/core/models/purchase_history.dart';
+import 'package:ndvpn/core/providers/globals/iap_provider.dart';
 import 'package:ndvpn/core/resources/colors.dart';
 import 'package:ndvpn/core/utils/config.dart';
 import 'package:ndvpn/core/utils/constant.dart';
@@ -504,6 +505,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Config.stripeRenewDate = "";
         Config.vipSubscription = false;
         Config.allSubscription = false;
+        IAPProvider.read(context).updateProStatus();
         tvRenewDate = "";
         setState(() {});
       }

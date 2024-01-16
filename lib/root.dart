@@ -166,6 +166,8 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
             Config.perks = perks;
             Config.expiration = exp;
 
+            IAPProvider.read(context).updateProStatus();
+
             if (isFirstTime) {
               replaceScreen(context, const OnBoardingPage());
             } else {

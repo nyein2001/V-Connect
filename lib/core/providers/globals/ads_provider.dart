@@ -28,7 +28,8 @@ class AdsProvider extends ChangeNotifier {
   ///Load consent form for ads
   static void loadForm() {
     ConsentForm.loadConsentForm((consentForm) async {
-      if (await ConsentInformation.instance.getConsentStatus() == ConsentStatus.required) {
+      if (await ConsentInformation.instance.getConsentStatus() ==
+          ConsentStatus.required) {
         consentForm.show((formError) {});
       }
     }, (formError) {});
@@ -119,7 +120,8 @@ class AdsProvider extends ChangeNotifier {
       request: adRequest,
     );
     return Consumer<IAPProvider>(
-      builder: (context, value, child) => value.isPro ? const SizedBox.shrink() : child!,
+      builder: (context, value, child) =>
+          value.isPro ? const SizedBox.shrink() : child!,
       child: SizedBox(
         key: Key(unitId),
         height: adsize.height.toDouble(),
@@ -138,6 +140,8 @@ class AdsProvider extends ChangeNotifier {
     );
   }
 
-  static AdsProvider read(BuildContext context) => context.read().._context = context;
-  static AdsProvider watch(BuildContext context) => context.read().._context = context;
+  static AdsProvider read(BuildContext context) =>
+      context.read().._context = context;
+  static AdsProvider watch(BuildContext context) =>
+      context.read().._context = context;
 }

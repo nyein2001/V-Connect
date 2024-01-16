@@ -35,9 +35,9 @@ String formatBytes(int bytes, int decimals) {
 
 extension CheckProForAd on AdWithoutView {
   void showIfNotPro(BuildContext context) {
-    if (!IAPProvider.watch(context).isPro) {
-      instanceManager.showAdWithoutView(this);
-    }
+    // if (!IAPProvider.watch(context).isPro) {
+    instanceManager.showAdWithoutView(this);
+    // }
   }
 }
 

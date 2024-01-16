@@ -95,7 +95,7 @@ class _ServerItemState extends State<ServerItem>
   }
 
   void _itemClick([bool force = false]) async {
-    if (!IAPProvider.read(context).isPro &&
+    if (!IAPProvider.watch(context).isPro &&
         int.parse(widget.config.isFree) == 1 &&
         !force) {
       return NAlertDialog(

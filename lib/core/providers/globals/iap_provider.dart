@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+import 'package:ndvpn/core/models/subscription_plan.dart';
+import 'package:ndvpn/core/utils/config.dart';
 import 'package:provider/provider.dart';
-
+import 'package:http/http.dart' as http;
 import '../../resources/environment.dart';
 
 ///InAppPurchase realted provider
-class IAPProvider extends ChangeNotifier {
+class IAPProvider with ChangeNotifier {
   late StreamSubscription<PurchasedItem?> _subscription;
 
   FlutterInappPurchase get _engine => FlutterInappPurchase.instance;
@@ -24,15 +27,52 @@ class IAPProvider extends ChangeNotifier {
   ///Initialize IAP and handler all purchase functions
   Future initialize() {
     return _engine.initialize().then((value) async {
-      _subscription = FlutterInappPurchase.purchaseUpdated.listen((item) => item != null ? _verifyPurchase(item) : null);
+      _subscription = FlutterInappPurchase.purchaseUpdated
+          .listen((item) => item != null ? _verifyPurchase(item) : null);
       await _loadPurchaseItems();
       await _verifyPreviousPurchase();
     });
   }
 
+  Future _fetchSubscription() async {
+    try {
+      http.Response response = await http.get(
+        Uri.parse('https://vpn.truetest.xyz/includes/api.php?get_subscription'),
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+        Map<String, dynamic> set = data['set'];
+        dynamic subObject = set['sub'];
+
+        if (subObject is Map<String, dynamic>) {
+          subObject = [subObject];
+        }
+
+        List object = subObject;
+        Map<String, dynamic> itemMap = object.first;
+
+        for (String key in itemMap.keys) {
+          SubscriptionPlan plan = SubscriptionPlan.fromJson(itemMap[key]);
+          subscriptionIdentifier[plan.productId] = {
+            "name": plan.name,
+            "price": plan.price,
+            "currency": plan.currency,
+            "status": plan.status,
+          };
+        }
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
   ///Load purchased item, in this case subscription
-  Future _loadPurchaseItems() {
-    return _engine.getSubscriptions(subscriptionIdentifier.keys.toList()).then((value) {
+  Future _loadPurchaseItems() async {
+    await _fetchSubscription();
+    return _engine
+        .getSubscriptions(subscriptionIdentifier.keys.toList())
+        .then((value) {
       if (value.isNotEmpty) {
         productItems.addAll(value);
       }
@@ -53,16 +93,20 @@ class IAPProvider extends ChangeNotifier {
     if (Platform.isAndroid) {
       if (item.purchaseStateAndroid == PurchaseState.purchased) {
         if (item.productId != null) {
-          _isPro = _productItems.map((e) => e.productId).contains(item.productId);
+          _isPro =
+              _productItems.map((e) => e.productId).contains(item.productId);
         }
       }
     } else {
-      if (item.transactionStateIOS == TransactionState.purchased || item.transactionStateIOS == TransactionState.restored) {
+      if (item.transactionStateIOS == TransactionState.purchased ||
+          item.transactionStateIOS == TransactionState.restored) {
         if (item.productId != null) {
           _isPro = await _engine.checkSubscribed(
             sku: item.productId!,
-            duration: subscriptionIdentifier[item.productId!]?["duration"] ?? Duration.zero,
-            grace: subscriptionIdentifier[item.productId!]?["grace_period"] ?? Duration.zero,
+            duration: subscriptionIdentifier[item.productId!]?["duration"] ??
+                Duration.zero,
+            grace: subscriptionIdentifier[item.productId!]?["grace_period"] ??
+                Duration.zero,
           );
         }
       }
@@ -70,9 +114,14 @@ class IAPProvider extends ChangeNotifier {
 
     if (item.transactionDate != null) {
       var different = DateTime.now().difference(item.transactionDate!);
-      var subbscriptionDuration = subscriptionIdentifier[item.productId!]?["duration"] ?? Duration.zero;
-      var graceDuration = subscriptionIdentifier[item.productId!]?["grace_period"] ?? Duration.zero;
-      if (different.inDays > subbscriptionDuration.inDays && different.inDays < (subbscriptionDuration.inDays + graceDuration.inDays)) {
+      var subbscriptionDuration =
+          subscriptionIdentifier[item.productId!]?["duration"] ?? Duration.zero;
+      var graceDuration = subscriptionIdentifier[item.productId!]
+              ?["grace_period"] ??
+          Duration.zero;
+      if (different.inDays > subbscriptionDuration.inDays &&
+          different.inDays <
+              (subbscriptionDuration.inDays + graceDuration.inDays)) {
         _inGracePeriod = true;
       }
     }
@@ -82,7 +131,8 @@ class IAPProvider extends ChangeNotifier {
 
   ///Purchasing items
   Future purchase(IAPItem item) {
-    return _engine.requestPurchase(item.productId!, offerTokenAndroid: item.subscriptionOffersAndroid?.first.offerToken);
+    return _engine.requestPurchase(item.productId!,
+        offerTokenAndroid: item.subscriptionOffersAndroid?.first.offerToken);
   }
 
   Future<bool> restorePurchase() {
@@ -95,6 +145,13 @@ class IAPProvider extends ChangeNotifier {
       }
       return false;
     });
+  }
+
+  void updateProStatus() {
+    _isPro = (Config.vipSubscription && Config.allSubscription) ||
+        Config.noAds ||
+        Config.isPremium;
+    notifyListeners();
   }
 
   @override

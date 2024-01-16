@@ -127,6 +127,7 @@ mixin _LoginScreenMixin on State<LoginScreen> {
               Config.perks = perks;
               Config.expiration = exp;
             }
+            IAPProvider.read(context).updateProStatus();
             replaceScreen(context, const MainScreen());
           } else {
             alertBox(msg, false, context);

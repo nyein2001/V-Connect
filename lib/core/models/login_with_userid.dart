@@ -15,7 +15,7 @@ class LoginWithUserid {
       'salt': salt,
       'package_name': packageName,
       'method_name': methodName,
-      'email': userid
+      'user_id': userid
     };
   }
 }

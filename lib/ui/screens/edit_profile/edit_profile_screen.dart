@@ -9,9 +9,9 @@ import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ndialog/ndialog.dart';
-import 'package:ndvpn/core/models/get_req_with_userid.dart';
+import 'package:ndvpn/core/models/api_req/get_req_with_userid.dart';
 import 'package:ndvpn/core/models/user_info.dart';
-import 'package:ndvpn/core/models/user_profile_update.dart';
+import 'package:ndvpn/core/models/api_req/user_profile_update.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/gallery_permission.dart';
 import 'package:ndvpn/core/utils/utils.dart';
@@ -479,7 +479,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
     customProgressDialog.show();
     var headers = <String, String>{'Content-Type': 'application/json'};
     UserProfileUpdate updateReq = UserProfileUpdate(
-        userId: Preferences.getProfileId(),
+        methodName: 'user_profile_update',
         name: nameController.text,
         email: emailController.text,
         password: passwordController.text,

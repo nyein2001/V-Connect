@@ -39,9 +39,7 @@ mixin _EnterReferenceCodeMixin on State<EnterReferenceCodeScreen> {
 
   Future<void> redeem() async {
     UserReferenceCode req = UserReferenceCode(
-        methodName: 'apply_user_refrence_code',
-        userId: Preferences.getProfileId(),
-        code: _codeController.text);
+        methodName: 'apply_user_refrence_code', code: _codeController.text);
     String methodBody = jsonEncode(req.toJson());
     CustomProgressDialog customProgressDialog =
         CustomProgressDialog(context, dismissable: false, onDismiss: () {});

@@ -63,7 +63,7 @@ mixin _LoginScreenMixin on State<LoginScreen> {
     CustomProgressDialog customProgressDialog =
         CustomProgressDialog(context, dismissable: false, onDismiss: () {});
     customProgressDialog.show();
-    UserLoginReq req = UserLoginReq(email: email, password: password);
+    UserLoginReq req = UserLoginReq(methodName: 'user_login', email: email, password: password);
     String requestBody = jsonEncode(req.toJson());
     try {
       http.Response response = await http.post(

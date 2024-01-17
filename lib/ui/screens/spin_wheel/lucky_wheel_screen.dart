@@ -7,8 +7,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:ndialog/ndialog.dart';
-import 'package:ndvpn/core/models/get_spinner_req.dart';
-import 'package:ndvpn/core/models/save_spinner_points_req.dart';
+import 'package:ndvpn/core/models/api_req/get_req_with_userid.dart';
+import 'package:ndvpn/core/models/api_req/save_spinner_points_req.dart';
 import 'package:ndvpn/core/providers/globals/ads_provider.dart';
 import 'package:ndvpn/core/resources/environment.dart';
 import 'package:ndvpn/core/utils/constant.dart';
@@ -25,7 +25,6 @@ class SpinningWheelPage extends StatefulWidget {
 }
 
 class SpinningWheelPageState extends State<SpinningWheelPage> {
-  String userId = '';
   String prefprofileId = 'pref_profileId';
   List<LuckyItem> spinnerLists = [];
   String dailySpinnerLimit = '';
@@ -41,7 +40,6 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       loadInterstitial();
     });
-    userId = Preferences.getProfileId();
     spinnerLists.clear();
     init();
     super.initState();
@@ -65,7 +63,7 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
   }
 
   void init() async {
-    GetSpinnerReq req = GetSpinnerReq(userId: userId);
+    ReqWithUserId req = ReqWithUserId(methodName: 'get_spinner');
     String methodBody = jsonEncode(req.toJson());
 
     try {
@@ -231,7 +229,7 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
           color: luckyItem.color);
     }).toList();
     String winitem = mySpinController.itemList[rdm].label;
-    sendSpinnerData(userId, winitem);
+    sendSpinnerData(winitem);
     await mySpinController.spinNow(
         luckyIndex: rdm + 1, totalSpin: 10, baseSpinDuration: 20);
   }
@@ -327,10 +325,10 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
     });
   }
 
-  Future<void> sendSpinnerData(String userId, String point) async {
+  Future<void> sendSpinnerData(String point) async {
     try {
-      SaveSpinnerPointsReq req =
-          SaveSpinnerPointsReq(userId: userId, points: point);
+      SaveSpinnerPointsReq req = SaveSpinnerPointsReq(
+          methodName: "save_spinner_points", points: point);
       String methodBody = jsonEncode(req.toJson());
 
       http.Response response = await http.post(

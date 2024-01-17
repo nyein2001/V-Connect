@@ -99,6 +99,7 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
 
   Future<void> form() async {
     ContactUSMsgReq req = ContactUSMsgReq(
+        methodName: 'user_contact_us',
         sendEmail: _emailController.text,
         sendName: _nameController.text,
         sendMessage: _descriptionController.text,

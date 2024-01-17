@@ -6,7 +6,6 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:ndvpn/core/models/login_with_userid.dart';
 import 'package:ndvpn/core/providers/globals/iap_provider.dart';
 import 'package:ndvpn/core/resources/environment.dart';
 import 'package:ndvpn/core/utils/config.dart';
@@ -16,6 +15,7 @@ import 'package:ndvpn/ui/screens/introduction_screen.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/main_screen.dart';
 import 'package:ndvpn/ui/screens/verify_screen/verification_screen.dart';
+import 'core/models/api_req/get_req_with_userid.dart';
 import 'core/providers/globals/ads_provider.dart';
 import 'ui/screens/splash_screen.dart';
 import 'package:http/http.dart' as http;
@@ -126,7 +126,7 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
   }
 
   void loginFun() async {
-    LoginWithUserid req = LoginWithUserid(userid: Preferences.getProfileId());
+    ReqWithUserId req = ReqWithUserId(methodName: "user_login");
     String requestBody = jsonEncode(req.toJson());
     try {
       http.Response response = await http

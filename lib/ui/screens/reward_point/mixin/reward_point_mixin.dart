@@ -72,7 +72,7 @@ mixin _RewardPointMixin on State<RewardPointClaim> {
 
   Future<void> form() async {
     PaymentReq req = PaymentReq(
-        userId: Preferences.getProfileId(),
+        methodName: 'user_redeem_request',
         userPoints: widget.userPoints,
         paymentMode: dropdownvalue,
         detail: _descriptionController.text);

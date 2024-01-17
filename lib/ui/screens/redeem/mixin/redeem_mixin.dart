@@ -37,10 +37,8 @@ mixin _RedeemMixin on State<RedeemScreen> {
   }
 
   Future<void> redeem() async {
-    RedeemReq req = RedeemReq(
-        methodName: 'redeem_code',
-        userId: Preferences.getProfileId(),
-        code: _codeController.text);
+    RedeemReq req =
+        RedeemReq(methodName: 'redeem_code', code: _codeController.text);
     String methodBody = jsonEncode(req.toJson());
     CustomProgressDialog customProgressDialog =
         CustomProgressDialog(context, dismissable: false, onDismiss: () {});

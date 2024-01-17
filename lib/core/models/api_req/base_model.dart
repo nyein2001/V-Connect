@@ -1,13 +1,14 @@
 import 'package:ndvpn/core/utils/constant.dart';
 
-class LoginWithUserid {
+class BaseModel {
   static String sign = AppConstants.sign;
   static String salt = AppConstants.randomSalt.toString();
   static String packageName = AppConstants.packageName;
-  static const String methodName = 'user_login';
-  final String userid;
+  final String methodName;
 
-  LoginWithUserid({required this.userid});
+  BaseModel({
+    required this.methodName,
+  });
 
   Map<String, dynamic> toJson() {
     return {
@@ -15,7 +16,6 @@ class LoginWithUserid {
       'salt': salt,
       'package_name': packageName,
       'method_name': methodName,
-      'user_id': userid
     };
   }
 }

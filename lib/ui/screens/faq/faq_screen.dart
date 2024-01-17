@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:ndialog/ndialog.dart';
-import 'package:ndvpn/core/models/get_req_with_userid.dart';
+import 'package:ndvpn/core/models/api_req/get_req_with_userid.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:ndvpn/core/utils/utils.dart';

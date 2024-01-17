@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/assets.dart';
-import 'package:ndvpn/core/models/user_login_req.dart';
+import 'package:ndvpn/core/models/api_req/user_login_req.dart';
 import 'package:ndvpn/core/providers/globals/iap_provider.dart';
 import 'package:ndvpn/core/resources/colors.dart';
 import 'package:ndvpn/core/resources/environment.dart';

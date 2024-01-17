@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
-import 'package:ndvpn/core/models/get_req_with_userid.dart';
+import 'package:ndvpn/core/models/api_req/get_req_with_userid.dart';
 import 'package:ndvpn/core/models/purchase_history.dart';
 import 'package:ndvpn/core/providers/globals/iap_provider.dart';
 import 'package:ndvpn/core/resources/colors.dart';

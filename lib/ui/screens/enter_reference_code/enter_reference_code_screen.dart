@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
-import 'package:ndvpn/core/models/user_reference_code.dart';
+import 'package:ndvpn/core/models/api_req/user_reference_code.dart';
 import 'package:ndvpn/core/resources/colors.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:http/http.dart' as http;

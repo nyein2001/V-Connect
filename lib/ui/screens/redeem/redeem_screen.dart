@@ -1,14 +1,10 @@
-import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:ndialog/ndialog.dart';
-import 'package:ndvpn/core/models/api_req/redeem_req.dart';
+import 'package:ndvpn/core/https/servers_http.dart';
 import 'package:ndvpn/core/resources/colors.dart';
 import 'package:ndvpn/core/utils/config.dart';
-import 'package:ndvpn/core/utils/constant.dart';
-import 'package:http/http.dart' as http;
 import 'package:ndvpn/core/utils/utils.dart';
-import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
+import 'package:ndvpn/ui/components/redeem_dialog.dart';
 import 'package:ndvpn/ui/screens/main_screen.dart';
 import 'package:ndvpn/ui/screens/register_screen/register_screen.dart';
 part 'mixin/redeem_mixin.dart';
@@ -109,7 +105,8 @@ class RedeemScreenState extends State<RedeemScreen> with _RedeemMixin {
                               width: double.infinity,
                               height: 45,
                               child: ElevatedButton(
-                                onPressed: () => redeemProcess(),
+                                onPressed: () => ServersHttp(context)
+                                    .redeem(code: _codeController.text),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xffFF4081),
                                   padding: const EdgeInsets.symmetric(
@@ -129,7 +126,7 @@ class RedeemScreenState extends State<RedeemScreen> with _RedeemMixin {
                                     .tr(),
                               ))),
                       Padding(
-                          padding: const EdgeInsets.only(top: 32),
+                          padding: const EdgeInsets.only(top: 15),
                           child: SizedBox(
                               width: double.infinity,
                               height: 45,

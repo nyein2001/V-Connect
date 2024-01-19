@@ -10,6 +10,7 @@ import 'package:in_app_update/in_app_update.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/utils/network_available.dart';
 import 'package:ndvpn/ui/components/alert_detail.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 export 'preferences.dart';
 export 'navigations.dart';
@@ -73,3 +74,64 @@ void alertBox(String message, bool exit, BuildContext context) {
     dismissable: false,
   ).show(context);
 }
+
+void launchEmail({required String appEmail}) async {
+  final Uri emailLaunchUri = Uri(
+    scheme: 'mailto',
+    path: appEmail,
+  );
+  if (await canLaunchUrl(emailLaunchUri)) {
+    await launchUrl(emailLaunchUri);
+  }
+}
+
+void launchWebsite({required String url}) async {
+  if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    url = "http://$url";
+  }
+
+  if (await canLaunchUrl(Uri.parse(url))) {
+    await launchUrl(Uri.parse(url));
+  }
+}
+
+void makePhoneCall({required String appContact}) async {
+  if (appContact != "Not Available") {
+    final Uri phoneCallUri = Uri(scheme: 'tel', path: appContact);
+
+    if (await canLaunchUrl(phoneCallUri)) {
+      await launchUrl(phoneCallUri);
+    }
+  }
+}
+
+  String formatWebText({required String text}) {
+    return '''
+            <html>
+              <head>
+                <style type="text/css">
+                  @font-face {
+                    font-family: MyFont;
+                    src: url("file:///android_asset/fonts/opensans_semi_bold.TTF");
+                  }
+                  p {
+                    color: white;
+                    text-indent: 30px;
+                  }
+                  body {
+                    font-family: MyFont;
+                    color: #fffffff;
+                    line-height: 1.6;
+                  }
+                  a {
+                    color: #fffffff;
+                    text-decoration: none;
+                  }
+                </style>
+              </head>
+              <body>
+               $text
+              </body>
+            </html>
+          ''';
+  }

@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ndvpn/core/https/servers_http.dart';
-import 'package:ndvpn/core/models/earn_point.dart';
+import 'package:ndvpn/core/models/api_res/earn_point.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/empty_widget.dart';
 import 'package:ndvpn/ui/components/error_widget.dart';

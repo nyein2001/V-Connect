@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ndvpn/core/models/vpn_server.dart';
+import 'package:ndvpn/core/utils/constant.dart';
 import '../models/model.dart';
 import '../resources/environment.dart';
 
@@ -151,6 +152,18 @@ abstract class HttpConnection {
     if (kDebugMode && showDebug) {
       log(prettyprint ?? response.toString());
       log("=======================================================\n\n");
+    }
+  }
+
+  Future<http.Response> postRequest(
+      {required Map<String, dynamic> body}) async {
+    try {
+      final methodBody = jsonEncode(body);
+      final response = await http.post(Uri.parse(AppConstants.baseURL),
+          body: {'data': base64Encode(utf8.encode(methodBody))});
+      return response;
+    } catch (error) {
+      throw 'Unexpected Error';
     }
   }
 }

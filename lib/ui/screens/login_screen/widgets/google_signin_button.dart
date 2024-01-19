@@ -10,7 +10,7 @@ import 'package:ndvpn/core/utils/config.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/main.dart';
-import 'package:ndvpn/ui/screens/enter_reference_code.dart';
+import 'package:ndvpn/ui/screens/enter_reference_code/enter_reference_code_screen.dart';
 import 'package:ndvpn/ui/screens/main_screen.dart';
 
 class GoogleSignInButton extends StatefulWidget {
@@ -150,7 +150,7 @@ class GoogleSignInButtonState extends State<GoogleSignInButton> {
           if (Config.loginBack) {
           } else {
             if (referralCode == "true") {
-              replaceScreen(context, EnterReferenceCodeScreen(userId: userId));
+              replaceScreen(context, const EnterReferenceCodeScreen());
             } else {
               if (data['no_ads'] != null) {
                 int noAds = data['no_ads'];

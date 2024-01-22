@@ -155,7 +155,9 @@ class _LoginScreenState extends State<LoginScreen> with _LoginScreenMixin {
                   )),
             ),
             const SizedBox(height: 22),
-            const GoogleSignInButton(),
+            Visibility(
+                visible: Config.appleOn != "1",
+                child: const GoogleSignInButton()),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: Center(

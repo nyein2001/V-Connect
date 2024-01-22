@@ -10,4 +10,5 @@ class Config {
   static String stripeRenewDate = "";
   static String stripeStatus = "";
   static bool loginBack = false;
+  static String appleOn = "1";
 }

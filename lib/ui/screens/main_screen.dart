@@ -10,6 +10,7 @@ import 'package:ndvpn/core/providers/globals/ads_provider.dart';
 import 'package:ndvpn/core/providers/globals/iap_provider.dart';
 import 'package:ndvpn/core/providers/globals/vpn_provider.dart';
 import 'package:ndvpn/core/resources/environment.dart';
+import 'package:ndvpn/core/utils/config.dart';
 import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/custom_divider.dart';
@@ -359,14 +360,16 @@ class _MainScreenState extends State<MainScreen> {
               _connectionInfoWidget(context),
               const Center(child: ConnectionButton()),
               const ColumnDivider(),
-              context.watch<IAPProvider>().isPro
+              context.watch<IAPProvider>().isPro || Config.appleOn == "1"
                   ? const SizedBox.shrink()
                   : _premiumWidget(context),
               Center(
                   child: context.watch<IAPProvider>().isPro
                       ? const SizedBox.shrink()
                       : const ColumnDivider(space: 20)),
-              _selectVpnWidget(context),
+              Visibility(
+                  visible: Config.appleOn != "1",
+                  child: _selectVpnWidget(context)),
               const ColumnDivider(space: 20),
               Center(
                   child: context.watch<IAPProvider>().isPro

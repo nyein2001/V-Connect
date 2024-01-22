@@ -51,6 +51,7 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
         });
       }
     }
+
     WidgetsBinding.instance.addObserver(this);
     if (Preferences.showLogin()) {
       Preferences.setShowLogin(showLogin: false);
@@ -123,6 +124,17 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
                     ? const VerificationScreen()
                     : const MainScreen()
         : const SplashScreen();
+  }
+
+  void appleOn() async {
+    http.Response response = await http.get(
+      Uri.parse('https://vpn.truetest.xyz/includes/api.php?apple_on'),
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = json.decode(response.body);
+      Config.appleOn = data['apple_on'];
+    }
   }
 
   void loginFun() async {

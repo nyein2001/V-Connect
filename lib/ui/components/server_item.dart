@@ -7,6 +7,7 @@ import 'package:ndvpn/core/models/vpn_server.dart';
 import 'package:ndvpn/core/providers/globals/iap_provider.dart';
 import 'package:ndvpn/core/providers/globals/vpn_provider.dart';
 import 'package:ndvpn/core/resources/colors.dart';
+import 'package:ndvpn/core/utils/config.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/custom_divider.dart';
 import 'package:ndvpn/ui/components/custom_image.dart';
@@ -39,7 +40,11 @@ class _ServerItemState extends State<ServerItem>
         padding: const EdgeInsets.all(10),
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-            gradient: selected ? secondaryGradient : primaryGradient,
+            gradient: selected
+                ? int.parse(widget.config.isFree) == 1 && Config.appleOn == "1"
+                    ? disableGradient
+                    : secondaryGradient
+                : primaryGradient,
             borderRadius: BorderRadius.circular(10)),
         child: Row(
           children: [
@@ -98,41 +103,57 @@ class _ServerItemState extends State<ServerItem>
     if (!IAPProvider.watch(context).isPro &&
         int.parse(widget.config.isFree) == 1 &&
         !force) {
-      return NAlertDialog(
-        blur: 10,
-        title: const Text("premium_servers").tr(),
-        content: Text(unlockProServerWithRewardAds
-                ? "also_allowed_with_watch_ad_description"
-                : "not_allowed_description")
-            .tr(),
-        actions: [
-          if (unlockProServerWithRewardAds)
+      if (Config.appleOn != "1") {
+        return NAlertDialog(
+          blur: 10,
+          title: const Text("premium_servers").tr(),
+          content: Text(unlockProServerWithRewardAds
+                  ? "also_allowed_with_watch_ad_description"
+                  : "not_allowed_description")
+              .tr(),
+          actions: [
+            if (unlockProServerWithRewardAds)
+              TextButton(
+                child: Text("watch_ad".tr()),
+                onPressed: () {
+                  Navigator.pop(context);
+                  showReward();
+                },
+              ),
             TextButton(
-              child: Text("watch_ad".tr()),
-              onPressed: () {
-                Navigator.pop(context);
-                showReward();
-              },
+              child: Text("go_premium".tr()),
+              onPressed: () =>
+                  replaceScreen(context, const SubscriptionScreen()),
             ),
-          TextButton(
-            child: Text("go_premium".tr()),
-            onPressed: () => replaceScreen(context, const SubscriptionScreen()),
-          ),
-          TextButton(
-            child: Text("redeem".tr()),
-            onPressed: () => replaceScreen(context, const RedeemScreen()),
-          ),
-        ],
-      ).show(context);
-    }
-    VpnProvider.read(context)
-        .selectServer(context, widget.config)
-        .then((value) {
-      if (value != null) {
-        VpnProvider.read(context).disconnect();
-        closeScreen(context);
+            TextButton(
+              child: Text("redeem".tr()),
+              onPressed: () => replaceScreen(context, const RedeemScreen()),
+            ),
+          ],
+        ).show(context);
       }
-    });
+    }
+    if (int.parse(widget.config.isFree) == 1) {
+      if (Config.appleOn != "1") {
+        VpnProvider.read(context)
+            .selectServer(context, widget.config)
+            .then((value) {
+          if (value != null) {
+            VpnProvider.read(context).disconnect();
+            closeScreen(context);
+          }
+        });
+      }
+    } else {
+      VpnProvider.read(context)
+          .selectServer(context, widget.config)
+          .then((value) {
+        if (value != null) {
+          VpnProvider.read(context).disconnect();
+          closeScreen(context);
+        }
+      });
+    }
   }
 
   void showReward() async {

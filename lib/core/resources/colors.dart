@@ -26,6 +26,12 @@ LinearGradient secondaryGradient = const LinearGradient(
   end: Alignment.centerRight,
 );
 
+LinearGradient disableGradient = LinearGradient(
+  colors: [Colors.grey.withOpacity(0.9), Colors.grey],
+  begin: Alignment.centerLeft,
+  end: Alignment.centerRight,
+);
+
 LinearGradient primarySecondaryGradient = const LinearGradient(
   colors: [primaryColor, primaryShade, secondaryShade, secondaryColor],
   begin: Alignment.centerLeft,

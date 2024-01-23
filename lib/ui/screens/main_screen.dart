@@ -367,9 +367,7 @@ class _MainScreenState extends State<MainScreen> {
                   child: context.watch<IAPProvider>().isPro
                       ? const SizedBox.shrink()
                       : const ColumnDivider(space: 20)),
-              Visibility(
-                  visible: Config.appleOn != "1",
-                  child: _selectVpnWidget(context)),
+              _selectVpnWidget(context),
               const ColumnDivider(space: 20),
               Center(
                   child: context.watch<IAPProvider>().isPro

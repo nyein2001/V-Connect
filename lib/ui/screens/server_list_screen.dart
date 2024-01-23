@@ -6,7 +6,6 @@ import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/https/servers_http.dart';
 import 'package:ndvpn/core/models/vpn_server.dart';
 import 'package:ndvpn/core/resources/environment.dart';
-import 'package:ndvpn/core/utils/config.dart';
 import 'package:ndvpn/core/utils/preferences.dart';
 import 'package:ndvpn/ui/components/server_item.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -18,27 +17,14 @@ class ServerListScreen extends StatefulWidget {
   State<ServerListScreen> createState() => _ServerListScreenState();
 }
 
-class _ServerListScreenState extends State<ServerListScreen>
-    with SingleTickerProviderStateMixin {
+class _ServerListScreenState extends State<ServerListScreen> {
   final List<RefreshController> _refreshControllers = List.generate(
       2, (index) => RefreshController(initialRefresh: !cacheServerList));
   List<VpnServer> _servers = [];
   late CustomProgressDialog customProgressDialog;
 
-  late TabController _controller;
-
   @override
   void initState() {
-    _controller = TabController(length: 2, vsync: this, initialIndex: 0);
-
-    _controller.addListener(() {
-      if (Config.appleOn == "1" && _controller.index == 1) {
-        print('nope!');
-        setState(() {
-          _controller.index = 0;
-        });
-      }
-    });
     customProgressDialog =
         CustomProgressDialog(context, dismissable: false, onDismiss: () {});
     ServicesBinding.instance.addPostFrameCallback((timeStamp) {
@@ -87,10 +73,6 @@ class _ServerListScreenState extends State<ServerListScreen>
             ),
           ],
           body: ExtendedTabBarView(
-            physics: Config.appleOn == "1"
-                ? const NeverScrollableScrollPhysics()
-                : null,
-            controller: _controller,
             children: List.generate(2, (index) {
               var data =
                   _servers.where((e) => int.parse(e.isFree) == index).toList();
@@ -119,7 +101,6 @@ class _ServerListScreenState extends State<ServerListScreen>
           color: Colors.grey.withOpacity(.3),
           borderRadius: BorderRadius.circular(20)),
       child: TabBar(
-        controller: _controller,
         splashBorderRadius: BorderRadius.circular(20),
         indicatorColor: Colors.white,
         indicator: BoxDecoration(

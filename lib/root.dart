@@ -38,6 +38,7 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
 
   @override
   void initState() {
+    appleOn();
     if (Preferences.getDeviceId() == "unknown") {
       if (Platform.isAndroid) {
         deviceInfo.androidInfo.then((AndroidDeviceInfo androidInfo) {

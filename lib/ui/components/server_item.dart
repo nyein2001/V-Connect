@@ -40,11 +40,7 @@ class _ServerItemState extends State<ServerItem>
         padding: const EdgeInsets.all(10),
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-            gradient: selected
-                ? int.parse(widget.config.isFree) == 1 && Config.appleOn == "1"
-                    ? disableGradient
-                    : secondaryGradient
-                : primaryGradient,
+            gradient: selected ? secondaryGradient : primaryGradient,
             borderRadius: BorderRadius.circular(10)),
         child: Row(
           children: [
@@ -100,60 +96,45 @@ class _ServerItemState extends State<ServerItem>
   }
 
   void _itemClick([bool force = false]) async {
-    if (!IAPProvider.watch(context).isPro &&
+    if (Config.appleOn != "1" &&
+        !IAPProvider.watch(context).isPro &&
         int.parse(widget.config.isFree) == 1 &&
         !force) {
-      if (Config.appleOn != "1") {
-        return NAlertDialog(
-          blur: 10,
-          title: const Text("premium_servers").tr(),
-          content: Text(unlockProServerWithRewardAds
-                  ? "also_allowed_with_watch_ad_description"
-                  : "not_allowed_description")
-              .tr(),
-          actions: [
-            if (unlockProServerWithRewardAds)
-              TextButton(
-                child: Text("watch_ad".tr()),
-                onPressed: () {
-                  Navigator.pop(context);
-                  showReward();
-                },
-              ),
+      return NAlertDialog(
+        blur: 10,
+        title: const Text("premium_servers").tr(),
+        content: Text(unlockProServerWithRewardAds
+                ? "also_allowed_with_watch_ad_description"
+                : "not_allowed_description")
+            .tr(),
+        actions: [
+          if (unlockProServerWithRewardAds)
             TextButton(
-              child: Text("go_premium".tr()),
-              onPressed: () =>
-                  replaceScreen(context, const SubscriptionScreen()),
+              child: Text("watch_ad".tr()),
+              onPressed: () {
+                Navigator.pop(context);
+                showReward();
+              },
             ),
-            TextButton(
-              child: Text("redeem".tr()),
-              onPressed: () => replaceScreen(context, const RedeemScreen()),
-            ),
-          ],
-        ).show(context);
-      }
+          TextButton(
+            child: Text("go_premium".tr()),
+            onPressed: () => replaceScreen(context, const SubscriptionScreen()),
+          ),
+          TextButton(
+            child: Text("redeem".tr()),
+            onPressed: () => replaceScreen(context, const RedeemScreen()),
+          ),
+        ],
+      ).show(context);
     }
-    if (int.parse(widget.config.isFree) == 1) {
-      if (Config.appleOn != "1") {
-        VpnProvider.read(context)
-            .selectServer(context, widget.config)
-            .then((value) {
-          if (value != null) {
-            VpnProvider.read(context).disconnect();
-            closeScreen(context);
-          }
-        });
+    VpnProvider.read(context)
+        .selectServer(context, widget.config)
+        .then((value) {
+      if (value != null) {
+        VpnProvider.read(context).disconnect();
+        closeScreen(context);
       }
-    } else {
-      VpnProvider.read(context)
-          .selectServer(context, widget.config)
-          .then((value) {
-        if (value != null) {
-          VpnProvider.read(context).disconnect();
-          closeScreen(context);
-        }
-      });
-    }
+    });
   }
 
   void showReward() async {

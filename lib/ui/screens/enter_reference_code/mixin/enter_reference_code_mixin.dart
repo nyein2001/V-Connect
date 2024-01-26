@@ -33,7 +33,7 @@ mixin _EnterReferenceCodeMixin on State<EnterReferenceCodeScreen> {
         redeem();
       }
     } else {
-      alertBox("no_internet_msg".tr(), false, context);
+      showToast("no_internet_msg".tr());
     }
   }
 
@@ -62,9 +62,9 @@ mixin _EnterReferenceCodeMixin on State<EnterReferenceCodeScreen> {
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, false, context);
+            showToast(message);
           } else {
-            alertBox(message, false, context);
+            showToast(message);
           }
         } else {
           Map<String, dynamic> data = jsonData[AppConstants.tag];
@@ -79,7 +79,7 @@ mixin _EnterReferenceCodeMixin on State<EnterReferenceCodeScreen> {
             );
             replaceScreen(context, const MainScreen());
           } else {
-            alertBox(msg, false, context);
+            showToast(msg);
           }
           setState(() {});
         }

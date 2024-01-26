@@ -24,7 +24,7 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
         getContact();
       }
     } else {
-      alertBox("no_internet_msg".tr(), false, context);
+      showToast("no_internet_msg".tr());
     }
   }
 
@@ -52,9 +52,9 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, false, context);
+            showToast(message);
           } else {
-            alertBox(message, false, context);
+            showToast(message);
           }
         } else {
           _nameController.text = jsonData["name"];
@@ -82,7 +82,7 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
       String email = _emailController.text;
       String desc = _descriptionController.text;
       if (dropdownvalue == "007") {
-        alertBox("select_cat_msg".tr(), false, context);
+        showToast("select_cat_msg".tr());
       } else if (name == '' || name.isEmpty) {
         validate();
       } else if (!_checkEmail(email) || email.isEmpty) {
@@ -93,7 +93,7 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
         form();
       }
     } else {
-      alertBox("no_internet_msg".tr(), false, context);
+      showToast("no_internet_msg".tr());
     }
   }
 
@@ -126,9 +126,9 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, false, context);
+            showToast(message);
           } else {
-            alertBox(message, false, context);
+            showToast(message);
           }
         } else {
           Map<String, dynamic> data = jsonData[AppConstants.tag];
@@ -138,9 +138,9 @@ mixin _ContactUsMixin on State<ContactUsScreen> {
           if (success == '1') {
             _descriptionController.clear();
             dropdownvalue = "007";
-            alertBox(msg, false, context);
+            showToast(msg);
           } else {
-            alertBox(msg, false, context);
+            showToast(msg);
           }
           setState(() {});
         }

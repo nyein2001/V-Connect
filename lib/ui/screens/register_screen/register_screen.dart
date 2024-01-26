@@ -52,7 +52,7 @@ class _RegisterScreenState extends State<RegisterScreen>
         }
         if (state is RegisterFail) {
           customProgressDialog.dismiss();
-          alertBox(state.message, false, context);
+          showToast(state.message);
         }
         if (state is RegisterSuccess) {
           customProgressDialog.dismiss();

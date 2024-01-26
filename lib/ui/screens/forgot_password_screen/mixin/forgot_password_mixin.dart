@@ -71,17 +71,17 @@ mixin _ForgotPasswordMixin on State<ForgotPasswordScreen> {
 
         if (jsonResponse.containsKey('status')) {
           String message = jsonResponse['message'];
-          alertBox(message, false, context);
+          showToast(message);
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           String msg = data['msg'];
-          alertBox(msg, false, context);
+          showToast(msg);
         }
       } else {
-        alertBox('error'.tr(), false, context);
+        showToast('error'.tr());
       }
     } catch (e) {
-      alertBox('error'.tr(), false, context);
+      showToast('error'.tr());
     }
   }
 }

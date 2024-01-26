@@ -55,7 +55,7 @@ mixin _LoginScreenMixin on State<LoginScreen> {
         loginFun(_emailController.text, _passwordController.text, isCheck);
       }
     } else {
-      alertBox("no_internet_msg".tr(), false, context);
+      showToast("no_internet_msg".tr());
     }
   }
 
@@ -63,7 +63,8 @@ mixin _LoginScreenMixin on State<LoginScreen> {
     CustomProgressDialog customProgressDialog =
         CustomProgressDialog(context, dismissable: false, onDismiss: () {});
     customProgressDialog.show();
-    UserLoginReq req = UserLoginReq(methodName: 'user_login', email: email, password: password);
+    UserLoginReq req = UserLoginReq(
+        methodName: 'user_login', email: email, password: password);
     String requestBody = jsonEncode(req.toJson());
     try {
       http.Response response = await http.post(
@@ -80,7 +81,7 @@ mixin _LoginScreenMixin on State<LoginScreen> {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         if (jsonResponse.containsKey('status')) {
           String message = jsonResponse['message'];
-          alertBox(message, false, context);
+          showToast(message);
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           String msg = data['msg'];
@@ -130,13 +131,13 @@ mixin _LoginScreenMixin on State<LoginScreen> {
             IAPProvider.read(context).updateProStatus();
             replaceScreen(context, const MainScreen());
           } else {
-            alertBox(msg, false, context);
+            showToast(msg);
           }
         }
       }
     } catch (e) {
       print("Failed try again $e");
-      alertBox('error'.tr(), false, context);
+      showToast('error'.tr());
     }
   }
 }

@@ -26,7 +26,7 @@ mixin _RedeemMixin on State<RedeemScreen> {
 
   void btnRedeemStatus() {
     if (Config.perks == "") {
-      alertBox("no_redeem_code_msg".tr(), false, context);
+      showToast("no_redeem_code_msg".tr());
     } else {
       showRedeemDialog(
           title: 'redeem_status'.tr(),

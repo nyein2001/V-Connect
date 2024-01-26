@@ -87,9 +87,9 @@ class ServersHttp extends HttpConnection {
 
       if (status == "-2") {
         replaceScreen(context, const LoginScreen());
-        alertBox(message, false, context);
+        showToast(message);
       } else {
-        alertBox(message, false, context);
+        showToast(message);
       }
       return false;
     }
@@ -170,7 +170,7 @@ class ServersHttp extends HttpConnection {
               isFinish: true,
               context: context);
         } else {
-          alertBox(msg, false, context);
+          showToast(msg);
         }
       }
     }

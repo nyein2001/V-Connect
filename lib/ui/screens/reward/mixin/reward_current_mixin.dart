@@ -17,7 +17,7 @@ mixin _RewardCurrentMixin on State<RewardCurrentFragment> {
         rewardPoint();
       }
     } else {
-      alertBox("no_internet_msg".tr(), false, context);
+      showToast("no_internet_msg".tr());
     }
   }
 
@@ -41,9 +41,9 @@ mixin _RewardCurrentMixin on State<RewardCurrentFragment> {
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, false, context);
+            showToast(message);
           } else {
-            alertBox(message, false, context);
+            showToast(message);
           }
         } else {
           final data = jsonData[AppConstants.tag];

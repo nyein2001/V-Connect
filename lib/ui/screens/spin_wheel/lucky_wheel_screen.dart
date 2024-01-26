@@ -58,7 +58,7 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
         init();
       }
     } else {
-      alertBox("no_internet_msg".tr(), false, context);
+      showToast("no_internet_msg".tr());
     }
   }
 
@@ -81,9 +81,9 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, false, context);
+            showToast(message);
           } else {
-            alertBox(message, false, context);
+            showToast(message);
           }
         } else {
           dailySpinnerLimit = jsonData["daily_spinner_limit"];
@@ -345,9 +345,9 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, false, context);
+            showToast(message);
           } else {
-            alertBox(message, false, context);
+            showToast(message);
           }
         } else {
           final List<dynamic> jsonArray = jsonResponse[AppConstants.tag];
@@ -360,17 +360,16 @@ class SpinningWheelPageState extends State<SpinningWheelPage> {
             remainSpin = object['remain_spin'];
 
             Future.delayed(const Duration(seconds: 3), () {
-              alertBox(
-                  "Congratulations, you have won $msg Point!", false, context);
+              showToast("Congratulations, you have won $msg Point!");
               setState(() {});
             });
           }
         }
       } else {
-        alertBox('error'.tr(), false, context);
+        showToast('error'.tr());
       }
     } catch (e) {
-      alertBox('error'.tr(), false, context);
+      showToast('error'.tr());
     }
   }
 }

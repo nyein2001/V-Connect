@@ -62,7 +62,7 @@ class _MainScreenState extends State<MainScreen> {
     if (isConnected) {
       getRefCode();
     } else {
-      alertBox("no_internet_msg".tr(), false, context);
+      showToast("no_internet_msg".tr());
     }
   }
 
@@ -86,9 +86,9 @@ class _MainScreenState extends State<MainScreen> {
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, false, context);
+            showToast(message);
           } else {
-            alertBox(message, false, context);
+            showToast(message);
           }
         } else {
           Map<String, dynamic> data = jsonData[AppConstants.tag];
@@ -203,7 +203,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const ProfileScreen());
                         } else {
-                          alertBox("no_login_msg".tr(), true, context);
+                          showToast("no_login_msg".tr());
                         }
                       }),
                   ListTile(
@@ -214,7 +214,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const RewardScreen());
                         } else {
-                          alertBox("no_login_msg".tr(), true, context);
+                          showToast("no_login_msg".tr());
                         }
                       }),
                   ListTile(
@@ -225,7 +225,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const ReferenceCodeScreen());
                         } else {
-                          alertBox("no_login_msg".tr(), true, context);
+                          showToast("no_login_msg".tr());
                         }
                       }),
                   ListTile(
@@ -236,7 +236,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const SpinningWheelPage());
                         } else {
-                          alertBox("no_login_msg".tr(), true, context);
+                          showToast("no_login_msg".tr());
                         }
                       }),
                   ListTile(
@@ -247,7 +247,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const RedeemScreen());
                         } else {
-                          alertBox("no_login_msg".tr(), true, context);
+                          showToast("no_login_msg".tr());
                         }
                       }),
                   ListTile(
@@ -281,7 +281,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const ContactUsScreen());
                         } else {
-                          alertBox("no_login_msg".tr(), true, context);
+                          showToast("no_login_msg".tr());
                         }
                       }),
                   ListTile(
@@ -292,7 +292,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const FaqScreen());
                         } else {
-                          alertBox("no_login_msg".tr(), true, context);
+                          showToast("no_login_msg".tr());
                         }
                       }),
                   ListTile(
@@ -303,7 +303,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (Preferences.isLogin()) {
                           startScreen(context, const EarnPointScreen());
                         } else {
-                          alertBox("no_login_msg".tr(), true, context);
+                          showToast("no_login_msg".tr());
                         }
                       }),
                   ListTile(

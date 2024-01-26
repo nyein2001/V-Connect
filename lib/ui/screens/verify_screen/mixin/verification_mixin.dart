@@ -40,7 +40,7 @@ mixin _VerificationMixin on State<VerificationScreen> {
   void vertification() async {
     pinText = optController.text;
     if (pinText == '' || pinText.isEmpty) {
-      alertBox('enter_verification_code_msg'.tr(), false, context);
+      showToast('enter_verification_code_msg'.tr());
     } else {
       bool isConnected = await networkInfo.isConnected;
       if (isConnected) {
@@ -50,10 +50,10 @@ mixin _VerificationMixin on State<VerificationScreen> {
           customProgressDialog.show();
           register(name, email, password, phoneNO, reference);
         } else {
-          alertBox('verfication_not_match'.tr(), false, context);
+          showToast('verfication_not_match'.tr());
         }
       } else {
-        alertBox("no_internet_msg".tr(), false, context);
+        showToast("no_internet_msg".tr());
       }
     }
   }
@@ -85,7 +85,7 @@ mixin _VerificationMixin on State<VerificationScreen> {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       if (jsonResponse.containsKey('status')) {
         String message = jsonResponse['message'];
-        alertBox(message, false, context);
+        showToast(message);
       } else {
         Map<String, dynamic> data = jsonResponse[AppConstants.tag];
         String msg = data['msg'];
@@ -135,7 +135,7 @@ mixin _VerificationMixin on State<VerificationScreen> {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         if (jsonResponse.containsKey(AppConstants.status)) {
           String message = jsonResponse['message'];
-          alertBox(message, false, context);
+          showToast(message);
         } else {
           Map<String, dynamic> data = jsonResponse[AppConstants.tag];
           String msg = data['msg'];
@@ -143,7 +143,7 @@ mixin _VerificationMixin on State<VerificationScreen> {
           if (success == '1') {
             Preferences.setOtp(verificationCode: otp);
           }
-          alertBox(msg, false, context);
+          showToast(msg);
         }
       }
     } on Exception catch (_) {}

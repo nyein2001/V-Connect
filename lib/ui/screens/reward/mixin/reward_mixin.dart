@@ -20,7 +20,7 @@ mixin _RewardScreenMixin on State<RewardScreen> {
         userData();
       }
     } else {
-      alertBox("no_internet_msg".tr(), false, context);
+      showToast("no_internet_msg".tr());
     }
   }
 
@@ -48,9 +48,9 @@ mixin _RewardScreenMixin on State<RewardScreen> {
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, false, context);
+            showToast(message);
           } else {
-            alertBox(message, false, context);
+            showToast(message);
           }
         } else {
           Map<String, dynamic> data = jsonData[AppConstants.tag];
@@ -76,8 +76,9 @@ mixin _RewardScreenMixin on State<RewardScreen> {
     if (compair >= point) {
       startScreen(context, RewardPointClaim(userPoints: totalPoint));
     } else {
-      alertBox("Minimum $minimumRedeemPoints Reward point is required to claim",
-          false, context);
+      showToast(
+        "Minimum $minimumRedeemPoints Reward point is required to claim",
+      );
     }
   }
 }

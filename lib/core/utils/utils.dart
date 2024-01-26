@@ -4,12 +4,11 @@ import 'dart:math';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:google_mobile_ads/src/ad_instance_manager.dart';
 import 'package:in_app_update/in_app_update.dart';
-import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/utils/network_available.dart';
-import 'package:ndvpn/ui/components/alert_detail.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 export 'preferences.dart';
@@ -64,15 +63,8 @@ class AssetsPath {
   static const String iconpath = "assets/icons/";
 }
 
-void alertBox(String message, bool exit, BuildContext context) {
-  DialogBackground(
-    dialog: AlertScreen(
-      message: message,
-      exit: exit,
-    ),
-    blur: 10,
-    dismissable: false,
-  ).show(context);
+void showToast(String message) {
+  Fluttertoast.showToast(msg: message, toastLength: Toast.LENGTH_SHORT);
 }
 
 void launchEmail({required String appEmail}) async {
@@ -105,8 +97,8 @@ void makePhoneCall({required String appContact}) async {
   }
 }
 
-  String formatWebText({required String text}) {
-    return '''
+String formatWebText({required String text}) {
+  return '''
             <html>
               <head>
                 <style type="text/css">
@@ -134,4 +126,4 @@ void makePhoneCall({required String appContact}) async {
               </body>
             </html>
           ''';
-  }
+}

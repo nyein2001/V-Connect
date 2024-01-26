@@ -22,7 +22,7 @@ mixin _RewardPointMixin on State<RewardPointClaim> {
         getContact();
       }
     } else {
-      alertBox("no_internet_msg".tr(), false, context);
+      showToast("no_internet_msg".tr());
     }
   }
 
@@ -50,9 +50,9 @@ mixin _RewardPointMixin on State<RewardPointClaim> {
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, false, context);
+            showToast(message);
           } else {
-            alertBox(message, false, context);
+            showToast(message);
           }
         } else {
           final data = jsonData[AppConstants.tag];
@@ -98,9 +98,9 @@ mixin _RewardPointMixin on State<RewardPointClaim> {
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, false, context);
+            showToast(message);
           } else {
-            alertBox(message, false, context);
+            showToast(message);
           }
         } else {
           final data = jsonData[AppConstants.tag];

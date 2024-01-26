@@ -17,7 +17,7 @@ mixin _WithdrawalHistoryMixin on State<WithdrawalHistoryFragment> {
         history();
       }
     } else {
-      alertBox("no_internet_msg".tr(), false, context);
+      showToast("no_internet_msg".tr());
     }
   }
 
@@ -45,9 +45,9 @@ mixin _WithdrawalHistoryMixin on State<WithdrawalHistoryFragment> {
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, false, context);
+            showToast(message);
           } else {
-            alertBox(message, false, context);
+            showToast(message);
           }
         } else {
           final data = jsonData[AppConstants.tag];

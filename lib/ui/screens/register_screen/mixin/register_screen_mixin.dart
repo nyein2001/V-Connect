@@ -166,7 +166,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
               reference: reference));
         }
       } else {
-        alertBox("no_internet_msg".tr(), false, context);
+        showToast("no_internet_msg".tr());
       }
     }
   }

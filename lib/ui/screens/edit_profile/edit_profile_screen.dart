@@ -52,7 +52,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
         getProfile();
       }
     } else {
-      alertBox("no_internet_msg".tr(), false, context);
+      showToast("no_internet_msg".tr());
     }
   }
 
@@ -80,9 +80,9 @@ class EditProfileScreenState extends State<EditProfileScreen>
 
           if (status == "-2") {
             replaceScreen(context, const LoginScreen());
-            alertBox(message, false, context);
+            showToast(message);
           } else {
-            alertBox(message, false, context);
+            showToast(message);
           }
         } else {
           Map<String, dynamic> data = jsonData[AppConstants.tag];
@@ -411,7 +411,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
                               passwordController.text ||
                           passwordController.text.trim().isEmpty ||
                           confirmController.text.trim().isEmpty) {
-                        alertBox("not_match_password".tr(), false, context);
+                        showToast("not_match_password".tr());
                       } else if (phoneController.text.trim().isEmpty) {
                         FocusScope.of(context).requestFocus(FocusNode());
                       } else {
@@ -429,7 +429,7 @@ class EditProfileScreenState extends State<EditProfileScreen>
                                 passwordController.text ||
                             passwordController.text.trim().isEmpty ||
                             confirmController.text.trim().isEmpty) {
-                          alertBox("not_match_password".tr(), false, context);
+                          showToast("not_match_password".tr());
                         } else if (phoneController.text.trim().isEmpty) {
                           FocusScope.of(context).requestFocus(FocusNode());
                         } else {
@@ -507,14 +507,14 @@ class EditProfileScreenState extends State<EditProfileScreen>
             int status = jsonResponse['status'];
             String message = jsonResponse['message'];
             if (status == -2) {
-              alertBox(message, false, context);
+              showToast(message);
             } else {
-              alertBox(message, false, context);
+              showToast(message);
             }
           } else {
             Map<String, dynamic> data = jsonResponse[AppConstants.tag];
             String msg = data['msg'];
-            alertBox(msg, false, context);
+            showToast(msg);
           }
         }
       } else {
@@ -532,20 +532,19 @@ class EditProfileScreenState extends State<EditProfileScreen>
             int status = jsonResponse['status'];
             String message = jsonResponse['message'];
             if (status == -2) {
-              alertBox(message, false, context);
+              showToast(message);
             } else {
-              alertBox(message, false, context);
+              showToast(message);
             }
           } else {
             Map<String, dynamic> data = jsonResponse[AppConstants.tag];
             String msg = data['msg'];
-            alertBox(msg, false, context);
+            showToast(msg);
           }
         }
       }
     } catch (e) {
-      print('Failed try again $e');
-      alertBox('error'.tr(), false, context);
+      showToast('error'.tr());
     }
   }
 

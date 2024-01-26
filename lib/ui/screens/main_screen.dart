@@ -1,17 +1,16 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ndialog/ndialog.dart';
-import 'package:ndvpn/core/models/api_req/get_req_with_userid.dart';
+import 'package:ndvpn/core/https/servers_http.dart';
+import 'package:ndvpn/core/models/api_res/app_settings.dart';
 import 'package:ndvpn/core/providers/globals/ads_provider.dart';
 import 'package:ndvpn/core/providers/globals/iap_provider.dart';
 import 'package:ndvpn/core/providers/globals/vpn_provider.dart';
 import 'package:ndvpn/core/resources/environment.dart';
 import 'package:ndvpn/core/utils/config.dart';
-import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/custom_divider.dart';
 import 'package:ndvpn/ui/components/logout_alert.dart';
@@ -38,9 +37,7 @@ import '../../core/providers/globals/theme_provider.dart';
 import '../components/connection_button.dart';
 import '../components/custom_image.dart';
 import 'connection_detail_screen.dart';
-import 'package:http/http.dart' as http;
 
-/// Main screen of the app
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -60,57 +57,19 @@ class _MainScreenState extends State<MainScreen> {
   void callData() async {
     bool isConnected = await networkInfo.isConnected;
     if (isConnected) {
-      getRefCode();
-    } else {
-      showToast("no_internet_msg".tr());
-    }
-  }
-
-  Future<void> getRefCode() async {
-    ReqWithUserId req = ReqWithUserId(methodName: 'app_settings');
-    String methodBody = jsonEncode(req.toJson());
-    try {
-      http.Response response = await http.post(
-        Uri.parse(AppConstants.baseURL),
-        body: {'data': base64Encode(utf8.encode(methodBody))},
-      ).then((value) {
-        return value;
-      });
-
-      if (response.statusCode == 200) {
-        Map<String, dynamic> jsonData = jsonDecode(response.body);
-
-        if (jsonData.containsKey("status")) {
-          String status = jsonData["status"];
-          String message = jsonData["message"];
-
-          if (status == "-2") {
-            replaceScreen(context, const LoginScreen());
-            showToast(message);
-          } else {
-            showToast(message);
-          }
-        } else {
-          Map<String, dynamic> data = jsonData[AppConstants.tag];
-          String success = '${data['success']}';
-          if (success == "1") {
-            String appUpdateStatus = data["app_update_status"];
-            String appUpdateDesc = data["app_update_desc"];
-            String appRedirectUrl = data["app_redirect_url"];
-            String cancelUpdateStatus = data["cancel_update_status"];
-            String appNewVersion = "${data["app_new_version"]}";
-            final String version = (await PackageInfo.fromPlatform()).version;
-            if (appUpdateStatus == "true" && appNewVersion != version) {
-              showUpdateDialog(
-                  desc: appUpdateDesc,
-                  url: appRedirectUrl,
-                  status: cancelUpdateStatus);
-            }
-          }
+      AppSettings? appSettings = await ServersHttp(context).getAppSettings();
+      if (appSettings != null) {
+        final String version = (await PackageInfo.fromPlatform()).version;
+        if (appSettings.appUpdateStatus == "true" &&
+            appSettings.appNewVersion != version) {
+          showUpdateDialog(
+              desc: appSettings.appUpdateDesc,
+              url: appSettings.appRedirectUrl,
+              status: appSettings.cancelUpdateStatus);
         }
       }
-    } catch (error) {
-      print("Error updateUIWithData  $error");
+    } else {
+      showToast("no_internet_msg".tr());
     }
   }
 
@@ -149,7 +108,7 @@ class _MainScreenState extends State<MainScreen> {
         TextButton(
           child: const Text("Yes"),
           onPressed: () {
-            _launchURL(url);
+            launchWebsite(url: url);
             Navigator.pop(context);
           },
         ),
@@ -165,18 +124,9 @@ class _MainScreenState extends State<MainScreen> {
     ).show(context);
   }
 
-  _launchURL(String link) async {
-    if (await canLaunchUrl(Uri.parse(link))) {
-      await launchUrl(Uri.parse(link));
-    } else {
-      throw 'Could not launch $link';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // controller: _controller,
       key: _scaffoldKey,
       drawer: Drawer(
           backgroundColor: Theme.of(context).colorScheme.background,

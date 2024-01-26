@@ -5,6 +5,7 @@ import 'package:ndvpn/core/models/api_req/base_model.dart';
 import 'package:ndvpn/core/models/api_req/get_req_with_userid.dart';
 import 'package:ndvpn/core/models/api_req/redeem_req.dart';
 import 'package:ndvpn/core/models/api_res/about_data.dart';
+import 'package:ndvpn/core/models/api_res/app_settings.dart';
 import 'package:ndvpn/core/models/api_res/earn_point.dart';
 import 'package:ndvpn/core/models/ip_detail.dart';
 import 'package:ndvpn/core/models/vpn_config.dart';
@@ -186,6 +187,22 @@ class ServersHttp extends HttpConnection {
         String success = "${data['success']}";
         if (success == "1") {
           return AboutData.fromJson(data);
+        }
+      }
+    }
+    return null;
+  }
+
+  Future<AppSettings?> getAppSettings() async {
+    ReqWithUserId req = ReqWithUserId(methodName: 'app_settings');
+    final response = await postRequest(body: req.toJson());
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      if (_handleStatus(jsonData)) {
+        final data = jsonData[AppConstants.tag];
+        String success = "${data['success']}";
+        if (success == "1") {
+          return AppSettings.fromJson(data);
         }
       }
     }

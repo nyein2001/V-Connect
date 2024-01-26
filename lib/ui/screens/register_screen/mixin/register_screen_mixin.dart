@@ -25,44 +25,9 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
     super.initState();
     customProgressDialog =
         CustomProgressDialog(context, dismissable: false, onDismiss: () {});
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkOtp();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      status = await ServersHttp(context).checkOtp();
     });
-  }
-
-  void checkOtp() async {
-    customProgressDialog.show();
-    String methodBody = jsonEncode({
-      'sign': AppConstants.sign,
-      'salt': AppConstants.randomSalt.toString(),
-      'package_name': AppConstants.packageName,
-      'method_name': 'otp_status',
-    });
-
-    try {
-      http.Response response = await http.post(
-        Uri.parse(AppConstants.baseURL),
-        body: {'data': base64Encode(utf8.encode(methodBody))},
-      ).then((value) {
-        customProgressDialog.dismiss();
-        return value;
-      });
-      if (response.statusCode == 200) {
-        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-
-        if (jsonResponse.containsKey('status')) {
-          String message = jsonResponse['message'];
-          alertBox(message, false, context);
-        } else {
-          Map<String, dynamic> data = jsonResponse[AppConstants.tag];
-          status = data['otp_status'];
-        }
-      } else {
-        alertBox('error'.tr(), false, context);
-      }
-    } catch (e) {
-      alertBox('error'.tr(), false, context);
-    }
   }
 
   @override
@@ -185,7 +150,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
       bool isConnected = await networkInfo.isConnected;
       if (isConnected) {
         customProgressDialog =
-        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
+            CustomProgressDialog(context, dismissable: false, onDismiss: () {});
         customProgressDialog.show();
         if (status == "true") {
           otp = generateOTP().toString();
@@ -206,125 +171,8 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
     }
   }
 
-  void verificationCall(String sentEmail, String otp) async {
-    // customProgressDialog.show();
-    String methodBody = jsonEncode({
-      'sign': AppConstants.sign,
-      'salt': AppConstants.randomSalt.toString(),
-      'package_name': AppConstants.packageName,
-      'method_name': 'user_register_verify_email',
-      'email': sentEmail,
-      'otp_code': otp
-    });
-    try {
-      http.Response response = await http.post(
-        Uri.parse(AppConstants.baseURL),
-        body: {'data': base64Encode(utf8.encode(methodBody))},
-      ).then((value) {
-        // customProgressDialog.dismiss();
-        return value;
-      });
-      if (response.statusCode == 200) {
-        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-        if (jsonResponse.containsKey('status')) {
-          String message = jsonResponse['message'];
-          alertBox(message, false, context);
-        } else {
-          Map<String, dynamic> data = jsonResponse[AppConstants.tag];
-          String msg = data['msg'];
-          String success = "${data['success']}";
-          if (success == '1') {
-            Fluttertoast.showToast(msg: msg, toastLength: Toast.LENGTH_SHORT);
-            Preferences.setVerification(isVerification: true);
-            Preferences.setName(name: name);
-            Preferences.setEmail(email: email);
-            Preferences.setPassword(password: password);
-            Preferences.setPhone(phoneNO: phoneNo);
-            Preferences.setReference(reference: reference);
-            Preferences.setOtp(verificationCode: otp);
-            startScreen(
-                context,
-                VerificationScreen(
-                  name: name,
-                  email: email,
-                  password: password,
-                  phoneNO: phoneNo,
-                  reference: reference,
-                ));
-          } else {
-            alertBox(msg, false, context);
-          }
-        }
-      }
-    } on Exception catch (_) {}
-  }
-
-  void addToRegistation(String name, String email, String password,
-      String phone, String reference) async {
-    String deviceId = Preferences.getDeviceId();
-    // customProgressDialog.show();
-    String methodBody = jsonEncode({
-      'sign': AppConstants.sign,
-      'salt': AppConstants.randomSalt.toString(),
-      'package_name': AppConstants.packageName,
-      'method_name': 'user_register',
-      'type': 'normal',
-      'name': name,
-      'email': email,
-      'password': password,
-      'phone': phone,
-      'device_id': deviceId,
-      'user_refrence_code': reference
-    });
-    http.Response response = await http.post(
-      Uri.parse(AppConstants.baseURL),
-      body: {'data': base64Encode(utf8.encode(methodBody))},
-    ).then((value) {
-      // customProgressDialog.dismiss();
-      return value;
-    });
-    if (response.statusCode == 200) {
-      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-      if (jsonResponse.containsKey('status')) {
-        String message = jsonResponse['message'];
-        alertBox(message, false, context);
-      } else {
-        Map<String, dynamic> data = jsonResponse[AppConstants.tag];
-        String msg = data['msg'];
-        String success = "${data['success']}";
-        if (success == '1') {
-          replaceScreen(context, const LoginScreen());
-        }
-        Fluttertoast.showToast(msg: msg, toastLength: Toast.LENGTH_SHORT);
-      }
-    }
-  }
-
   int generateOTP() {
     Random random = Random();
     return random.nextInt(9000) + 1000;
-  }
-
-  Future<void> verifyEmail() async {
-    if (validate()) {
-      await RegisterHttp(context)
-          .verifyEmail(body: getVerificationEmailData())
-          .then((value) {
-        debugPrint('value: $value');
-      });
-    }
-  }
-
-  getVerificationEmailData() {
-    final data = json.encode({
-      'method_name': 'user_register_verify_email',
-      'email': _emailController.text.trim(),
-      'otp_code': '123456'
-    });
-
-    String jsonString = jsonEncode(data);
-    String base64String = base64Encode(utf8.encode(jsonString));
-
-    return ({'data': base64String});
   }
 }

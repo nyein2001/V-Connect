@@ -1,17 +1,13 @@
-import 'dart:convert';
 import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
 import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/assets.dart';
-import 'package:ndvpn/core/https/sign_http/register_http.dart';
+import 'package:ndvpn/core/https/servers_http.dart';
 import 'package:ndvpn/core/resources/colors.dart';
 import 'package:ndvpn/core/resources/environment.dart';
-import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 import 'package:ndvpn/ui/screens/register_screen/bloc/register_bloc.dart';

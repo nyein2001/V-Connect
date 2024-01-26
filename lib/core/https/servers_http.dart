@@ -225,4 +225,21 @@ class ServersHttp extends HttpConnection {
     }
     return '';
   }
+
+  Future<String> checkOtp() async {
+    BaseModel req = BaseModel(methodName: 'otp_status');
+    CustomProgressDialog customProgressDialog =
+        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
+    customProgressDialog.show();
+    final response = await postRequest(body: req.toJson());
+    customProgressDialog.dismiss();
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      if (_handleStatus(jsonData)) {
+        final data = jsonData[AppConstants.tag];
+        return "${data['otp_status']}";
+      }
+    }
+    return '';
+  }
 }

@@ -25,7 +25,9 @@ class PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
             future: ServersHttp(context).getPrivacyPolicy(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const ShimmerListLoadingEffect();
+                return const ShimmerListLoadingEffect(
+                  count: 5,
+                );
               } else if (snapshot.hasError) {
                 return ErrorViewWidget(onRetry: () {
                   setState(() {});

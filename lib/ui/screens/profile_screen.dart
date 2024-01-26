@@ -1,19 +1,17 @@
-import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
-import 'package:ndvpn/core/models/api_req/get_req_with_userid.dart';
+import 'package:ndvpn/core/https/servers_http.dart';
 import 'package:ndvpn/core/models/purchase_history.dart';
-import 'package:ndvpn/core/providers/globals/iap_provider.dart';
 import 'package:ndvpn/core/resources/colors.dart';
 import 'package:ndvpn/core/utils/config.dart';
-import 'package:ndvpn/core/utils/constant.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/custom_card.dart';
+import 'package:ndvpn/ui/components/empty_widget.dart';
+import 'package:ndvpn/ui/components/error_widget.dart';
+import 'package:ndvpn/ui/components/shimmer_list_loading.dart';
 import 'package:ndvpn/ui/screens/edit_profile/edit_profile_screen.dart';
-import 'package:ndvpn/ui/screens/login_screen/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -28,12 +26,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String phone = Preferences.getPhoneNo();
   String userImage = Preferences.getUserImage();
   String accountType = "Free";
-  List<PurchaseHistory> phList = [];
   String tvRenewDate = "";
 
   @override
   void initState() {
-    fetchPurchaseHistory();
     setRenewDate();
     callData();
     super.initState();
@@ -43,43 +39,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     bool isConnected = await networkInfo.isConnected;
     if (isConnected) {
       if (Preferences.isLogin()) {
-        getProfile();
+        ServersHttp(context).getProfile().then((value) {
+          accountType = value;
+          if (accountType == "Premium") {
+            setRenewDate();
+          }
+          setState(() {});
+        });
       }
     } else {
       showToast("no_internet_msg".tr());
-    }
-  }
-
-  void fetchPurchaseHistory() async {
-    ReqWithUserId req = ReqWithUserId(methodName: "fetch_purchase_history");
-    String methodBody = jsonEncode(req.toJson());
-
-    try {
-      http.Response response = await http.post(
-        Uri.parse(AppConstants.baseURL),
-        body: {'data': base64Encode(utf8.encode(methodBody))},
-      );
-
-      if (response.statusCode == 200) {
-        Map<String, dynamic> jsonData = jsonDecode(response.body);
-        Map<String, dynamic> jsonResponse = jsonData[AppConstants.tag];
-
-        if (jsonResponse.containsKey('list') && jsonResponse['list'] != null) {
-          dynamic listData = jsonResponse['list'];
-          if (listData != null) {
-            if (listData is String) {
-              List<dynamic> decodedList = json.decode(listData);
-              if (decodedList.isNotEmpty) {
-                phList = List<PurchaseHistory>.from(
-                    decodedList.map((item) => PurchaseHistory.fromJson(item)));
-              }
-            }
-          }
-        }
-      }
-      setState(() {});
-    } catch (error) {
-      print("Error updateUIWithData  $error");
     }
   }
 
@@ -92,60 +61,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var formatter = DateFormat('yyyy-MM-dd', 'en_US');
     tvRenewDate = formatter.format(date);
     setState(() {});
-  }
-
-  void getProfile() async {
-    ReqWithUserId req = ReqWithUserId(methodName: "user_profile");
-    String methodBody = jsonEncode(req.toJson());
-
-    try {
-      http.Response response = await http.post(
-        Uri.parse(AppConstants.baseURL),
-        body: {'data': base64Encode(utf8.encode(methodBody))},
-      );
-
-      if (response.statusCode == 200) {
-        Map<String, dynamic> jsonData = jsonDecode(response.body);
-
-        if (jsonData.containsKey("status")) {
-          String status = jsonData["status"];
-          String message = jsonData["message"];
-
-          if (status == "-2") {
-            replaceScreen(context, const LoginScreen());
-            showToast(message);
-          } else {
-            showToast(message);
-          }
-        } else {
-          Map<String, dynamic> data = jsonData[AppConstants.tag];
-          String success = "${data['success']}";
-          if (success == "1") {
-            name = data["name"];
-            email = data["email"];
-            phone = data["phone"];
-            userImage = data["user_image"];
-
-            String stripeJson = data["stripe"];
-            if (stripeJson != '') {
-              Map<String, dynamic> stripeObject = jsonDecode(stripeJson);
-
-              if (stripeObject["status"] == "active") {
-                Config.stripeRenewDate = stripeObject["current_period_end"];
-                Config.stripeStatus = "active";
-                accountType = "Premium";
-                // setRenewDate();
-              } else {
-                accountType = "Free";
-              }
-            }
-            setState(() {});
-          }
-        }
-      }
-    } catch (error) {
-      print("Error updateUIWithData  $error");
-    }
   }
 
   @override
@@ -356,114 +271,98 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
-            phList.isEmpty
-                ? Card(
-                    color: Theme.of(context).cardColor,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    margin: const EdgeInsets.all(8.0),
-                    child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Center(
-                            child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.width / 8,
-                            ),
-                            const SizedBox(
-                                child: Icon(
-                              Icons.history,
-                              size: 80,
-                              color: Colors.blue,
-                            )),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.width / 16,
-                            ),
-                            const Text(
-                              'no_purchase',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ).tr(),
-                            const SizedBox(height: 8),
-                            const Text(
-                              'no_purchase_msg',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey,
-                              ),
-                            ).tr(),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.width / 8,
-                            ),
-                          ],
-                        ))))
-                : Expanded(
-                    child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: ListView.builder(
-                        itemBuilder: (BuildContext context, int index) {
-                          PurchaseHistory rewardPoint = phList[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 5),
-                            child: CustomCard(
-                              child: ListTile(
-                                  leading: CircleAvatar(
-                                    radius: 25,
-                                    child: ClipOval(
-                                      child: Image.asset(
-                                        "${AssetsPath.iconpath}logo_android.png",
-                                        fit: BoxFit.cover,
-                                        height: 125,
-                                        width: 125,
-                                      ),
-                                    ),
-                                  ),
-                                  title: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        rewardPoint.type,
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 12),
-                                        child: Text(
-                                          rewardPoint.amount,
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
+            FutureBuilder(
+                future: ServersHttp(context).fetchPurchaseHistory(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const ShimmerListLoadingEffect(
+                      count: 3,
+                    );
+                  } else if (snapshot.hasError) {
+                    return ErrorViewWidget(onRetry: () {
+                      setState(() {});
+                    });
+                  } else {
+                    List<PurchaseHistory> earnPointLists = snapshot.data ?? [];
+                    if (earnPointLists.isEmpty) {
+                      return Card(
+                          color: Theme.of(context).cardColor,
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          margin: const EdgeInsets.all(8.0),
+                          child: const Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: EmptyWidget(
+                                  emptyTitle: 'no_purchase',
+                                  emptyMessage: 'no_purchase_msg')));
+                    } else {
+                      return Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: ListView.builder(
+                            itemBuilder: (BuildContext context, int index) {
+                              PurchaseHistory rewardPoint =
+                                  earnPointLists[index];
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 5),
+                                child: CustomCard(
+                                  child: ListTile(
+                                      leading: CircleAvatar(
+                                        radius: 25,
+                                        child: ClipOval(
+                                          child: Image.asset(
+                                            "${AssetsPath.iconpath}logo_android.png",
+                                            fit: BoxFit.cover,
+                                            height: 125,
+                                            width: 125,
+                                          ),
                                         ),
-                                      )
-                                    ],
-                                  ),
-                                  subtitle: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Text(
-                                      rewardPoint.createDate,
-                                      style: const TextStyle(
-                                        fontSize: 14,
                                       ),
-                                    ),
-                                  ),
-                                  visualDensity: VisualDensity.compact,
-                                  contentPadding:
-                                      const EdgeInsets.only(left: 5, right: 5)),
-                            ),
-                          );
-                        },
-                        shrinkWrap: true,
-                        itemCount: phList.length),
-                  ))
+                                      title: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            rewardPoint.type,
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 12),
+                                            child: Text(
+                                              rewardPoint.amount,
+                                              style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      subtitle: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(
+                                          rewardPoint.createDate,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                      visualDensity: VisualDensity.compact,
+                                      contentPadding: const EdgeInsets.only(
+                                          left: 5, right: 5)),
+                                ),
+                              );
+                            },
+                            shrinkWrap: true,
+                            itemCount: earnPointLists.length),
+                      ));
+                    }
+                  }
+                })
           ],
         ));
   }
@@ -477,7 +376,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         TextButton(
           child: const Text("Yes"),
           onPressed: () {
-            cancelStripeSubscription();
+            ServersHttp(context).cancelStripeSubscription().then((value) {
+              if (value == "success") {
+                tvRenewDate = "";
+                setState(() {});
+              }
+            });
             Navigator.pop(context);
           },
         ),
@@ -489,28 +393,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ],
     ).show(context);
-  }
-
-  void cancelStripeSubscription() async {
-    ReqWithUserId req = ReqWithUserId(methodName: "cancel_stripe_subscription");
-    String methodBody = jsonEncode(req.toJson());
-
-    try {
-      http.Response response = await http.post(
-        Uri.parse(AppConstants.baseURL),
-        body: {'data': base64Encode(utf8.encode(methodBody))},
-      );
-
-      if (response.statusCode == 200) {
-        Config.stripeStatus = "";
-        Config.stripeJson = "";
-        Config.stripeRenewDate = "";
-        Config.vipSubscription = false;
-        Config.allSubscription = false;
-        IAPProvider.read(context).updateProStatus();
-        tvRenewDate = "";
-        setState(() {});
-      }
-    } catch (e) {}
   }
 }

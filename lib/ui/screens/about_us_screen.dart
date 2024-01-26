@@ -31,7 +31,9 @@ class AboutUsScreenState extends State<AboutUsScreen> {
             future: ServersHttp(context).getAboutData(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const ShimmerListLoadingEffect();
+                return const ShimmerListLoadingEffect(
+                  count: 5,
+                );
               } else if (snapshot.hasError) {
                 return ErrorViewWidget(onRetry: () {
                   setState(() {});

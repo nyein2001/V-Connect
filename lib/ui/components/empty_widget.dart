@@ -30,14 +30,15 @@ class EmptyWidget extends StatelessWidget {
           emptyTitle,
           style: const TextStyle(
             fontSize: 18,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
         ).tr(),
         const SizedBox(height: 8),
         Text(
           emptyMessage,
+          textAlign: TextAlign.center,
           style: const TextStyle(
-            fontSize: 16,
+            fontSize: 12,
             color: Colors.grey,
           ),
         ).tr(),

@@ -98,7 +98,7 @@
     "account_type": "Account Type:",
     "purchase_history": "Purchase History",
     "no_purchase": "No Purchase History",
-    "no_purchase_msg": "Looks like there are no purchase history to display.",
+    "no_purchase_msg": "Looks like there are no purchase to display.",
     "empty_withdrawal": "Empty Withdrawal",
     "empty_withdrawal_msg": "Looks like there are no withdrawal to display.",
     "edit_profile": "Edit Profile",

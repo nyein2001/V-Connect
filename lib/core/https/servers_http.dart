@@ -8,6 +8,7 @@ import 'package:ndvpn/core/models/api_res/about_data.dart';
 import 'package:ndvpn/core/models/api_res/app_settings.dart';
 import 'package:ndvpn/core/models/api_res/earn_point.dart';
 import 'package:ndvpn/core/models/ip_detail.dart';
+import 'package:ndvpn/core/models/purchase_history.dart';
 import 'package:ndvpn/core/models/vpn_config.dart';
 import 'package:ndvpn/core/models/vpn_server.dart';
 import 'package:ndvpn/core/providers/globals/iap_provider.dart';
@@ -127,6 +128,30 @@ class ServersHttp extends HttpConnection {
             .map<EarnPoint>((object) =>
                 EarnPoint(title: object['title'], points: object['point']))
             .toList();
+      }
+    }
+    return [];
+  }
+
+  Future<List<PurchaseHistory>> fetchPurchaseHistory() async {
+    ReqWithUserId req = ReqWithUserId(methodName: "fetch_purchase_history");
+    final response = await postRequest(body: req.toJson());
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      if (_handleStatus(jsonData)) {
+        final data = jsonData[AppConstants.tag];
+        if (data.containsKey('list') && data['list'] != null) {
+          dynamic listData = data['list'];
+          if (listData != null) {
+            if (listData is String) {
+              List<dynamic> decodedList = json.decode(listData);
+              if (decodedList.isNotEmpty) {
+                return List<PurchaseHistory>.from(
+                    decodedList.map((item) => PurchaseHistory.fromJson(item)));
+              }
+            }
+          }
+        }
       }
     }
     return [];
@@ -258,5 +283,48 @@ class ServersHttp extends HttpConnection {
       }
     }
     return '';
+  }
+
+  Future<String> getProfile() async {
+    ReqWithUserId req = ReqWithUserId(methodName: "user_profile");
+    final response = await postRequest(body: req.toJson());
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      if (_handleStatus(jsonData)) {
+        final data = jsonData[AppConstants.tag];
+        String success = "${data['success']}";
+        if (success == "1") {
+          Preferences.setName(name: data["name"]);
+          Preferences.setEmail(email: data["email"]);
+          Preferences.setPhone(phoneNO: data["phone"]);
+          Preferences.setUserImage(userImage: data["user_image"]);
+          String stripeJson = data["stripe"];
+          if (stripeJson != '') {
+            Map<String, dynamic> stripeObject = jsonDecode(stripeJson);
+            if (stripeObject["status"] == "active") {
+              Config.stripeRenewDate = stripeObject["current_period_end"];
+              Config.stripeStatus = "active";
+              return "Premium";
+            }
+          }
+        }
+      }
+    }
+    return "Free";
+  }
+
+  Future<String> cancelStripeSubscription() async {
+    ReqWithUserId req = ReqWithUserId(methodName: "cancel_stripe_subscription");
+    final response = await postRequest(body: req.toJson());
+    if (response.statusCode == 200) {
+      Config.stripeStatus = "";
+      Config.stripeJson = "";
+      Config.stripeRenewDate = "";
+      Config.vipSubscription = false;
+      Config.allSubscription = false;
+      IAPProvider.read(context).updateProStatus();
+      return "success";
+    }
+    return "fail";
   }
 }

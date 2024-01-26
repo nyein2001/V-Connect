@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ShimmerListLoadingEffect extends StatelessWidget {
-  const ShimmerListLoadingEffect({super.key});
+  final int count;
+  const ShimmerListLoadingEffect({required this.count, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +12,7 @@ class ShimmerListLoadingEffect extends StatelessWidget {
       highlightColor: Colors.grey[100]!,
       child: Column(
         children: List.generate(
-          5,
+          count,
           (index) => ListTile(
             leading: const CircleAvatar(
               radius: 25,

@@ -14,6 +14,7 @@ import 'package:ndvpn/core/utils/config.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/custom_divider.dart';
 import 'package:ndvpn/ui/components/logout_alert.dart';
+import 'package:ndvpn/ui/components/redeem_dialog.dart';
 import 'package:ndvpn/ui/screens/about_us_screen.dart';
 import 'package:ndvpn/ui/screens/contact_us/contact_us_screen.dart';
 import 'package:ndvpn/ui/screens/earn_point_screen.dart';
@@ -65,63 +66,13 @@ class _MainScreenState extends State<MainScreen> {
           showUpdateDialog(
               desc: appSettings.appUpdateDesc,
               url: appSettings.appRedirectUrl,
-              status: appSettings.cancelUpdateStatus);
+              status: appSettings.cancelUpdateStatus,
+              context: context);
         }
       }
     } else {
       showToast("no_internet_msg".tr());
     }
-  }
-
-  void showUpdateDialog(
-      {required String desc,
-      required String url,
-      required String status}) async {
-    return NAlertDialog(
-      blur: 10,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          CircleAvatar(
-              radius: 20,
-              child: ClipRRect(
-                  child: Image.asset(
-                "${AssetsPath.iconpath}logo_android.png",
-                fit: BoxFit.cover,
-                height: 125,
-                width: 125,
-              ))),
-          const SizedBox(
-            width: 10,
-          ),
-          Text(
-            appName,
-            style: Theme.of(context)
-                .textTheme
-                .bodyLarge!
-                .copyWith(fontWeight: FontWeight.bold, fontSize: 18),
-          )
-        ],
-      ),
-      content: Text(desc),
-      actions: [
-        TextButton(
-          child: const Text("Yes"),
-          onPressed: () {
-            launchWebsite(url: url);
-            Navigator.pop(context);
-          },
-        ),
-        Visibility(
-            visible: status == "true",
-            child: TextButton(
-              child: const Text("No"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            )),
-      ],
-    ).show(context);
   }
 
   @override

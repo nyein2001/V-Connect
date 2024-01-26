@@ -184,8 +184,10 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
       _referenceCodeController.clear();
       bool isConnected = await networkInfo.isConnected;
       if (isConnected) {
+        customProgressDialog =
+        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
+        customProgressDialog.show();
         if (status == "true") {
-          customProgressDialog.show();
           otp = generateOTP().toString();
           BlocProvider.of<RegisterBloc>(context)
               .add(VerificationCall(email: email, otp: otp));
@@ -205,7 +207,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
   }
 
   void verificationCall(String sentEmail, String otp) async {
-    customProgressDialog.show();
+    // customProgressDialog.show();
     String methodBody = jsonEncode({
       'sign': AppConstants.sign,
       'salt': AppConstants.randomSalt.toString(),
@@ -219,7 +221,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
         Uri.parse(AppConstants.baseURL),
         body: {'data': base64Encode(utf8.encode(methodBody))},
       ).then((value) {
-        customProgressDialog.dismiss();
+        // customProgressDialog.dismiss();
         return value;
       });
       if (response.statusCode == 200) {
@@ -260,7 +262,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
   void addToRegistation(String name, String email, String password,
       String phone, String reference) async {
     String deviceId = Preferences.getDeviceId();
-    customProgressDialog.show();
+    // customProgressDialog.show();
     String methodBody = jsonEncode({
       'sign': AppConstants.sign,
       'salt': AppConstants.randomSalt.toString(),
@@ -278,7 +280,7 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
       Uri.parse(AppConstants.baseURL),
       body: {'data': base64Encode(utf8.encode(methodBody))},
     ).then((value) {
-      customProgressDialog.dismiss();
+      // customProgressDialog.dismiss();
       return value;
     });
     if (response.statusCode == 200) {

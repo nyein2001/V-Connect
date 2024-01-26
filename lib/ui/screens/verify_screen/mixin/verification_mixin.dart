@@ -13,8 +13,6 @@ mixin _VerificationMixin on State<VerificationScreen> {
 
   @override
   void initState() {
-    customProgressDialog =
-        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
     if (widget.name != null) {
       name = widget.name!;
       email = widget.email!;
@@ -28,6 +26,8 @@ mixin _VerificationMixin on State<VerificationScreen> {
       phoneNO = Preferences.getPhoneNo();
       reference = Preferences.getReference();
     }
+    customProgressDialog =
+        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
     super.initState();
   }
 

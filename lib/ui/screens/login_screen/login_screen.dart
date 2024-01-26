@@ -171,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> with _LoginScreenMixin {
                         style: Theme.of(context).textTheme.labelLarge,
                         children: [
                           TextSpan(
-                            text: 'Register',
+                            text: ' Register',
                             style: Theme.of(context)
                                 .textTheme
                                 .labelLarge

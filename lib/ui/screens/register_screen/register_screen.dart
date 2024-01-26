@@ -29,18 +29,11 @@ final class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen>
     with _RegisterScreenMixin {
   @override
-  void initState() {
-    customProgressDialog =
-        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocListener<RegisterBloc, RegisterState>(
       listener: (context, state) {
         if (state is RegisterInitial) {
-          customProgressDialog.show();
+          // customProgressDialog.show();
         }
         if (state is VerificationSuccess) {
           customProgressDialog.dismiss();

@@ -129,6 +129,7 @@ class _VerificationScreenState extends State<VerificationScreen>
                                     onChanged: (value) {},
                                   ),
                                 )),
+                            // Text(Preferences.getOtp()),
                             Padding(
                               padding:
                                   const EdgeInsets.fromLTRB(10, 10, 10, 10),

@@ -33,6 +33,12 @@ class _RegisterScreenState extends State<RegisterScreen>
         }
         if (state is VerificationSuccess) {
           customProgressDialog.dismiss();
+          _nameController.clear();
+          _emailController.clear();
+          _passwordController.clear();
+          _confirmPasswordController.clear();
+          _phoneController.clear();
+          _referenceCodeController.clear();
           Preferences.setVerification(isVerification: true);
           Preferences.setName(name: name);
           Preferences.setEmail(email: email);
@@ -52,10 +58,22 @@ class _RegisterScreenState extends State<RegisterScreen>
         }
         if (state is RegisterFail) {
           customProgressDialog.dismiss();
+          _nameController.clear();
+          _emailController.clear();
+          _passwordController.clear();
+          _confirmPasswordController.clear();
+          _phoneController.clear();
+          _referenceCodeController.clear();
           showToast(state.message);
         }
         if (state is RegisterSuccess) {
           customProgressDialog.dismiss();
+          _nameController.clear();
+          _emailController.clear();
+          _passwordController.clear();
+          _confirmPasswordController.clear();
+          _phoneController.clear();
+          _referenceCodeController.clear();
           replaceScreen(context, const LoginScreen());
         }
       },

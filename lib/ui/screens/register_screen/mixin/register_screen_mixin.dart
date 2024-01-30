@@ -141,12 +141,6 @@ mixin _RegisterScreenMixin on State<RegisterScreen> {
     } else if (reference == '' || reference.isEmpty) {
       validate();
     } else {
-      _nameController.clear();
-      _emailController.clear();
-      _passwordController.clear();
-      _confirmPasswordController.clear();
-      _phoneController.clear();
-      _referenceCodeController.clear();
       bool isConnected = await networkInfo.isConnected;
       if (isConnected) {
         customProgressDialog =

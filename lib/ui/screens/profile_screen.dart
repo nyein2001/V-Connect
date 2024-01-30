@@ -105,7 +105,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(60),
                                       border: Border.all(
-                                        // color: Colors.white,
                                         width: 1.5,
                                       ),
                                     ),

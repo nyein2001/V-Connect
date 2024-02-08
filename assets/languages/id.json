@@ -10,6 +10,7 @@
     "download": "Unduh",
     "upload": "Unggah",
     "subscription_title": "Langganan",
+    "subscription": "Subscriptions",
     "subscription_description": "Dengan berlangganan, Anda akan mendapatkan akses tak terbatas ke semua fitur aplikasi. Jika Anda tidak membatalkan sebelum masa percobaan berakhir, Anda akan dikenakan biaya sesuai pilihan di atas sampai Anda membatalkannya",
     "theme_mode": "Mode Tema",
     "theme_mode_title": "Pilih Mode Tema",
@@ -120,5 +121,7 @@
     "spin_now": "Spin Now",
     "remaining_spins": "Today Remaining Spins",
     "total_spins": "Daily Total Spins ",
-    "total_point_msg": "You Have {total} Reward Point"
+    "total_point_msg": "You Have {total} Reward Point", 
+    "choose_one_item" : "Please choose one item",
+    "payment_success": "Payment Successful"
 }

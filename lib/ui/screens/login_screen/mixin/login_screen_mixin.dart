@@ -137,6 +137,7 @@ mixin _LoginScreenMixin on State<LoginScreen> {
       }
     } catch (e) {
       print("Failed try again $e");
+      customProgressDialog.dismiss();
       showToast('error'.tr());
     }
   }

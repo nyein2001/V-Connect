@@ -11,6 +11,7 @@
     "download": "DOWNLOAD",
     "upload": "UPLOAD",
     "subscription_title": "Lets Subscribe!",
+    "subscription": "Subscriptions",
     "subscription_description": "By Subscribing will gives you unlimited access to all app features. If you don't cancel before trial ends, you will be charged the amount chosen above until you cancel",
     "theme_mode": "Theme Mode",
     "theme_mode_title": "Theme Mode",
@@ -121,5 +122,7 @@
     "spin_now": "Spin Now",
     "remaining_spins": "Today Remaining Spins",
     "total_spins": "Daily Total Spins ",
-    "total_point_msg": "You Have {total} Reward Point"
+    "total_point_msg": "You Have {total} Reward Point", 
+    "choose_one_item" : "Please choose one item",
+    "payment_success": "Payment Successful"
 }

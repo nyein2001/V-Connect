@@ -1,10 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:ndvpn/core/models/subscription_plan.dart';
 import 'package:ndvpn/core/utils/config.dart';
+import 'package:ndvpn/core/utils/constant.dart';
+import 'package:ndvpn/core/utils/utils.dart';
+import 'package:pay/pay.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import '../../resources/environment.dart';
@@ -18,15 +23,38 @@ class IAPProvider with ChangeNotifier {
   final List<IAPItem> _productItems = [];
   List<IAPItem> get productItems => _productItems;
 
+  final List<PaymentItem> _paymentItems = [];
+  List<PaymentItem> get paymentItems => _paymentItems;
+
+  final List<SubscriptionPlan> _subscriptionItems = [];
+  List<SubscriptionPlan> get subscriptionItems => _subscriptionItems;
+
+  SubscriptionPlan? _subscriptionItem;
+  SubscriptionPlan? get subscriptionItem => _subscriptionItem;
+  set subscriptionPlan(SubscriptionPlan item) {
+    _subscriptionItem = item;
+    notifyListeners();
+  }
+
   bool _isPro = false;
   bool get isPro => _isPro;
 
   bool _inGracePeriod = false;
   bool get inGracePeriod => _inGracePeriod;
 
+  Map<String, dynamic>? paymentIntentData;
+
+  var stripeSecretKey = AppConstants.stripeSecretKey;
+  late final Future<PaymentConfiguration> googlePayConfigFuture;
+  late final Future<PaymentConfiguration> applePayConfigFuture;
+
   ///Initialize IAP and handler all purchase functions
   Future initialize() {
     return _engine.initialize().then((value) async {
+      googlePayConfigFuture =
+          PaymentConfiguration.fromAsset('default_google_pay_config.json');
+      applePayConfigFuture =
+          PaymentConfiguration.fromAsset('default_apple_pay_config.json');
       _subscription = FlutterInappPurchase.purchaseUpdated
           .listen((item) => item != null ? _verifyPurchase(item) : null);
       await _loadPurchaseItems();
@@ -52,8 +80,15 @@ class IAPProvider with ChangeNotifier {
         List object = subObject;
         Map<String, dynamic> itemMap = object.first;
 
+        _subscriptionItems.clear();
         for (String key in itemMap.keys) {
           SubscriptionPlan plan = SubscriptionPlan.fromJson(itemMap[key]);
+          PaymentItem paymentItem = PaymentItem(
+              amount: plan.price,
+              label: plan.name,
+              status: PaymentItemStatus.final_price);
+          _subscriptionItems.add(plan);
+          _paymentItems.add(paymentItem);
           subscriptionIdentifier[plan.productId] = {
             "name": plan.name,
             "price": plan.price,
@@ -65,6 +100,106 @@ class IAPProvider with ChangeNotifier {
     } catch (e) {
       print("Error: $e");
     }
+  }
+
+  Future<void> makePayment() async {
+    try {
+      if (subscriptionItem != null) {
+        debugPrint("Start Payment");
+        paymentIntentData = await createPaymentIntent(
+            subscriptionItem!.price, subscriptionItem!.currency);
+
+        debugPrint("After payment intent");
+
+        if (paymentIntentData != null) {
+          debugPrint(" payment intent is not null .........");
+          await Stripe.instance.initPaymentSheet(
+              paymentSheetParameters: SetupPaymentSheetParameters(
+            merchantDisplayName: 'Prospects',
+            customerId: paymentIntentData!['customer'],
+            paymentIntentClientSecret: paymentIntentData!['client_secret'],
+            // applePay: const PaymentSheetApplePay(merchantCountryCode: '+92'),
+            // googlePay: const PaymentSheetGooglePay(merchantCountryCode: '+92', testEnv: true),
+            style: ThemeMode.dark,
+          ));
+          debugPrint(" initPaymentSheet  .........");
+          displayPaymentSheet(paymentIntentData!['client_secret']);
+        }
+      } else {
+        showToast('choose_one_item'.tr());
+      }
+    } catch (e, s) {
+      debugPrint("After payment intent Error: ${e.toString()}");
+      debugPrint("After payment intent s Error: ${s.toString()}");
+    }
+  }
+
+  displayPaymentSheet(clientSecret) async {
+    try {
+      await Stripe.instance.presentPaymentSheet();
+
+      // final paymentIntentResult = await Stripe.instance.confirmPayment(
+      //     paymentIntentClientSecret: clientSecret,
+      // );
+      // print("on a fini confirmpayment");
+      // print(paymentIntentResult.status);
+
+      showToast('payment_success'.tr());
+      updateUserPlan();
+    } on Exception catch (e) {
+      if (e is StripeException) {
+        debugPrint("Error from Stripe: ${e.error.localizedMessage}");
+      } else {
+        debugPrint("Unforcen Error: $e");
+      }
+    } catch (e) {
+      debugPrint("Exception $e");
+    }
+  }
+
+  createPaymentIntent(String amount, String currency) async {
+    try {
+      Map<String, dynamic> body = {
+        'amount': calculate(amount),
+        'currency': currency,
+        'payment_method_types[]': 'card',
+      };
+
+      debugPrint("Start Payment Intent http rwq post method");
+
+      var response = await http
+          .post(Uri.parse(AppConstants.stripeUrl), body: body, headers: {
+        "Authorization": "Bearer $stripeSecretKey",
+        "Content-Type": 'application/x-www-form-urlencoded'
+      });
+      debugPrint("End Payment Intent http rwq post method");
+      debugPrint(response.body.toString());
+
+      return jsonDecode(response.body);
+    } catch (e) {
+      debugPrint('err charging user: ${e.toString()}');
+    }
+  }
+
+  calculate(String amount) {
+    final a = (int.parse(amount)) * 100;
+    return a.toString();
+  }
+
+  updateUserPlan() async {
+    // var collection = FirebaseFirestore.instance.collection('botUsers');
+    // collection.doc(LocalStorage.getId()).update({'isPremium': true});
+    // ToastMessage.success('Your Plan Updated to Premium');
+    // MainController.updateToPremiumUser();
+    // Get.offNamedUntil(Routes.homeScreen, (route) => false);
+  }
+
+  void onGooglePayResult(paymentResult) {
+    debugPrint(paymentResult.toString());
+  }
+
+  void onApplePayResult(paymentResult) {
+    debugPrint(paymentResult.toString());
   }
 
   ///Load purchased item, in this case subscription

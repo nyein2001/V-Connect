@@ -14,7 +14,6 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import '../../resources/environment.dart';
 
-///InAppPurchase realted provider
 class IAPProvider with ChangeNotifier {
   late StreamSubscription<PurchasedItem?> _subscription;
 
@@ -44,22 +43,50 @@ class IAPProvider with ChangeNotifier {
 
   Map<String, dynamic>? paymentIntentData;
 
-  var stripeSecretKey = AppConstants.stripeSecretKey;
-  late final Future<PaymentConfiguration> googlePayConfigFuture;
-  late final Future<PaymentConfiguration> applePayConfigFuture;
+  String stripeSecretKey = '';
+  String stripePublicKey = '';
+
+  late String paymentProfile;
 
   ///Initialize IAP and handler all purchase functions
   Future initialize() {
     return _engine.initialize().then((value) async {
-      googlePayConfigFuture =
-          PaymentConfiguration.fromAsset('default_google_pay_config.json');
-      applePayConfigFuture =
-          PaymentConfiguration.fromAsset('default_apple_pay_config.json');
       _subscription = FlutterInappPurchase.purchaseUpdated
           .listen((item) => item != null ? _verifyPurchase(item) : null);
       await _loadPurchaseItems();
       await _verifyPreviousPurchase();
     });
+  }
+
+  Future _fetchStripeSecretKey() async {
+    try {
+      http.Response response = await http.get(
+        Uri.parse('${AppConstants.baseURL}?stripe_secret_key'),
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+        stripeSecretKey = data['stripe_secret_key'];
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  Future _fetchStripePublicKey() async {
+    try {
+      http.Response response = await http.get(
+        Uri.parse('${AppConstants.baseURL}?stripe_public_key'),
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+        stripePublicKey = data['stripe_public_key'];
+        Preferences.setPublicStripeKey(stripeKey: stripePublicKey);
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 
   Future _fetchSubscription() async {
@@ -145,7 +172,7 @@ class IAPProvider with ChangeNotifier {
       // print(paymentIntentResult.status);
 
       showToast('payment_success'.tr());
-      updateUserPlan();
+      savePayment();
     } on Exception catch (e) {
       if (e is StripeException) {
         debugPrint("Error from Stripe: ${e.error.localizedMessage}");
@@ -161,11 +188,11 @@ class IAPProvider with ChangeNotifier {
     try {
       Map<String, dynamic> body = {
         'amount': calculate(amount),
-        'currency': currency,
+        'currency': "usd",
         'payment_method_types[]': 'card',
       };
 
-      debugPrint("Start Payment Intent http rwq post method");
+      debugPrint("Start Payment Intent http rwq post method $stripeSecretKey");
 
       var response = await http
           .post(Uri.parse(AppConstants.stripeUrl), body: body, headers: {
@@ -181,22 +208,108 @@ class IAPProvider with ChangeNotifier {
     }
   }
 
+  Future<Map<String, dynamic>> fetchPaymentIntentClientSecret() async {
+    final url = Uri.parse('https://api.stripe.com/v1/create-payment-intent');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'email': 'example@gmail.com',
+        'currency': 'usd',
+        'items': ['id-1'],
+        'request_three_d_secure': 'any',
+      }),
+    );
+    return json.decode(response.body);
+  }
+
+  String createPaymentProfile() {
+    return '''
+    {
+      "provider": "google_pay",
+      "data": {
+        "environment": "TEST",
+        "apiVersion": 2,
+        "apiVersionMinor": 0,
+        "allowedPaymentMethods": [
+          {
+            "type": "CARD",
+            "tokenizationSpecification": {
+              "type": "PAYMENT_GATEWAY",
+              "parameters": {
+                "gateway": "stripe",
+                "stripe:version": "2020-08-27",
+                "stripe:publishableKey": "$stripeSecretKey"
+              }
+            },
+            "parameters": {
+              "allowedCardNetworks": ["VISA", "MASTERCARD"],
+              "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+              "billingAddressRequired": true,
+              "billingAddressParameters": {
+                "format": "FULL",
+                "phoneNumberRequired": true
+              }
+            }
+          }
+        ],
+        "merchantInfo": {
+          "merchantId": "01234567890123456789",
+          "merchantName": "Example Merchant Name"
+        },
+        "transactionInfo": {
+          "countryCode": "US",
+          "currencyCode": "USD"
+        }
+      }
+    }
+    ''';
+  }
+
+  void savePayment() async {
+    Config.vipSubscription = true;
+    Config.allSubscription = true;
+    Config.stripeStatus = "active";
+    updateProStatus();
+
+    Map<String, String> headers = {
+      "Content-Type": "application/x-www-form-urlencoded",
+    };
+
+    Map<String, String> body = {
+      "payment_method": "Stripe",
+      "product_id": _subscriptionItem!.productId,
+      "user_id": Preferences.getProfileId(),
+      "method_name": "savePayment",
+    };
+
+    try {
+      var response = await http.post(
+        Uri.parse(AppConstants.baseURL),
+        headers: headers,
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        // customProgressDialog.dismiss();
+      } else {
+        // customProgressDialog.dismiss();
+      }
+    } catch (error) {
+      // customProgressDialog.dismiss();
+    }
+  }
+
   calculate(String amount) {
-    final a = (int.parse(amount)) * 100;
+    final a = (double.parse(amount).toInt()) * 100;
     return a.toString();
   }
 
-  updateUserPlan() async {
-    // var collection = FirebaseFirestore.instance.collection('botUsers');
-    // collection.doc(LocalStorage.getId()).update({'isPremium': true});
-    // ToastMessage.success('Your Plan Updated to Premium');
-    // MainController.updateToPremiumUser();
-    // Get.offNamedUntil(Routes.homeScreen, (route) => false);
-  }
-
-  void onGooglePayResult(paymentResult) {
-    debugPrint(paymentResult.toString());
-  }
+  // void onGooglePayResult(paymentResult) {
+  //   debugPrint(paymentResult.toString());
+  // }
 
   void onApplePayResult(paymentResult) {
     debugPrint(paymentResult.toString());
@@ -205,6 +318,8 @@ class IAPProvider with ChangeNotifier {
   ///Load purchased item, in this case subscription
   Future _loadPurchaseItems() async {
     await _fetchSubscription();
+    await _fetchStripeSecretKey();
+    await _fetchStripePublicKey();
     return _engine
         .getSubscriptions(subscriptionIdentifier.keys.toList())
         .then((value) {

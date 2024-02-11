@@ -5,9 +5,9 @@ import 'package:crypto/crypto.dart';
 
 class AppConstants {
   static const String stripeUrl = "https://api.stripe.com/v1/payment_intents";
-  static const String stripeSecretKey =
-      "sk_test_51L6hZUBoqQ6Z2AxwD8EzIYyW5z7i5OFIa76Rv1IpzZ4yoEjZNlVIo4WpiMzVoPmEl5vvbNBD3ipVxVxqUuoM9P4X002BcC7b8s";
-  static const String baseURL = "https://newvpn.truetest.xyz/api.php";
+  // static const String stripeSecretKey =
+  //     "sk_test_51L6hZUBoqQ6Z2AxwD8EzIYyW5z7i5OFIa76Rv1IpzZ4yoEjZNlVIo4WpiMzVoPmEl5vvbNBD3ipVxVxqUuoM9P4X002BcC7b8s";
+  static const String baseURL = "https://newvpn.testerdev.xyz/api.php";
   // ignore: constant_identifier_names
   static const LOGIN_TYPE_GOOGLE = 'google';
   // ignore: constant_identifier_names

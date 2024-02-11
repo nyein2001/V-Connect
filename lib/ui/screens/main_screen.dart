@@ -572,7 +572,7 @@ class _MainScreenState extends State<MainScreen> {
 
   ///Open the subscription screen when user click on the crown icon
   void _upgradeProClick(BuildContext context) {
-    startScreen(context, const SubscriptionScreen());
+    startScreen(context, SubscriptionScreen());
   }
 
   void profileUpdate(BuildContext context) {

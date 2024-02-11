@@ -244,4 +244,13 @@ class Preferences {
   static bool isFirstTime() {
     return _getValue<bool>(isFirstTimeKey) ?? true;
   }
+
+  static const String stripePublishableKey = 'stripePublishableKey';
+  static void setPublicStripeKey({required String stripeKey}) {
+    _setValue<String>(stripePublishableKey, stripeKey);
+  }
+
+  static String getPublicStripeKey() {
+    return _getValue<String>(stripePublishableKey) ?? 'stripeKey';
+  }
 }

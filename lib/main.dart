@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ndvpn/core/providers/globals/ads_provider.dart';
 import 'package:ndvpn/core/providers/globals/iap_provider.dart';
@@ -22,6 +23,10 @@ AuthService authService = AuthService();
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Preferences.init();
+  Stripe.publishableKey = Preferences.getPublicStripeKey();
+  Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
+  Stripe.urlScheme = 'flutterstripe';
+  await Stripe.instance.applySettings();
   await Firebase.initializeApp();
   await Future.wait([
     CountryCodes.init(),

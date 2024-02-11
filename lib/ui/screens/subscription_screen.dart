@@ -1,20 +1,20 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/modules.dart';
+import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
 import 'package:ndialog/ndialog.dart';
 import 'package:ndvpn/core/models/subscription_plan.dart';
 import 'package:ndvpn/core/providers/globals/iap_provider.dart';
 import 'package:ndvpn/core/resources/colors.dart';
 import 'package:ndvpn/core/resources/environment.dart';
-import 'package:ndvpn/core/utils/config.dart';
 import 'package:ndvpn/core/utils/utils.dart';
 import 'package:ndvpn/ui/components/custom_card.dart';
 import 'package:ndvpn/ui/components/custom_divider.dart';
 import 'package:pay/pay.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
 class SubscriptionScreen extends StatefulWidget {
   const SubscriptionScreen({super.key});
@@ -24,6 +24,13 @@ class SubscriptionScreen extends StatefulWidget {
 }
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
+  late IAPProvider myWidget;
+  @override
+  void initState() {
+    myWidget = Provider.of<IAPProvider>(context, listen: false);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -216,7 +223,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     return CupertinoButton(
       padding: EdgeInsets.zero,
       onPressed: () {
-        provider.purchase(e).then((value) => savePayment(e.productId!));
+        provider.purchase(e).then((value) => provider.savePayment());
       },
       child: SizedBox(
         height: 100,
@@ -273,44 +280,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     );
   }
 
-  void savePayment(String productId) async {
-    Config.vipSubscription = true;
-    Config.allSubscription = true;
-    Config.stripeStatus = "active";
-    IAPProvider.read(context).updateProStatus();
-    CustomProgressDialog customProgressDialog =
-        CustomProgressDialog(context, dismissable: false, onDismiss: () {});
-    customProgressDialog.show();
-    String url = "https://vpn.truetest.xyz/includes/api.php";
-
-    Map<String, String> headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-    };
-
-    Map<String, String> body = {
-      "payment_method": "Stripe",
-      "product_id": productId,
-      "user_id": Preferences.getProfileId(),
-      "method_name": "savePayment",
-    };
-
-    try {
-      var response = await http.post(
-        Uri.parse(url),
-        headers: headers,
-        body: body,
-      );
-
-      if (response.statusCode == 200) {
-        customProgressDialog.dismiss();
-      } else {
-        customProgressDialog.dismiss();
-      }
-    } catch (error) {
-      customProgressDialog.dismiss();
-    }
-  }
-
   _showPaymentDialog(
       {required BuildContext context, required IAPProvider controller}) {
     showModalBottomSheet(
@@ -351,8 +320,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     ),
                     title: const Text("Stripe"),
                     trailing: const Icon(Icons.arrow_forward_ios_outlined),
-                    onTap: () {
-                      controller.makePayment();
+                    onTap: () async {
+                      await controller.makePayment();
+                      Navigator.pop(context);
                     },
                   ),
                 ),
@@ -376,39 +346,77 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   }
 
   _applePayPayment({required IAPProvider controller}) {
-    return FutureBuilder<PaymentConfiguration>(
-        future: controller.applePayConfigFuture,
-        builder: (context, snapshot) => snapshot.hasData
-            ? ApplePayButton(
-                height: 12.00 * 3.6,
-                paymentConfiguration: snapshot.data!,
-                paymentItems: controller.paymentItems,
-                style: ApplePayButtonStyle.black,
-                type: ApplePayButtonType.plain,
-                margin: const EdgeInsets.only(top: 15.0),
-                onPaymentResult: controller.onApplePayResult,
-                loadingIndicator: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
-            : const SizedBox.shrink());
+    return ApplePayButton(
+      height: 12.00 * 3.6,
+      paymentConfiguration: PaymentConfiguration.fromJsonString(
+        myWidget.createPaymentProfile(),
+      ),
+      paymentItems: controller.paymentItems,
+      style: ApplePayButtonStyle.black,
+      type: ApplePayButtonType.plain,
+      margin: const EdgeInsets.only(top: 15.0),
+      onPaymentResult: controller.onApplePayResult,
+      loadingIndicator: const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
   }
 
   _gpayPayment({required IAPProvider controller}) {
-    return FutureBuilder<PaymentConfiguration>(
-        future: controller.googlePayConfigFuture,
-        builder: (context, snapshot) => snapshot.hasData
-            ? GooglePayButton(
-                height: 200,
-                paymentConfiguration: snapshot.data!,
-                paymentItems: controller.paymentItems,
-                type: GooglePayButtonType.plain,
-                margin: const EdgeInsets.only(top: 15.0),
-                onPaymentResult: controller.onGooglePayResult,
-                loadingIndicator: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
-            : const SizedBox.shrink());
+    return GooglePayButton(
+      paymentConfiguration: PaymentConfiguration.fromJsonString(
+        myWidget.createPaymentProfile(),
+      ),
+      paymentItems: controller.paymentItems,
+      margin: const EdgeInsets.only(top: 15),
+      onPaymentResult: onGooglePayResult,
+      loadingIndicator: const Center(
+        child: CircularProgressIndicator(),
+      ),
+      onPressed: () async {},
+      childOnError: const Text('Google Pay is not available in this device'),
+      onError: (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content:
+                Text('There was an error while trying to perform the payment'),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> onGooglePayResult(paymentResult) async {
+    try {
+      debugPrint(paymentResult.toString());
+      // 2. fetch Intent Client Secret from backend
+      final response = await myWidget.fetchPaymentIntentClientSecret();
+      final clientSecret = response['clientSecret'];
+      final token =
+          paymentResult['paymentMethodData']['tokenizationData']['token'];
+      final tokenJson = Map.castFrom(json.decode(token));
+      debugPrint(tokenJson.toString());
+
+      final params = stripe.PaymentMethodParams.cardFromToken(
+        paymentMethodData: stripe.PaymentMethodDataCardFromToken(
+          token: tokenJson['id'],
+        ),
+      );
+
+      // 3. Confirm Google pay payment method
+      await stripe.Stripe.instance.confirmPayment(
+        paymentIntentClientSecret: clientSecret,
+        data: params,
+      );
+      myWidget.savePayment();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Google Pay payment succesfully completed')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
   }
 }

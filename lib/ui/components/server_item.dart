@@ -118,7 +118,7 @@ class _ServerItemState extends State<ServerItem>
             ),
           TextButton(
             child: Text("go_premium".tr()),
-            onPressed: () => replaceScreen(context, const SubscriptionScreen()),
+            onPressed: () => replaceScreen(context,  SubscriptionScreen()),
           ),
           TextButton(
             child: Text("redeem".tr()),

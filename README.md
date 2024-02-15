@@ -1,3 +1,3 @@
 # vpn_project
 
-Custom-Bottom-App-Bar redefines the loading experience with its sleek design and user-friendly interface. This challenging two-hour project delivers optimized performance, customization options, and integrates valuable user feedback. Join a vibrant community pushing the boundaries of UI design. Elevate your app's loading game with Custom-Bottom-App-Bar!
+V-Connect is a state-of-the-art VPN app offering real-time display, social login, and manual registration for enhanced security. Users can effortlessly manage profiles, enjoy seamless payment processing with Google Pay, Apple Pay, and Stripe, and engage with interactive features like a spin wheel. With Z-Connect, enjoy secure browsing and privacy with ease.
